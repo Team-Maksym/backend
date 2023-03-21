@@ -7,9 +7,11 @@ import Strlight.backend.talent.service.TalentServiceInterface;
 import lombok.AllArgsConstructor;
 import org.springframework.context.annotation.Primary;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.stereotype.Service;
 
 @Primary
 @AllArgsConstructor
+@Service
 public class TalentServiceImpl implements TalentServiceInterface {
     TalentMapper mapper;
     TalentRepository repository;
