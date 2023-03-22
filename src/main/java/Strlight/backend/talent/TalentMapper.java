@@ -24,7 +24,6 @@ public interface TalentMapper {
                     .talentProfileList(talentEntities.getContent().
                             stream().map(this::toTalentProfile).toList())
                     .totalTalents(talentEntities.getTotalElements())
-                    .totalPage(talentEntities.getTotalPages())
                     .build();
         }
 }
