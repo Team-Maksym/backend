@@ -18,16 +18,25 @@ import static jakarta.persistence.GenerationType.IDENTITY;
 public class TalentEntity {
     @Id
     @GeneratedValue(strategy = IDENTITY)
-    Long talentId;
-    String fullName;
-    String mail;
-    String password;
-    Integer age;
-    String avatarUrl;
-    String education;
-    String experience;
+    private Long talentId;
+    private String fullName;
+    private String mail;
+    private String password;
+    private Integer age;
+    private String avatarUrl;
+    private String education;
+    private String experience;
 
-    @OneToMany(mappedBy = "talent", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-    @JsonManagedReference
-    private Set<PositionEntity> positionEntities;
+    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @JoinTable(
+            name = "talent_position",
+            joinColumns = @JoinColumn(name = "talent_id"),
+            inverseJoinColumns = @JoinColumn(name = "position_id"))
+    private Set<PositionEntity> positions;
+
+    @ManyToMany @JoinTable(
+            name = "talent_roles",
+            joinColumns = @JoinColumn(name = "talent_id"),
+            inverseJoinColumns = @JoinColumn(name = "role_id"))
+    private Set<RoleEntity> talentRole;
 }

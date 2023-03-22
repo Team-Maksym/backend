@@ -13,7 +13,8 @@ public class TalentController {
     TalentServiceInterface talentService;
 
     @GetMapping("/talents")
-    TalentPagePagination pagination (@RequestParam int page, int size) {
+    TalentPagePagination pagination (@RequestParam(defaultValue = "0") int page,
+                                     @RequestParam(defaultValue = "10") int size) {
         return talentService.talentPagination(page, size);
     }
 }

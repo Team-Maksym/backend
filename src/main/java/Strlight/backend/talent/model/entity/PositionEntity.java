@@ -4,6 +4,8 @@ import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.Set;
+
 import static jakarta.persistence.GenerationType.IDENTITY;
 
 @Getter
@@ -16,12 +18,10 @@ import static jakarta.persistence.GenerationType.IDENTITY;
 public class PositionEntity {
     @Id
     @GeneratedValue(strategy = IDENTITY)
-    Long id_position;
+    private Long positionId;
 
-    String position;
-    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-    @JoinColumn(name = "talent_id", nullable = false)
+    private String position;
+    @ManyToMany(mappedBy = "positions", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JsonBackReference
-    TalentEntity talent;
+    private Set<TalentEntity> talents;
 }
-
