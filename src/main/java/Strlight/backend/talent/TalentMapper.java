@@ -13,7 +13,7 @@ public interface TalentMapper {
         default TalentProfile toTalentProfile(TalentEntity talent){
             return  TalentProfile.builder()
                     .fullName(talent.getFullName())
-                    .position(talent.getPositionEntities().stream().map(PositionEntity::getPosition).toList())
+                    .position(talent.getPositions().stream().map(PositionEntity::getPosition).toList())
                     .avatarUrl(talent.getAvatarUrl())
                     .build();
         }
