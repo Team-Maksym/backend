@@ -156,11 +156,13 @@ VALUES (2,30);
 INSERT INTO talent_position ( position_id,talent_id)
 VALUES (3,30);
 ---
-INSERT INTO role (role)
+
+INSERT INTO talent_entity_authorities (authorities)
 VALUES ('ROLE_TALENT');
 /*INSERT INTO role (role)
 VALUES ('ROLE_ADMIN');*/
 --
+/*
 INSERT INTO talent_role (role_id,talent_id)
 VALUES (1,1);
 INSERT INTO talent_role (role_id,talent_id)
@@ -221,4 +223,4 @@ VALUES (1,28);
 INSERT INTO talent_role (role_id,talent_id)
 VALUES (1,29);
 INSERT INTO talent_role (role_id,talent_id)
-VALUES (1,30);
+VALUES (1,30);*/
