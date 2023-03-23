@@ -2,6 +2,7 @@ package Strlight.backend.talent;
 
 import Strlight.backend.talent.model.entity.PositionEntity;
 import Strlight.backend.talent.model.entity.TalentEntity;
+import Strlight.backend.talent.model.response.TalentFullInfo;
 import Strlight.backend.talent.model.response.TalentPagePagination;
 import Strlight.backend.talent.model.response.TalentProfile;
 import org.mapstruct.Mapper;
@@ -23,7 +24,20 @@ public interface TalentMapper {
             return TalentPagePagination.builder()
                     .talentProfileList(talentEntities.getContent().
                             stream().map(this::toTalentProfile).toList())
-                    .totalTalents(talentEntities.getTotalElements())
+                    .totalTalents(talentEntities.getTotalElements())    
+                    .build();
+        }
+
+        default TalentFullInfo toTalentFullInfo(TalentEntity talent) {
+            return TalentFullInfo.builder()
+                    .fullName(talent.getFullName())
+                    .mail(talent.getMail())
+                    .age(talent.getAge())
+                    .avatar(talent.getAvatarUrl())
+                    .experience(talent.getExperience())
+                    .education(talent.getEducation())
+                    .positions(talent.getPositions().stream().toList())
                     .build();
         }
 }
+
