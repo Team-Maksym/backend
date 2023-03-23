@@ -9,7 +9,6 @@ import java.util.Set;
 
 @Builder
 public record TalentProfile (
-
             @NotNull
             String fullName,
             @NotNull
