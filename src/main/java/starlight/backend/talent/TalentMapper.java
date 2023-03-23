@@ -17,6 +17,7 @@ public interface TalentMapper {
     default TalentProfile toTalentProfile(TalentEntity talent) {
         return TalentProfile.builder()
                 .fullName(talent.getFullName())
+                .email(talent.getMail())
                 .position(talent.getPositions().stream().map(PositionEntity::getPosition).toList())
                 .avatarUrl(talent.getAvatarUrl())
                 .build();

@@ -55,4 +55,3 @@ public class TalentEntity {
     private Set<RoleEntity> talentRole;
 
  */
-

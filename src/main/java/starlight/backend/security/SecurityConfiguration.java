@@ -28,8 +28,10 @@ class SecurityConfiguration {
                 .requestMatchers(antMatcher("/h2/**")).permitAll()
                 //.requestMatchers(POST, "/register").permitAll()
                 .requestMatchers("/talents").permitAll()
+                .requestMatchers(POST, "/talents/login").permitAll()
                 .requestMatchers("/error").permitAll()
-                .requestMatchers("/hello").authenticated()
+
+                .requestMatchers("/talents/**").authenticated()
                 .anyRequest().permitAll()
         ); /*authenticated());*/
         http.sessionManagement().sessionCreationPolicy(STATELESS);

@@ -3,7 +3,6 @@ package starlight.backend.security.controller;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 import starlight.backend.security.mapper.SecurityMapper;
@@ -17,10 +16,11 @@ public class SecurityController {
     TalentService service;
     SecurityMapper mapper;
 
-    @PreAuthorize("hasRole('TALENT')")
-    @GetMapping("/hello")
+   // @PreAuthorize("hasRole('TALENT')")
+    @GetMapping ("/talents/login")
     public String hello(Authentication authentication) {
-        return "Hello, " + authentication.getName();
+
+        return "Hello, " + authentication.getName() + ", u in system now!";
     }
 
     @PostMapping("/talents")
