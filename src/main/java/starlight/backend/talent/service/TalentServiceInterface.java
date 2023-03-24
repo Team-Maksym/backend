@@ -1,7 +1,7 @@
-package Strlight.backend.talent.service;
+package starlight.backend.talent.service;
 
-import Strlight.backend.talent.model.response.TalentFullInfo;
-import Strlight.backend.talent.model.response.TalentPagePagination;
+import starlight.backend.talent.model.response.TalentFullInfo;
+import starlight.backend.talent.model.response.TalentPagePagination;
 
 import java.util.Optional;
 

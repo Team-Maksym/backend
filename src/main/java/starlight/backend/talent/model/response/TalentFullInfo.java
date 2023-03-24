@@ -1,18 +1,18 @@
-package Strlight.backend.talent.model.response;
+package starlight.backend.talent.model.response;
 
-import Strlight.backend.talent.model.entity.PositionEntity;
 import lombok.Builder;
+import starlight.backend.talent.model.entity.PositionEntity;
 
 import java.util.List;
 
 @Builder
 public record TalentFullInfo(
         String fullName,
-        String mail,
+        String email,
         Integer age,
         String avatar,
         String education,
         String experience,
-        List<PositionEntity> positions
+        List<String> positions
 ) {
 }

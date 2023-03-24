@@ -1,4 +1,4 @@
-package Strlight.backend.talent.model.entity;
+package starlight.backend.talent.model.entity;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
@@ -21,7 +21,8 @@ public class PositionEntity {
     private Long positionId;
 
     private String position;
+
     @ManyToMany(mappedBy = "positions", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JsonBackReference
-    private Set<TalentEntity> talents;
+    private Set<UserEntity> users;
 }
