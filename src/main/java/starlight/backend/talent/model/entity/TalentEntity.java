@@ -1,5 +1,6 @@
 package starlight.backend.talent.model.entity;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotNull;
@@ -38,20 +39,10 @@ public class TalentEntity {
             name = "talent_position",
             joinColumns = @JoinColumn(name = "talent_id"),
             inverseJoinColumns = @JoinColumn(name = "position_id"))
+    @JsonManagedReference
     private Set<PositionEntity> positions;
 
 
     @ElementCollection(fetch = FetchType.EAGER)
     private Collection<String> authorities;
 }
-
-
-/*  //PREVIOUS VERSION
-    @ManyToMany (fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-    @JoinTable(
-            name = "talent_roles",
-            joinColumns = @JoinColumn(name = "talent_id"),
-            inverseJoinColumns = @JoinColumn(name = "role_id"))
-    private Set<RoleEntity> talentRole;
-
- */

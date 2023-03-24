@@ -1,7 +1,5 @@
 package starlight.backend.security;
 
-import starlight.backend.security.mapper.SecurityMapper;
-import starlight.backend.talent.repository.TalentRepository;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
@@ -12,8 +10,9 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import starlight.backend.security.mapper.SecurityMapper;
+import starlight.backend.talent.repository.TalentRepository;
 
-import static org.springframework.http.HttpMethod.GET;
 import static org.springframework.http.HttpMethod.POST;
 import static org.springframework.security.config.http.SessionCreationPolicy.STATELESS;
 import static org.springframework.security.web.util.matcher.AntPathRequestMatcher.antMatcher;
@@ -30,14 +29,14 @@ class SecurityConfiguration {
                 .requestMatchers("/talents").permitAll()
                 .requestMatchers(POST, "/talents/login").permitAll()
                 .requestMatchers("/error").permitAll()
-
-                .requestMatchers("/talents/**").authenticated()
+                .requestMatchers(antMatcher("/talents/**")).authenticated()
                 .anyRequest().permitAll()
         ); /*authenticated());*/
         http.sessionManagement().sessionCreationPolicy(STATELESS);
         http.httpBasic();
 //        http.csrf().disable();
         http.csrf()
+                //.ignoringRequestMatchers(antMatcher("/talents/**"))
                 .ignoringRequestMatchers("/talents")
                 .ignoringRequestMatchers(antMatcher("/h2/**"));
 //        http.cors().disable();
