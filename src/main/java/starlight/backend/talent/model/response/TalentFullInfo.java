@@ -13,6 +13,6 @@ public record TalentFullInfo(
         String avatar,
         String education,
         String experience,
-        List<PositionEntity> positions
+        List<String> positions
 ) {
 }

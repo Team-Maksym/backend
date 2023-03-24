@@ -3,8 +3,6 @@ package starlight.backend.talent.model.response;
 import jakarta.validation.constraints.NotNull;
 import lombok.Builder;
 
-import java.util.List;
-
 @Builder
 public record TalentProfile (
             @NotNull
