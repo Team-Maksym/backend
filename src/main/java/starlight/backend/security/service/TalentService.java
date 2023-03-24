@@ -27,7 +27,7 @@ public class TalentService {
                     .fullName(newTalent.full_name())
                     .email(newTalent.email())
                     .password(passwordEncoder.encode(newTalent.password()))
-                    .authorities(List.of("ROLE_TALENT"))
+                    //.authorities(List.of("ROLE_TALENT"))
                     .build());
         else
             throw new ResponseStatusException(HttpStatus.CONFLICT,

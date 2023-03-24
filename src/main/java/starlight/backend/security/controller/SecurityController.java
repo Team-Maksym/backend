@@ -22,7 +22,7 @@ import java.util.stream.Collectors;
 
 import static java.time.temporal.ChronoUnit.MINUTES;
 
-@RequiredArgsConstructor
+@AllArgsConstructor
 @RestController
 @Slf4j
 public class SecurityController {
@@ -30,15 +30,6 @@ public class SecurityController {
     SecurityMapper mapper;
     final JwtEncoder jwtEncoder;
 
-
-//
-//    private String createScope(Authentication authentication) {
-//        return authentication.getAuthorities().stream()
-//                .map(GrantedAuthority::getAuthority)
-//                .collect(Collectors.joining(" "));
-//    }
-
-    @PreAuthorize("hasRole('TALENT')")
     @GetMapping ("/talents/login")
     public String login(Authentication authentication) {
         log.info("=== POST /login === auth.name = {}", authentication.getName());
@@ -58,11 +49,6 @@ public class SecurityController {
                 .map(GrantedAuthority::getAuthority)
                 .collect(Collectors.joining(" "));
     }
-
-
-//
-//        return "Hello, " + authentication.getName() + ", u in system now!";
-//    }
 
     @PostMapping("/talents")
     @ResponseStatus(HttpStatus.CREATED)

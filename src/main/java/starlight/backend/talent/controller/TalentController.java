@@ -1,5 +1,6 @@
 package starlight.backend.talent.controller;
 
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.PathVariable;
 import starlight.backend.talent.model.response.TalentFullInfo;
 import starlight.backend.talent.model.response.TalentPagePagination;
@@ -21,7 +22,8 @@ public class TalentController {
                                             @RequestParam(defaultValue = "10") int size) {
         return talentService.talentPagination(page, size);
     }
-//TODO pagination default
+
+    @PreAuthorize("hasRole('TALENT')")
     @GetMapping("/talents/{talentId}")
     public Optional<TalentFullInfo> searchTalentById(@PathVariable(value = "talentId") Long talentId) {
         return talentService.talentFullInfo(talentId);

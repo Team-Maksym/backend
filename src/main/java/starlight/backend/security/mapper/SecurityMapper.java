@@ -18,14 +18,4 @@ public interface SecurityMapper {
                 .email(user.getEmail())
                 .build();
     }
-
-/*    *default UserDetails toTalentDetails(UserEntity user) {
-        return User.withUsername(user.getMail())
-                .password(user.getPassword())
-                .authorities(user.getAuthorities()
-                        .stream()
-                        .map(SimpleGrantedAuthority::new)
-                        .toList())
-                .build();
-    }*/
 }
