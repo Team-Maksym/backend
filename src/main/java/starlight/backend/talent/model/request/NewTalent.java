@@ -5,7 +5,7 @@ import lombok.Builder;
 
 @Builder
 public record NewTalent(
-        @NotBlank String fullName,
+        @NotBlank String full_name,
         @NotBlank String email,
         @NotBlank String password
 )

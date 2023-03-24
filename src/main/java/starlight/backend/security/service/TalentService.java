@@ -24,7 +24,7 @@ public class TalentService {
     public UserEntity register(NewTalent newTalent) {
         if (!repository.existsByEmail(newTalent.email()))
             return repository.save(UserEntity.builder()
-                    .fullName(newTalent.fullName())
+                    .fullName(newTalent.full_name())
                     .email(newTalent.email())
                     .password(passwordEncoder.encode(newTalent.password()))
                     .authorities(List.of("ROLE_TALENT"))
