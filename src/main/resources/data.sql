@@ -1,64 +1,64 @@
-INSERT INTO user_entity (full_name,mail,password,age,avatar_url,education,experience)
+INSERT INTO user_entity (full_name,email,password,age,avatar,education,experience)
 VALUES ('Maksym Khudoliy','zaxaqueiboigreu-5997@gmail.com','$2a$10$A40TjVC8xC1tC7uChck0BOWVxgMKY..7sfG2.YHrjkrG2GLSy4YLW',30,'photo1','education','experience');
-INSERT INTO user_entity (full_name,mail,password,age,avatar_url,education,experience)
+INSERT INTO user_entity (full_name,email,password,age,avatar,education,experience)
 VALUES ('Alex Lee','faulleureheiyei-5854@gmail.com','$2a$10$A40TjVC8xC1tC7uChck0BOWVxgMKY..7sfG2.YHrjkrG2GLSy4YLW',26,'photo2','education','experience');
-INSERT INTO user_entity (full_name,mail,password,age,avatar_url,education,experience)
+INSERT INTO user_entity (full_name,email,password,age,avatar,education,experience)
 VALUES ('Brandon Hernandez','merekucrautta-6463@gmail.com','$2a$10$A40TjVC8xC1tC7uChck0BOWVxgMKY..7sfG2.YHrjkrG2GLSy4YLW',17,'photo3','education','experience');
-INSERT INTO user_entity (full_name,mail,password,age,avatar_url,education,experience)
+INSERT INTO user_entity (full_name,email,password,age,avatar,education,experience)
 VALUES ('Christopher Miller','quozilejama-8415@gmail.com','$2a$10$A40TjVC8xC1tC7uChck0BOWVxgMKY..7sfG2.YHrjkrG2GLSy4YLW',24,'photo4','education','experience');
-INSERT INTO user_entity (full_name,mail,password,age,avatar_url,education,experience)
+INSERT INTO user_entity (full_name,email,password,age,avatar,education,experience)
 VALUES ('Dillon Rodrigues','neiquatrereucru-2403@gmail.com','$2a$10$A40TjVC8xC1tC7uChck0BOWVxgMKY..7sfG2.YHrjkrG2GLSy4YLW',20,'photo5','education','experience');
-INSERT INTO user_entity (full_name,mail,password,age,avatar_url,education,experience)
+INSERT INTO user_entity (full_name,email,password,age,avatar,education,experience)
 VALUES ('Josh Smith','jaxifisammi-2877@gmail.com','$2a$10$A40TjVC8xC1tC7uChck0BOWVxgMKY..7sfG2.YHrjkrG2GLSy4YLW',35,'photo6','education','experience');
-INSERT INTO user_entity (full_name,mail,password,age,avatar_url,education,experience)
+INSERT INTO user_entity (full_name,email,password,age,avatar,education,experience)
 VALUES ('Jotaro Kujo','hitubowixa-9787@gmail.com','$2a$10$A40TjVC8xC1tC7uChck0BOWVxgMKY..7sfG2.YHrjkrG2GLSy4YLW',17,'photo7','education','experience');
-INSERT INTO user_entity (full_name,mail,password,age,avatar_url,education,experience)
+INSERT INTO user_entity (full_name,email,password,age,avatar,education,experience)
 VALUES ('Ryan White','troigriheuraque-2668@gmail.com','$2a$10$A40TjVC8xC1tC7uChck0BOWVxgMKY..7sfG2.YHrjkrG2GLSy4YLW',41,'photo8','education','experience');
-INSERT INTO user_entity (full_name,mail,password,age,avatar_url,education,experience)
+INSERT INTO user_entity (full_name,email,password,age,avatar,education,experience)
 VALUES ('Tyler Moore','gridippeiwace-9072@gmail.com','$2a$10$A40TjVC8xC1tC7uChck0BOWVxgMKY..7sfG2.YHrjkrG2GLSy4YLW',27,'photo9','education','experience');
-INSERT INTO user_entity (full_name,mail,password,age,avatar_url,education,experience)
+INSERT INTO user_entity (full_name,email,password,age,avatar,education,experience)
 VALUES ('William Moore','hounoimottauque-3830@gmail.com','$2a$10$A40TjVC8xC1tC7uChck0BOWVxgMKY..7sfG2.YHrjkrG2GLSy4YLW',35,'photo10','education','experience');
 
-INSERT INTO user_entity (full_name,mail,password,age,avatar_url,education,experience)
+INSERT INTO user_entity (full_name,email,password,age,avatar,education,experience)
 VALUES ('Khudoliy','zaxaqueiboreu-5997@gmail.com','$2a$10$A40TjVC8xC1tC7uChck0BOWVxgMKY..7sfG2.YHrjkrG2GLSy4YLW',30,'photo1','education','experience');
-INSERT INTO user_entity (full_name,mail,password,age,avatar_url,education,experience)
+INSERT INTO user_entity (full_name,email,password,age,avatar,education,experience)
 VALUES ('Lee','faulleureheiye5854@gmail.com','$2a$10$A40TjVC8xC1tC7uChck0BOWVxgMKY..7sfG2.YHrjkrG2GLSy4YLW',26,'photo2','education','experience');
-INSERT INTO user_entity (full_name,mail,password,age,avatar_url,education,experience)
+INSERT INTO user_entity (full_name,email,password,age,avatar,education,experience)
 VALUES ('Hernandez','463@gmail.com','$2a$10$A40TjVC8xC1tC7uChck0BOWVxgMKY..7sfG2.YHrjkrG2GLSy4YLW',17,'photo3','education','experience');
-INSERT INTO user_entity (full_name,mail,password,age,avatar_url,education,experience)
+INSERT INTO user_entity (full_name,email,password,age,avatar,education,experience)
 VALUES ('Miller','quozil8415@gmail.com','$2a$10$A40TjVC8xC1tC7uChck0BOWVxgMKY..7sfG2.YHrjkrG2GLSy4YLW',24,'photo4','education','experience');
-INSERT INTO user_entity (full_name,mail,password,age,avatar_url,education,experience)
+INSERT INTO user_entity (full_name,email,password,age,avatar,education,experience)
 VALUES ('Rodrigues','neiquatreucru-2403@gmail.com','$2a$10$A40TjVC8xC1tC7uChck0BOWVxgMKY..7sfG2.YHrjkrG2GLSy4YLW',20,'photo5','education','experience');
-INSERT INTO user_entity (full_name,mail,password,age,avatar_url,education,experience)
+INSERT INTO user_entity (full_name,email,password,age,avatar,education,experience)
 VALUES ('Smith','jaxifimi-2877@gmail.com','$2a$10$A40TjVC8xC1tC7uChck0BOWVxgMKY..7sfG2.YHrjkrG2GLSy4YLW',35,'photo6','education','experience');
-INSERT INTO user_entity (full_name,mail,password,age,avatar_url,education,experience)
+INSERT INTO user_entity (full_name,email,password,age,avatar,education,experience)
 VALUES ('Kujo','hitubxa-9787@gmail.com','$2a$10$A40TjVC8xC1tC7uChck0BOWVxgMKY..7sfG2.YHrjkrG2GLSy4YLW',17,'photo7','education','experience');
-INSERT INTO user_entity (full_name,mail,password,age,avatar_url,education,experience)
+INSERT INTO user_entity (full_name,email,password,age,avatar,education,experience)
 VALUES ('White','troigraque-2668@gmail.com','$2a$10$A40TjVC8xC1tC7uChck0BOWVxgMKY..7sfG2.YHrjkrG2GLSy4YLW',41,'photo8','education','experience');
-INSERT INTO user_entity (full_name,mail,password,age,avatar_url,education,experience)
+INSERT INTO user_entity (full_name,email,password,age,avatar,education,experience)
 VALUES ('Moore','gridippece-9072@gmail.com','$2a$10$A40TjVC8xC1tC7uChck0BOWVxgMKY..7sfG2.YHrjkrG2GLSy4YLW',27,'photo9','education','experience');
-INSERT INTO user_entity (full_name,mail,password,age,avatar_url,education,experience)
+INSERT INTO user_entity (full_name,email,password,age,avatar,education,experience)
 VALUES ('Moore','hounoimo30@gmail.com','$2a$10$A40TjVC8xC1tC7uChck0BOWVxgMKY..7sfG2.YHrjkrG2GLSy4YLW',35,'photo10','education','experience');
 
-INSERT INTO user_entity (full_name,mail,password,age,avatar_url,education,experience)
+INSERT INTO user_entity (full_name,email,password,age,avatar,education,experience)
 VALUES ('Maksym','zaxaqueib@gmail.com','$2a$10$A40TjVC8xC1tC7uChck0BOWVxgMKY..7sfG2.YHrjkrG2GLSy4YLW',30,'photo1','education','experience');
-INSERT INTO user_entity (full_name,mail,password,age,avatar_url,education,experience)
+INSERT INTO user_entity (full_name,email,password,age,avatar,education,experience)
 VALUES ('Alex','fau54@gmail.com','$2a$10$A40TjVC8xC1tC7uChck0BOWVxgMKY..7sfG2.YHrjkrG2GLSy4YLW',26,'photo2','education','experience');
-INSERT INTO user_entity (full_name,mail,password,age,avatar_url,education,experience)
+INSERT INTO user_entity (full_name,email,password,age,avatar,education,experience)
 VALUES ('Brandon','merekucrau3@gmail.com','$2a$10$A40TjVC8xC1tC7uChck0BOWVxgMKY..7sfG2.YHrjkrG2GLSy4YLW',17,'photo3','education','experience');
-INSERT INTO user_entity (full_name,mail,password,age,avatar_url,education,experience)
+INSERT INTO user_entity (full_name,email,password,age,avatar,education,experience)
 VALUES ('Christopher','quozileja8415@gmail.com','$2a$10$A40TjVC8xC1tC7uChck0BOWVxgMKY..7sfG2.YHrjkrG2GLSy4YLW',24,'photo4','education','experience');
-INSERT INTO user_entity (full_name,mail,password,age,avatar_url,education,experience)
+INSERT INTO user_entity (full_name,email,password,age,avatar,education,experience)
 VALUES ('Dillon','neiqua03@gmail.com','$2a$10$A40TjVC8xC1tC7uChck0BOWVxgMKY..7sfG2.YHrjkrG2GLSy4YLW',20,'photo5','education','experience');
-INSERT INTO user_entity (full_name,mail,password,age,avatar_url,education,experience)
+INSERT INTO user_entity (full_name,email,password,age,avatar,education,experience)
 VALUES ('Josh','jaxif77@gmail.com','$2a$10$A40TjVC8xC1tC7uChck0BOWVxgMKY..7sfG2.YHrjkrG2GLSy4YLW',35,'photo6','education','experience');
-INSERT INTO user_entity (full_name,mail,password,age,avatar_url,education,experience)
+INSERT INTO user_entity (full_name,email,password,age,avatar,education,experience)
 VALUES ('Jotaro','hitubowix87@gmail.com','$2a$10$A40TjVC8xC1tC7uChck0BOWVxgMKY..7sfG2.YHrjkrG2GLSy4YLW',17,'photo7','education','experience');
-INSERT INTO user_entity (full_name,mail,password,age,avatar_url,education,experience)
+INSERT INTO user_entity (full_name,email,password,age,avatar,education,experience)
 VALUES ('Ryan','troigriheuraqu68@gmail.com','$2a$10$A40TjVC8xC1tC7uChck0BOWVxgMKY..7sfG2.YHrjkrG2GLSy4YLW',41,'photo8','education','experience');
-INSERT INTO user_entity (full_name,mail,password,age,avatar_url,education,experience)
+INSERT INTO user_entity (full_name,email,password,age,avatar,education,experience)
 VALUES ('Tyler','gridippeiwa72@gmail.com','$2a$10$A40TjVC8xC1tC7uChck0BOWVxgMKY..7sfG2.YHrjkrG2GLSy4YLW',27,'photo9','education','experience');
-INSERT INTO user_entity (full_name,mail,password,age,avatar_url,education,experience)
+INSERT INTO user_entity (full_name,email,password,age,avatar,education,experience)
 VALUES ('William','hounoimottauq3830@gmail.com','$2a$10$A40TjVC8xC1tC7uChck0BOWVxgMKY..7sfG2.YHrjkrG2GLSy4YLW',35,'photo10','education','experience');
 
 ---

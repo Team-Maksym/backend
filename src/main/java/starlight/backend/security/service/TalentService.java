@@ -22,10 +22,10 @@ public class TalentService {
     private PasswordEncoder passwordEncoder;
 
     public UserEntity register(NewTalent newTalent) {
-        if (!repository.existsByMail(newTalent.email()))
+        if (!repository.existsByEmail(newTalent.email()))
             return repository.save(UserEntity.builder()
-                    .fullName(newTalent.name())
-                    .mail(newTalent.email())
+                    .fullName(newTalent.fullName())
+                    .email(newTalent.email())
                     .password(passwordEncoder.encode(newTalent.password()))
                     .authorities(List.of("ROLE_TALENT"))
                     .build());

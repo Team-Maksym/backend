@@ -9,8 +9,8 @@ import java.util.Optional;
 public interface UserRepository extends PagingAndSortingRepository<UserEntity, Long>,
         JpaRepository<UserEntity, Long> {
 
-    Boolean existsByMail(String email);
+    Boolean existsByEmail(String email);
 
-    Optional<UserEntity> findByMail(String mail);
+    Optional<UserEntity> findByEmail(String email);
 
 }

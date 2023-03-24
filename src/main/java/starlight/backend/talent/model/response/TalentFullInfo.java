@@ -8,7 +8,7 @@ import java.util.List;
 @Builder
 public record TalentFullInfo(
         String fullName,
-        String mail,
+        String email,
         Integer age,
         String avatar,
         String education,

@@ -9,9 +9,9 @@ import java.util.List;
 public record TalentProfile (
             @NotNull
             String fullName,
+            //@NotNull
+            //String email,
             @NotNull
-            String email,
-            @NotNull
-            List<String> position,
-            String avatarUrl
+            String position,
+            String avatar
 ){}

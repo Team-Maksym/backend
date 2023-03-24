@@ -4,7 +4,7 @@ import lombok.Builder;
 
 @Builder
 public record CreatedTalent(
-        String name,
+        String fullName,
         String email
 ) {
 }

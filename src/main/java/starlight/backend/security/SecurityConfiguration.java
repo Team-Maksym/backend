@@ -11,6 +11,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import starlight.backend.security.mapper.SecurityMapper;
+import starlight.backend.security.model.UserDetailsImpl;
 import starlight.backend.talent.repository.UserRepository;
 
 import static org.springframework.http.HttpMethod.POST;
@@ -51,13 +52,13 @@ class SecurityConfiguration {
 
     @Bean
     UserDetailsService userDetailsService(
-            UserRepository repository,
-            SecurityMapper securityMapper
+            UserRepository repository
     ) {
-        return email -> repository.findByMail(email)
-                .map(securityMapper::toTalentDetails)
+        return email -> repository.findByEmail(email)
+                .map(user -> new UserDetailsImpl(user.getEmail(), user.getPassword()))
                 .orElseThrow(() -> new UsernameNotFoundException(email + " not found user by email"));
     }
 
     //TODO do UserDetailsServiceImpl
+
 }

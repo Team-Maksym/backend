@@ -15,15 +15,15 @@ public interface TalentMapper {
     default TalentProfile toTalentProfile(UserEntity user) {
         return TalentProfile.builder()
                 .fullName(user.getFullName())
-                .email(user.getMail())
-                .position(user.getPositions().stream().map(PositionEntity::getPosition).toList())
-                .avatarUrl(user.getAvatarUrl())
+                //.email(user.getMail())
+                .position(user.getPositions().stream().map(PositionEntity::getPosition).toList().get(0))
+                .avatar(user.getAvatar())
                 .build();
     }
 
     default TalentPagePagination toTalentPagePagination(Page<UserEntity> userEntities) {
         return TalentPagePagination.builder()
-                .talentProfileList(userEntities.getContent().
+                .data(userEntities.getContent().
                         stream().map(this::toTalentProfile).toList())
                 .totalTalents(userEntities.getTotalElements())
                 .build();
@@ -32,9 +32,9 @@ public interface TalentMapper {
     default TalentFullInfo toTalentFullInfo(UserEntity user) {
         return TalentFullInfo.builder()
                 .fullName(user.getFullName())
-                .mail(user.getMail())
+                .email(user.getEmail())
                 .age(user.getAge())
-                .avatar(user.getAvatarUrl())
+                .avatar(user.getAvatar())
                 .experience(user.getExperience())
                 .education(user.getEducation())
                 .positions(user.getPositions().stream().toList())

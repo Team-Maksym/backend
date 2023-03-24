@@ -14,12 +14,12 @@ public interface SecurityMapper {
 
     default CreatedTalent toCreatedUser(UserEntity user){
         return CreatedTalent.builder()
-                .name(user.getFullName())
-                .email(user.getMail())
+                .fullName(user.getFullName())
+                .email(user.getEmail())
                 .build();
     }
 
-    default UserDetails toTalentDetails(UserEntity user) {
+/*    *default UserDetails toTalentDetails(UserEntity user) {
         return User.withUsername(user.getMail())
                 .password(user.getPassword())
                 .authorities(user.getAuthorities()
@@ -27,5 +27,5 @@ public interface SecurityMapper {
                         .map(SimpleGrantedAuthority::new)
                         .toList())
                 .build();
-    }
+    }*/
 }

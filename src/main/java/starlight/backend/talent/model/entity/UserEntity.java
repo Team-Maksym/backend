@@ -26,11 +26,11 @@ public class UserEntity {
     private String fullName;
     @NotNull
     @Email
-    private String mail;
+    private String email;
     @NotNull
     private String password;
     private Integer age;
-    private String avatarUrl;
+    private String avatar;
     private String education;
     private String experience;
 
