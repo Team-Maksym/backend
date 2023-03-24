@@ -24,5 +24,5 @@ public class PositionEntity {
 
     @ManyToMany(mappedBy = "positions", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JsonBackReference
-    private Set<TalentEntity> talents;
+    private Set<UserEntity> users;
 }

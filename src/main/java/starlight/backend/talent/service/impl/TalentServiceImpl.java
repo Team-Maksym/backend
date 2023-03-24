@@ -8,7 +8,7 @@ import org.springframework.stereotype.Service;
 import starlight.backend.talent.TalentMapper;
 import starlight.backend.talent.model.response.TalentFullInfo;
 import starlight.backend.talent.model.response.TalentPagePagination;
-import starlight.backend.talent.repository.TalentRepository;
+import starlight.backend.talent.repository.UserRepository;
 import starlight.backend.talent.service.TalentServiceInterface;
 
 import java.util.Optional;
@@ -18,7 +18,7 @@ import java.util.Optional;
 @Service
 public class TalentServiceImpl implements TalentServiceInterface {
     TalentMapper mapper;
-    TalentRepository repository;
+    UserRepository repository;
     PasswordEncoder passwordEncoder;
 
     @Override

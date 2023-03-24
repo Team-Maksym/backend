@@ -18,10 +18,10 @@ import static jakarta.persistence.GenerationType.IDENTITY;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-public class TalentEntity {
+public class UserEntity {
     @Id
     @GeneratedValue(strategy = IDENTITY)
-    private Long talentId;
+    private Long userId;
     @NotNull
     private String fullName;
     @NotNull
@@ -36,8 +36,8 @@ public class TalentEntity {
 
     @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinTable(
-            name = "talent_position",
-            joinColumns = @JoinColumn(name = "talent_id"),
+            name = "user_position",
+            joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "position_id"))
     @JsonManagedReference
     private Set<PositionEntity> positions;

@@ -16,10 +16,8 @@ public class SecurityController {
     TalentService service;
     SecurityMapper mapper;
 
-   // @PreAuthorize("hasRole('TALENT')")
     @GetMapping ("/talents/login")
     public String hello(Authentication authentication) {
-
         return "Hello, " + authentication.getName() + ", u in system now!";
     }
 

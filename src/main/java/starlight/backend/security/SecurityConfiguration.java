@@ -11,7 +11,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import starlight.backend.security.mapper.SecurityMapper;
-import starlight.backend.talent.repository.TalentRepository;
+import starlight.backend.talent.repository.UserRepository;
 
 import static org.springframework.http.HttpMethod.POST;
 import static org.springframework.security.config.http.SessionCreationPolicy.STATELESS;
@@ -51,7 +51,7 @@ class SecurityConfiguration {
 
     @Bean
     UserDetailsService userDetailsService(
-            TalentRepository repository,
+            UserRepository repository,
             SecurityMapper securityMapper
     ) {
         return email -> repository.findByMail(email)
