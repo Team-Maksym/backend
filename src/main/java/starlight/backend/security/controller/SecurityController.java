@@ -30,7 +30,7 @@ public class SecurityController {
     SecurityMapper mapper;
     final JwtEncoder jwtEncoder;
 
-    @GetMapping ("/talents/login")
+    @PostMapping ("/talents/login")
     public String login(Authentication authentication) {
         log.info("=== POST /login === auth.name = {}", authentication.getName());
         log.info("=== POST /login === auth = {}", authentication);
