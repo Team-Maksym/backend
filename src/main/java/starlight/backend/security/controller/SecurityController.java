@@ -22,21 +22,13 @@ import java.util.stream.Collectors;
 
 import static java.time.temporal.ChronoUnit.MINUTES;
 
-@RequiredArgsConstructor
+@AllArgsConstructor
 @RestController
 @Slf4j
 public class SecurityController {
     TalentService service;
     SecurityMapper mapper;
     final JwtEncoder jwtEncoder;
-
-
-//
-//    private String createScope(Authentication authentication) {
-//        return authentication.getAuthorities().stream()
-//                .map(GrantedAuthority::getAuthority)
-//                .collect(Collectors.joining(" "));
-//    }
 
     @PreAuthorize("hasRole('TALENT')")
     @GetMapping ("/talents/login")
