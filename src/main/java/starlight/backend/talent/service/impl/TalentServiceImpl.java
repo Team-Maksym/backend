@@ -1,10 +1,11 @@
 package starlight.backend.talent.service.impl;
 
+import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
-import org.springframework.context.annotation.Primary;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import starlight.backend.exception.PageNotFoundException;
+import starlight.backend.exception.TalentNotFoundException;
 import starlight.backend.talent.TalentMapper;
 import starlight.backend.talent.model.response.TalentFullInfo;
 import starlight.backend.talent.model.response.TalentPagePagination;
@@ -13,25 +14,35 @@ import starlight.backend.talent.service.TalentServiceInterface;
 
 import java.util.Optional;
 
-@Primary
 @AllArgsConstructor
 @Service
+@Transactional
 public class TalentServiceImpl implements TalentServiceInterface {
     TalentMapper mapper;
     UserRepository repository;
-    PasswordEncoder passwordEncoder;
 
     @Override
     public TalentPagePagination talentPagination(int page, int size) {
-        return mapper.toTalentPagePagination(
-                repository.findAll(PageRequest.of(page, size))
-        );
+        var pageRequest = repository.findAll(PageRequest.of(page, size));
+        if (page >= pageRequest.getTotalPages())
+            throw new PageNotFoundException(page);
+        return mapper.toTalentPagePagination(pageRequest);
     }
 
+    @Override
     public Optional<TalentFullInfo> talentFullInfo(long id) {
-        return repository.findById(id)
-                .map(mapper::toTalentFullInfo);
-                /*.orElseThrow(() -> new TalentNotFoundException(id));*/
-
+        return Optional.ofNullable(repository.findById(id)
+                .map(mapper::toTalentFullInfo)
+                .orElseThrow(() -> new TalentNotFoundException(id)));
     }
+/*
+    private boolean validation(int page, int size, Page<UserEntity> pages) {
+        if (page >= pages.getTotalPages())
+            return true;
+        if ((pages.getTotalElements() % size == 1) && (page == (pages.getTotalPages()-1)))//if you do not want to display an incomplete page
+            return true;
+        return false;
+    }
+
+ */
 }

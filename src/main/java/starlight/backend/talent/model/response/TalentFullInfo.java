@@ -1,7 +1,6 @@
 package starlight.backend.talent.model.response;
 
 import lombok.Builder;
-import starlight.backend.talent.model.entity.PositionEntity;
 
 import java.util.List;
 
