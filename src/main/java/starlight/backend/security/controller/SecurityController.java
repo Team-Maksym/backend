@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import starlight.backend.security.mapper.SecurityMapper;
 import starlight.backend.security.model.UserDetailsImpl;
-import starlight.backend.security.service.TalentService;
+import starlight.backend.security.service.UserServiceInterface;
 import starlight.backend.talent.model.entity.UserEntity;
 import starlight.backend.talent.model.request.NewUser;
 import starlight.backend.talent.model.response.SessionInfo;
@@ -19,9 +19,9 @@ import starlight.backend.talent.repository.UserRepository;
 @AllArgsConstructor
 @RestController
 public class SecurityController {
-    TalentService service;
-    SecurityMapper mapper;
-    UserRepository repository;
+    private UserServiceInterface service;
+    private SecurityMapper mapper;
+    private UserRepository repository;
 
     @PostMapping("/talents/login")
     public SessionInfo login(Authentication authentication) {

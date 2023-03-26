@@ -1,4 +1,4 @@
-package starlight.backend.security.service;
+package starlight.backend.security.service.impl;
 
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
@@ -11,6 +11,7 @@ import org.springframework.security.oauth2.jwt.JwtEncoderParameters;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 import starlight.backend.security.model.UserDetailsImpl;
+import starlight.backend.security.service.UserServiceInterface;
 import starlight.backend.talent.model.entity.UserEntity;
 import starlight.backend.talent.model.request.NewUser;
 import starlight.backend.talent.repository.UserRepository;
@@ -23,12 +24,13 @@ import static java.time.temporal.ChronoUnit.MINUTES;
 @AllArgsConstructor
 @Service
 @Transactional
-public class TalentService {
+public class UserServiceImpl implements UserServiceInterface {
     private final JwtEncoder jwtEncoder;
     private UserRepository repository;
 
     private PasswordEncoder passwordEncoder;
 
+    @Override
     public UserEntity register(NewUser newUser) {
         if (Boolean.FALSE.equals(repository.existsByEmail(newUser.email())))
             return repository.save(UserEntity.builder()
@@ -41,6 +43,7 @@ public class TalentService {
                     "Email '" + newUser.email() + "' is already occupied");
     }
 
+    @Override
     public String getJWTToken(UserDetailsImpl authentication) {
         var now = Instant.now();
         var claims = JwtClaimsSet.builder()

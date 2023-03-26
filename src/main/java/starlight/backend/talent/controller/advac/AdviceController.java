@@ -18,13 +18,13 @@ public class AdviceController {
             PageNotFoundException.class
     })
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    ErrorDTO purchasedTicketError(Exception exception) {
+    public ErrorDTO purchasedTicketError(Exception exception) {
         return new ErrorDTO(exception.getMessage());
     }
 
     @ExceptionHandler(WrongPasswordException.class)
     @ResponseStatus(HttpStatus.UNAUTHORIZED)
-    ErrorDTO wrongPasswordError(Exception exception) {
+    public ErrorDTO wrongPasswordError(Exception exception) {
         return new ErrorDTO(exception.getMessage());
     }
 
