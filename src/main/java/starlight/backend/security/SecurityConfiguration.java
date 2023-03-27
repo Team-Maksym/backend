@@ -22,6 +22,8 @@ import org.springframework.security.oauth2.server.resource.authentication.JwtGra
 import org.springframework.security.oauth2.server.resource.web.BearerTokenAuthenticationEntryPoint;
 import org.springframework.security.oauth2.server.resource.web.access.BearerTokenAccessDeniedHandler;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.web.servlet.config.annotation.CorsRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import starlight.backend.security.model.UserDetailsImpl;
 import starlight.backend.talent.repository.UserRepository;
 
@@ -51,11 +53,6 @@ class SecurityConfiguration {
         http.sessionManagement().sessionCreationPolicy(STATELESS);
         http.httpBasic();
         http.csrf().disable();
-//        http.csrf()
-//                //.ignoringRequestMatchers(antMatcher("/talents/**"))
-//                .ignoringRequestMatchers("/talents")
-//                .ignoringRequestMatchers(antMatcher("/h2/**"));
-        http.cors().disable();
         http.headers().frameOptions().disable();
         http.oauth2ResourceServer(OAuth2ResourceServerConfigurer::jwt)
                 .exceptionHandling(c -> c
@@ -63,6 +60,16 @@ class SecurityConfiguration {
                         .accessDeniedHandler(new BearerTokenAccessDeniedHandler())
                 );
         return http.build();
+    }
+
+    @Bean
+    public WebMvcConfigurer configure(){
+        return new WebMvcConfigurer() {
+            @Override
+            public void addCorsMappings(CorsRegistry registry) {
+                registry.addMapping("/**").allowedOrigins("*");
+            }
+        };
     }
 
     @Bean

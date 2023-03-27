@@ -18,7 +18,7 @@ public interface TalentMapper {
                 .position(user.getPositions().stream()
                         .findAny()
                         .map(PositionEntity::getPosition)
-                        .orElse("don`t have position"))
+                        .orElse(null))
                 .avatar(user.getAvatar())
                 .build();
     }
