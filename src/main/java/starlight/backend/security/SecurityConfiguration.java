@@ -10,6 +10,8 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.web.servlet.config.annotation.CorsRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import starlight.backend.security.model.UserDetailsImpl;
 import starlight.backend.talent.repository.UserRepository;
 
@@ -41,6 +43,16 @@ class SecurityConfiguration {
         http.cors().disable();
         http.headers().frameOptions().disable();
         return http.build();
+    }
+
+    @Bean
+    public WebMvcConfigurer configure(){
+        return new WebMvcConfigurer() {
+            @Override
+            public void addCorsMappings(CorsRegistry registry) {
+                registry.addMapping("/**").allowedOrigins("*");
+            }
+        };
     }
 
     @Bean
