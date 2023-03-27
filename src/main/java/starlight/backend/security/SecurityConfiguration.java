@@ -41,6 +41,8 @@ class SecurityConfiguration {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http.authorizeHttpRequests(c -> c
+                .requestMatchers(antMatcher("/h2/**")).permitAll()
+                .requestMatchers("/error").permitAll()
                 .requestMatchers("/talents").permitAll()
                 .requestMatchers(POST, "/talents").permitAll()
                 .requestMatchers(POST, "/talents/login").permitAll()
@@ -48,8 +50,12 @@ class SecurityConfiguration {
                 .anyRequest().authenticated());
         http.sessionManagement().sessionCreationPolicy(STATELESS);
         http.httpBasic();
-        http.cors().disable();//TODO
         http.csrf().disable();
+//        http.csrf()
+//                //.ignoringRequestMatchers(antMatcher("/talents/**"))
+//                .ignoringRequestMatchers("/talents")
+//                .ignoringRequestMatchers(antMatcher("/h2/**"));
+        http.cors().disable();
         http.headers().frameOptions().disable();
         http.oauth2ResourceServer(OAuth2ResourceServerConfigurer::jwt)
                 .exceptionHandling(c -> c
