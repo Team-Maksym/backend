@@ -25,21 +25,20 @@ class SecurityConfiguration {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http.authorizeHttpRequests(c -> c
                 .requestMatchers(antMatcher("/h2/**")).permitAll()
-                //.requestMatchers(POST, "/register").permitAll()
-                .requestMatchers("/talents").permitAll()
-                .requestMatchers(POST, "/talents/login").permitAll()
                 .requestMatchers("/error").permitAll()
+                .requestMatchers("/talents").permitAll()
+                .requestMatchers(POST, "/talents").permitAll()
+                .requestMatchers(POST, "/talents/login").permitAll()
                 .requestMatchers(antMatcher("/talents/**")).authenticated()
-                .anyRequest().permitAll()
-        ); /*authenticated());*/
+                .anyRequest().authenticated());
         http.sessionManagement().sessionCreationPolicy(STATELESS);
         http.httpBasic();
-//        http.csrf().disable();
-        http.csrf()
-                //.ignoringRequestMatchers(antMatcher("/talents/**"))
-                .ignoringRequestMatchers("/talents")
-                .ignoringRequestMatchers(antMatcher("/h2/**"));
-//        http.cors().disable();
+        http.csrf().disable();
+//        http.csrf()
+//                //.ignoringRequestMatchers(antMatcher("/talents/**"))
+//                .ignoringRequestMatchers("/talents")
+//                .ignoringRequestMatchers(antMatcher("/h2/**"));
+        http.cors().disable();
         http.headers().frameOptions().disable();
         return http.build();
     }

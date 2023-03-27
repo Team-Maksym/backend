@@ -24,7 +24,7 @@ public class SecurityController {
         return mapper.toCreatedUser(service.register(newTalent));
     }
 
-    @GetMapping("/talents/login")
+    @PostMapping("/talents/login")
     public String login(Authentication authentication) {
         return "Hello, " + authentication.getName() + ", u in system now!";
     }
