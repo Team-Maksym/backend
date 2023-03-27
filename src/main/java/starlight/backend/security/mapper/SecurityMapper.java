@@ -1,31 +1,17 @@
 package starlight.backend.security.mapper;
 
 import org.mapstruct.Mapper;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.userdetails.User;
-import org.springframework.security.core.userdetails.UserDetails;
 import starlight.backend.talent.model.entity.UserEntity;
-import starlight.backend.talent.model.response.CreatedTalent;
+import starlight.backend.talent.model.response.SessionInfo;
 
 import static org.mapstruct.ReportingPolicy.IGNORE;
 
 @Mapper(componentModel = "spring", unmappedTargetPolicy = IGNORE)
 public interface SecurityMapper {
-
-    default CreatedTalent toCreatedUser(UserEntity user){
-        return CreatedTalent.builder()
-                .fullName(user.getFullName())
-                .email(user.getEmail())
+    default SessionInfo toSessionInfo(UserEntity user, String token) {
+        return SessionInfo.builder()
+                .token(token)
+                .user_id(user.getUserId())
                 .build();
     }
-
-/*    *default UserDetails toTalentDetails(UserEntity user) {
-        return User.withUsername(user.getMail())
-                .password(user.getPassword())
-                .authorities(user.getAuthorities()
-                        .stream()
-                        .map(SimpleGrantedAuthority::new)
-                        .toList())
-                .build();
-    }*/
 }
