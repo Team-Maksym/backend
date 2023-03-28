@@ -4,7 +4,7 @@ CREATE TABLE user_entity
     full_name  VARCHAR(255),
     email       VARCHAR(255) NOT NULL,
     password   VARCHAR(255) NOT NULL,
-    age        INT,
+    birthday        VARCHAR(255),
     avatar     VARCHAR(255),
     education  VARCHAR(255),
     experience VARCHAR(255),

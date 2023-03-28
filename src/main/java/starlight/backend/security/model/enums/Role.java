@@ -1,4 +1,4 @@
-package starlight.backend.security.enums;
+package starlight.backend.security.model.enums;
 
 import org.springframework.security.core.GrantedAuthority;
 

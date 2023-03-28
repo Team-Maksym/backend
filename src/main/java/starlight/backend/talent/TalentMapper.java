@@ -2,8 +2,8 @@ package starlight.backend.talent;
 
 import org.mapstruct.Mapper;
 import org.springframework.data.domain.Page;
-import starlight.backend.talent.model.entity.PositionEntity;
-import starlight.backend.talent.model.entity.UserEntity;
+import starlight.backend.user.model.entity.PositionEntity;
+import starlight.backend.user.model.entity.UserEntity;
 import starlight.backend.talent.model.response.TalentFullInfo;
 import starlight.backend.talent.model.response.TalentPagePagination;
 import starlight.backend.talent.model.response.TalentProfile;
@@ -35,7 +35,7 @@ public interface TalentMapper {
         return TalentFullInfo.builder()
                 .fullName(user.getFullName())
                 .email(user.getEmail())
-                .age(user.getAge())
+                .birthday(user.getBirthday())
                 .avatar(user.getAvatar())
                 .experience(user.getExperience())
                 .education(user.getEducation())

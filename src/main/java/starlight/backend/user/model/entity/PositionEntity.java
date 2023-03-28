@@ -1,4 +1,4 @@
-package starlight.backend.talent.model.entity;
+package starlight.backend.user.model.entity;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;

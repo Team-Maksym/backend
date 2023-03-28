@@ -1,4 +1,4 @@
-package starlight.backend.talent.model.request;
+package starlight.backend.security.model.request;
 
 import jakarta.validation.constraints.NotBlank;
 import lombok.Builder;
@@ -11,6 +11,4 @@ public record NewUser(
         String email,
         @NotBlank
         String password
-)
- {
-}
+) {}
