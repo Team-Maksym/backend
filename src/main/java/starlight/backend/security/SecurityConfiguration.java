@@ -25,6 +25,7 @@ import org.springframework.security.oauth2.server.resource.web.access.BearerToke
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 import org.springframework.security.web.authentication.SavedRequestAwareAuthenticationSuccessHandler;
+import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import starlight.backend.security.model.UserDetailsImpl;
@@ -57,7 +58,7 @@ class SecurityConfiguration {
         http.sessionManagement().sessionCreationPolicy(STATELESS);
         http.httpBasic();
         http.csrf().disable();
-        http.cors().disable();
+        http.cors().configurationSource(request -> new CorsConfiguration().applyPermitDefaultValues());
         http.headers().frameOptions().disable();
         http.oauth2ResourceServer(OAuth2ResourceServerConfigurer::jwt)
                 .exceptionHandling(c -> c
@@ -66,17 +67,7 @@ class SecurityConfiguration {
         return http.build();
     }
 
-    @Bean
-    public WebMvcConfigurer configure(){
-        return new WebMvcConfigurer() {
-            @Override
-            public void addCorsMappings(CorsRegistry registry) {
-                registry.addMapping("/**").allowedOrigins("*");
-            }
-        };
-    }
-
-    @Bean
+     @Bean
     public KeyPair keyPair() throws NoSuchAlgorithmException {
         var keyPairGenerator = KeyPairGenerator.getInstance("RSA");
         keyPairGenerator.initialize(2048);
