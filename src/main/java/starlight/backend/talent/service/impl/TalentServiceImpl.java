@@ -35,14 +35,4 @@ public class TalentServiceImpl implements TalentServiceInterface {
                 .map(mapper::toTalentFullInfo)
                 .orElseThrow(() -> new TalentNotFoundException(id)));
     }
-/*
-    private boolean validation(int page, int size, Page<UserEntity> pages) {
-        if (page >= pages.getTotalPages())
-            return true;
-        if ((pages.getTotalElements() % size == 1) && (page == (pages.getTotalPages()-1)))//if you do not want to display an incomplete page
-            return true;
-        return false;
-    }
-
- */
 }
