@@ -1,4 +1,4 @@
-package starlight.backend.security.controller;
+package starlight.backend.security;
 
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
@@ -8,18 +8,18 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
-import starlight.backend.security.service.UserServiceInterface;
-import starlight.backend.talent.model.request.NewUser;
-import starlight.backend.talent.model.response.SessionInfo;
+import starlight.backend.security.service.SecurityServiceInterface;
+import starlight.backend.security.model.request.NewUser;
+import starlight.backend.security.model.response.SessionInfo;
 
 @AllArgsConstructor
 @RestController
 public class SecurityController {
-    private UserServiceInterface service;
+    private SecurityServiceInterface service;
 
     @PostMapping("/talents/login")
     public SessionInfo login(Authentication authentication) {
-        return service.loginInfo(authentication);
+        return service.loginInfo(authentication.getName());
     }
 
     @PostMapping("/talents")

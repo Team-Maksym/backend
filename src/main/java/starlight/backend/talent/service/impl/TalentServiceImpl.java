@@ -9,7 +9,7 @@ import starlight.backend.exception.TalentNotFoundException;
 import starlight.backend.talent.TalentMapper;
 import starlight.backend.talent.model.response.TalentFullInfo;
 import starlight.backend.talent.model.response.TalentPagePagination;
-import starlight.backend.talent.repository.UserRepository;
+import starlight.backend.user.repository.UserRepository;
 import starlight.backend.talent.service.TalentServiceInterface;
 
 import java.util.Optional;
@@ -31,7 +31,7 @@ public class TalentServiceImpl implements TalentServiceInterface {
 
     @Override
     public Optional<TalentFullInfo> talentFullInfo(long id) {
-        return Optional.ofNullable(repository.findById(id)
+        return Optional.of(repository.findById(id)
                 .map(mapper::toTalentFullInfo)
                 .orElseThrow(() -> new TalentNotFoundException(id)));
     }
