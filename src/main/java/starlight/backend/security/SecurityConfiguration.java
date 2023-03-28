@@ -53,6 +53,7 @@ class SecurityConfiguration {
         http.sessionManagement().sessionCreationPolicy(STATELESS);
         http.httpBasic();
         http.csrf().disable();
+        http.cors().disable();
         http.headers().frameOptions().disable();
         http.oauth2ResourceServer(OAuth2ResourceServerConfigurer::jwt)
                 .exceptionHandling(c -> c
