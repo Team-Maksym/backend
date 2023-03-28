@@ -2,18 +2,21 @@ package starlight.backend.security.service.impl;
 
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
-import org.springframework.http.HttpStatus;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.jwt.JwtClaimsSet;
 import org.springframework.security.oauth2.jwt.JwtEncoder;
 import org.springframework.security.oauth2.jwt.JwtEncoderParameters;
 import org.springframework.stereotype.Service;
-import org.springframework.web.server.ResponseStatusException;
+import starlight.backend.exception.TalentAlreadyOccupiedException;
+import starlight.backend.security.mapper.SecurityMapper;
 import starlight.backend.security.model.UserDetailsImpl;
 import starlight.backend.security.service.UserServiceInterface;
 import starlight.backend.talent.model.entity.UserEntity;
 import starlight.backend.talent.model.request.NewUser;
+import starlight.backend.talent.model.response.SessionInfo;
 import starlight.backend.talent.repository.UserRepository;
 
 import java.time.Instant;
@@ -27,11 +30,26 @@ import static java.time.temporal.ChronoUnit.MINUTES;
 public class UserServiceImpl implements UserServiceInterface {
     private final JwtEncoder jwtEncoder;
     private UserRepository repository;
+    private SecurityMapper mapper;
 
     private PasswordEncoder passwordEncoder;
 
     @Override
-    public UserEntity register(NewUser newUser) {
+    public SessionInfo loginInfo(Authentication authentication) {
+        var user = repository.findByEmail(authentication.getName())
+                .orElseThrow(() -> new UsernameNotFoundException(authentication.getName() + " not found user by email"));
+        var token = getJWTToken(mapper.toUserDetailsImpl(user));
+        return mapper.toSessionInfo(user, token);
+    }
+
+    @Override
+    public SessionInfo register(NewUser newUser) {
+        var user = saveNewUser(newUser);
+        var token = getJWTToken(mapper.toUserDetailsImpl(user));
+        return mapper.toSessionInfo(user, token);
+    }
+
+    private UserEntity saveNewUser(NewUser newUser) {
         if (Boolean.FALSE.equals(repository.existsByEmail(newUser.email())))
             return repository.save(UserEntity.builder()
                     .fullName(newUser.full_name())
@@ -39,12 +57,10 @@ public class UserServiceImpl implements UserServiceInterface {
                     .password(passwordEncoder.encode(newUser.password()))
                     .build());
         else
-            throw new ResponseStatusException(HttpStatus.CONFLICT,
-                    "Email '" + newUser.email() + "' is already occupied");
+            throw new TalentAlreadyOccupiedException(newUser.email());
     }
 
-    @Override
-    public String getJWTToken(UserDetailsImpl authentication) {
+    private String getJWTToken(UserDetailsImpl authentication) {
         var now = Instant.now();
         var claims = JwtClaimsSet.builder()
                 .issuer("self")

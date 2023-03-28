@@ -1,6 +1,7 @@
 package starlight.backend.security.mapper;
 
 import org.mapstruct.Mapper;
+import starlight.backend.security.model.UserDetailsImpl;
 import starlight.backend.talent.model.entity.UserEntity;
 import starlight.backend.talent.model.response.SessionInfo;
 
@@ -13,5 +14,10 @@ public interface SecurityMapper {
                 .token(token)
                 .user_id(user.getUserId())
                 .build();
+    }
+    default UserDetailsImpl toUserDetailsImpl(UserEntity user) {
+        return new UserDetailsImpl(
+                user.getEmail(),
+                user.getPassword());
     }
 }

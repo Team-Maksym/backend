@@ -3,6 +3,7 @@ package starlight.backend.security;
 import com.nimbusds.jose.jwk.JWKSet;
 import com.nimbusds.jose.jwk.RSAKey;
 import com.nimbusds.jose.jwk.source.ImmutableJWKSet;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
@@ -22,6 +23,8 @@ import org.springframework.security.oauth2.server.resource.authentication.JwtGra
 import org.springframework.security.oauth2.server.resource.web.BearerTokenAuthenticationEntryPoint;
 import org.springframework.security.oauth2.server.resource.web.access.BearerTokenAccessDeniedHandler;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.AuthenticationFailureHandler;
+import org.springframework.security.web.authentication.SavedRequestAwareAuthenticationSuccessHandler;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import starlight.backend.security.model.UserDetailsImpl;
@@ -40,6 +43,7 @@ import static org.springframework.security.web.util.matcher.AntPathRequestMatche
 @EnableMethodSecurity
 @Configuration
 class SecurityConfiguration {
+
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http.authorizeHttpRequests(c -> c
@@ -58,8 +62,7 @@ class SecurityConfiguration {
         http.oauth2ResourceServer(OAuth2ResourceServerConfigurer::jwt)
                 .exceptionHandling(c -> c
                         .authenticationEntryPoint(new BearerTokenAuthenticationEntryPoint())
-                        .accessDeniedHandler(new BearerTokenAccessDeniedHandler())
-                );
+                        .accessDeniedHandler(new BearerTokenAccessDeniedHandler()));
         return http.build();
     }
 
@@ -115,4 +118,5 @@ class SecurityConfiguration {
                 .map(user -> new UserDetailsImpl(user.getEmail(), user.getPassword()))
                 .orElseThrow(() -> new UsernameNotFoundException(email + " not found user by email"));
     }
+
 }
