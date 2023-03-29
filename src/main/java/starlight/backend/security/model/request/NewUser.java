@@ -13,7 +13,7 @@ import org.springframework.validation.annotation.Validated;
 public record NewUser(
         @NotBlank
         @Length(min = 3, max = 64)
-        @Pattern(regexp = "^[a-zA-Z]{4,}(?: [a-zA-Z]+){0,2}$", message = "must not contain special characters")
+        @Pattern(regexp = "^[A-Za-z\\s'-]+$", message = "must not contain special characters")
         @JsonProperty("full_name")
         String fullName,
 
@@ -28,5 +28,4 @@ public record NewUser(
         message = "must be between 8 and 128 characters, must contain at least one letter and one number")
         String password
 ) {
-
 }
