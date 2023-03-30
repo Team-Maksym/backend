@@ -3,31 +3,33 @@ package starlight.backend.talent;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.Positive;
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.parameters.P;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
-import starlight.backend.security.model.UserDetailsImpl;
 import starlight.backend.talent.model.request.TalentUpdateRequest;
 import starlight.backend.talent.model.response.TalentFullInfo;
 import starlight.backend.talent.model.response.TalentPagePagination;
 import starlight.backend.talent.service.TalentServiceInterface;
 
+import java.util.Objects;
 import java.util.Optional;
 
 @RestController
 @AllArgsConstructor
 @Validated
+@Slf4j
 @RequestMapping("/api/v1")
 public class TalentController {
     private TalentServiceInterface talentService;
 
     @GetMapping("/talents")
-    public TalentPagePagination pagination (@RequestParam(defaultValue = "0") @Min(0) int page,
-                                            @RequestParam(defaultValue = "10") @Positive int size) {
+    public TalentPagePagination pagination(@RequestParam(defaultValue = "0") @Min(0) int page,
+                                           @RequestParam(defaultValue = "10") @Positive int size) {
         return talentService.talentPagination(page, size);
     }
 
@@ -37,38 +39,33 @@ public class TalentController {
         return talentService.talentFullInfo(talentId);
     }
 
-//    @PreAuthorize("hasRole('TALENT')"
-    @PreAuthorize("#t == authentication.principal.talent-id")
+    // @PreAuthorize("#talentId == authentication.name")//????
+    @PreAuthorize("hasRole('TALENT')")
     @PatchMapping("/talents/{talent-id}")
-    public TalentFullInfo updateTalentFullInfo(@PathVariable("talent-id") @P("t") long talentId,
-                                     @RequestBody TalentUpdateRequest talentUpdateRequest,
-                                     Authentication auth) {
-        if (auth != null && auth.isAuthenticated() (UserDetailsImpl) auth.getPrincipal()).getId() == talentId) {
+    public TalentFullInfo updateTalentFullInfo(@PathVariable("talent-id") long talentId,
+                                               @RequestBody TalentUpdateRequest talentUpdateRequest,
+                                               Authentication auth) {
+        log.info("auth.name={}", auth.getName());
+        if (auth != null && auth.isAuthenticated() &&
+                (Objects.equals(auth.getName(), String.valueOf(talentId)))) {
             return talentService.updateTalentProfile(talentId, talentUpdateRequest);
         } else {
-            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED,"Not found talent");
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "you cannot change someone else's profile");
         }
     }
-    /*
-    @PreAuthorize("#id == authentication.principal.id")
-    @PatchMapping("/{id}")
-    public ResponseEntity<?> updateUser(@PathVariable Long id, @RequestBody UserDTO updates) {
-        try {
-            userService.updateUser(id, updates);
-            return ResponseEntity.ok().build();
-        } catch (UserNotFoundException e) {
-            return ResponseEntity.notFound().build();
+/*
+    @PreAuthorize("hasRole('TALENT')")
+    @DeleteMapping(path = "/talents/{talent-id}",
+            produces = {MediaType.APPLICATION_XML_VALUE,
+                    MediaType.APPLICATION_JSON_VALUE})
+    public void deleteTalent(@PathVariable("talent-id") long talentId,
+                             Authentication auth) {
+        if (auth != null && auth.isAuthenticated() &&
+                (Objects.equals(auth.getName(), String.valueOf(talentId)))) {
+            talentService.deleteTalentProfile(talentId);
+        } else {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "you cannot delete someone else's profile");
         }
     }
-
-
-@PreAuthorize("hasRole('ADMIN') or principal.userId == #id")
-@DeleteMapping(path = "/{id}", produces = { MediaType.APPLICATION_XML_VALUE, MediaType.APPLICATION_JSON_VALUE })
-@Transactional
-public OperationStatusModel deleteUser(@PathVariable String id) {
- OperationStatusModel returnValue = new OperationStatusModel();
-  // Some code here
- return returnValue;
-}
-     */
+ */
 }
