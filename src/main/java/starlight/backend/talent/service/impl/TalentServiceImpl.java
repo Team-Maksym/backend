@@ -1,9 +1,9 @@
 package starlight.backend.talent.service.impl;
 
-import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import starlight.backend.exception.PageNotFoundException;
 import starlight.backend.exception.TalentNotFoundException;
 import starlight.backend.talent.TalentMapper;
@@ -20,7 +20,6 @@ import java.util.stream.Collectors;
 
 @AllArgsConstructor
 @Service
-@Transactional
 public class TalentServiceImpl implements TalentServiceInterface {
     TalentMapper mapper;
     UserRepository repository;
