@@ -12,4 +12,6 @@ public interface TalentServiceInterface {
     Optional<TalentFullInfo> talentFullInfo(long id);
 
     TalentFullInfo updateTalentProfile(long id, TalentUpdateRequest talentUpdateRequest);
+
+    void deleteTalentProfile(long talentId);
 }
