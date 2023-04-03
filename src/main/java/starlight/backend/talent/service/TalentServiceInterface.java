@@ -9,4 +9,5 @@ public interface TalentServiceInterface {
     TalentPagePagination talentPagination(int page, int size);
 
     Optional<TalentFullInfo> talentFullInfo(long id);
+
 }
