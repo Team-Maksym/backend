@@ -55,7 +55,7 @@ public class SecurityServiceImpl implements SecurityServiceInterface {
             throw new TalentAlreadyOccupiedException(newUser.email());
         }
         return repository.save(UserEntity.builder()
-                .fullName(newUser.full_name())
+                .fullName(newUser.fullName())
                 .email(newUser.email())
                 .password(passwordEncoder.encode(newUser.password()))
                 .build());

@@ -46,8 +46,8 @@ class SecurityConfiguration {
         http.authorizeHttpRequests(c -> c
                 .requestMatchers(antMatcher("/h2/**")).permitAll()
                 .requestMatchers("/error").permitAll()
-                .requestMatchers("/talents").permitAll()
-                .requestMatchers(POST, "/talents/login").permitAll()
+                .requestMatchers("/api/v1/talents").permitAll()
+                .requestMatchers(POST, "/api/v1/talents/login").permitAll()
                 .anyRequest().authenticated());
         http.sessionManagement().sessionCreationPolicy(STATELESS);
         http.httpBasic();
