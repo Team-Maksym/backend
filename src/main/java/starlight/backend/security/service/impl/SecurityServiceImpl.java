@@ -11,7 +11,7 @@ import org.springframework.security.oauth2.jwt.JwtEncoderParameters;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import starlight.backend.exception.TalentAlreadyOccupiedException;
-import starlight.backend.security.SecurityMapper;
+import starlight.backend.security.MapperSecurity;
 import starlight.backend.security.model.UserDetailsImpl;
 import starlight.backend.security.service.SecurityServiceInterface;
 import starlight.backend.user.model.entity.UserEntity;
@@ -30,7 +30,7 @@ import static java.time.temporal.ChronoUnit.MINUTES;
 public class SecurityServiceImpl implements SecurityServiceInterface {
     private final JwtEncoder jwtEncoder;
     private UserRepository repository;
-    private SecurityMapper mapper;
+    private MapperSecurity mapperSecurity;
 
     private PasswordEncoder passwordEncoder;
 
@@ -38,16 +38,16 @@ public class SecurityServiceImpl implements SecurityServiceInterface {
     public SessionInfo loginInfo(String userName) {
         var user = repository.findByEmail(userName)
                 .orElseThrow(() -> new UsernameNotFoundException(userName + " not found user by email"));
-        var token = getJWTToken(mapper.toUserDetailsImpl(user));
-        return mapper.toSessionInfo(token);
+        var token = getJWTToken(mapperSecurity.toUserDetailsImpl(user));
+        return mapperSecurity.toSessionInfo(token);
     }
 
     @Override
     @Transactional(readOnly = true)
     public SessionInfo register(NewUser newUser) {
         var user = saveNewUser(newUser);
-        var token = getJWTToken(mapper.toUserDetailsImpl(user));
-        return mapper.toSessionInfo(token);
+        var token = getJWTToken(mapperSecurity.toUserDetailsImpl(user));
+        return mapperSecurity.toSessionInfo(token);
     }
 
     private UserEntity saveNewUser(NewUser newUser) {
