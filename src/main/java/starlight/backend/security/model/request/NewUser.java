@@ -18,13 +18,13 @@ public record NewUser(
         String fullName,
 
         @NotBlank
-        @Email(regexp = "^[\\p{L}.'-]+@[\\p{L}.'-]+", message = "must be a valid email")
+        @Email(regexp = "^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$", message = "must be a valid email")
         String email,
 
         @NotBlank
         @Length(min = 8, max = 128)
         @Pattern(
-        regexp = "^(?=.*[A-Z])(?=.*\\d)[a-zA-Z\\d]+$",
+        regexp = "^(?=.*[A-Z])(?=.*[a-z])(?=.*\\d).+$",
         message = "must be between 8 and 128 characters, must contain at least one letter and one number")
         String password
 ) {
