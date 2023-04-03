@@ -42,9 +42,12 @@ public class TalentController {
     // @PreAuthorize("#talentId == authentication.name")//????
     @PreAuthorize("hasRole('TALENT')")
     @PatchMapping("/talents/{talent-id}")
+
     public TalentFullInfo updateTalentFullInfo(@PathVariable("talent-id") long talentId,
                                                @RequestBody TalentUpdateRequest talentUpdateRequest,
                                                Authentication auth) {
+        
+
         log.info("auth.name={}", auth.getName());
         if (auth != null && auth.isAuthenticated() &&
                 (Objects.equals(auth.getName(), String.valueOf(talentId)))) {
