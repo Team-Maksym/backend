@@ -70,7 +70,7 @@ public class TalentServiceImpl implements TalentServiceInterface {
     @Override
     @Transactional
     public void deleteTalentProfile(long talentId) {
-        UserEntity user = em.find(UserEntity.class, 1);
+        UserEntity user = em.find(UserEntity.class, talentId);
         user.setPositions(null);
         em.remove(user);
     }
