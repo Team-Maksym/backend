@@ -37,6 +37,6 @@ public class TalentController {
     @PatchMapping("/talents/{talent-id}")
     public TalentProfile edit (@PathVariable(value = "talentId") Long talentId,
                                      @RequestBody TalentSession talentSession) {
-        return talentService.editTalent(talentId, talentSession);
+        return null;//talentService.editTalent(talentId, talentSession);
     }
 }
