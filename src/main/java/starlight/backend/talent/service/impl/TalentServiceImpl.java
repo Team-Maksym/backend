@@ -60,9 +60,4 @@ public class TalentServiceImpl implements TalentServiceInterface {
             return mapper.toTalentFullInfo(talent);
         }).orElseThrow(() -> new TalentNotFoundException(id));
     }
-    @Override
-    @Transactional
-    public void deleteTalentProfile(long talentId){
-        repository.deleteById(talentId);
-    }
 }

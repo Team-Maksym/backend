@@ -5,7 +5,6 @@ import jakarta.validation.constraints.Positive;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.validation.annotation.Validated;
@@ -39,7 +38,6 @@ public class TalentController {
         return talentService.talentFullInfo(talentId);
     }
 
-    // @PreAuthorize("#talentId == authentication.name")//????
     @PreAuthorize("hasRole('TALENT')")
     @PatchMapping("/talents/{talent-id}")
     public TalentFullInfo updateTalentFullInfo(@PathVariable("talent-id") long talentId,
@@ -53,19 +51,4 @@ public class TalentController {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "you cannot change someone else's profile");
         }
     }
-/*
-    @PreAuthorize("hasRole('TALENT')")
-    @DeleteMapping(path = "/talents/{talent-id}",
-            produces = {MediaType.APPLICATION_XML_VALUE,
-                    MediaType.APPLICATION_JSON_VALUE})
-    public void deleteTalent(@PathVariable("talent-id") long talentId,
-                             Authentication auth) {
-        if (auth != null && auth.isAuthenticated() &&
-                (Objects.equals(auth.getName(), String.valueOf(talentId)))) {
-            talentService.deleteTalentProfile(talentId);
-        } else {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "you cannot delete someone else's profile");
-        }
-    }
- */
 }
