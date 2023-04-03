@@ -1,5 +1,6 @@
 package starlight.backend.talent.service;
 
+import starlight.backend.talent.model.request.TalentUpdateRequest;
 import starlight.backend.talent.model.response.TalentFullInfo;
 import starlight.backend.talent.model.response.TalentPagePagination;
 
@@ -10,4 +11,5 @@ public interface TalentServiceInterface {
 
     Optional<TalentFullInfo> talentFullInfo(long id);
 
+    TalentFullInfo updateTalentProfile(long id, TalentUpdateRequest talentUpdateRequest);
 }

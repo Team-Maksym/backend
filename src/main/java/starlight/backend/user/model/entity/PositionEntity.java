@@ -25,4 +25,8 @@ public class PositionEntity {
     @ManyToMany(mappedBy = "positions", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JsonBackReference
     private Set<UserEntity> users;
+
+    public PositionEntity(String position) {
+        this.position = position;
+    }
 }
