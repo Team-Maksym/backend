@@ -1,5 +1,7 @@
 package starlight.backend.talent.service.impl;
 
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.PageRequest;
@@ -12,6 +14,7 @@ import starlight.backend.talent.model.response.TalentFullInfo;
 import starlight.backend.talent.model.response.TalentPagePagination;
 import starlight.backend.talent.service.TalentServiceInterface;
 import starlight.backend.user.model.entity.PositionEntity;
+import starlight.backend.user.model.entity.UserEntity;
 import starlight.backend.user.repository.PositionRepository;
 import starlight.backend.user.repository.UserRepository;
 
@@ -25,6 +28,9 @@ public class TalentServiceImpl implements TalentServiceInterface {
     TalentMapper mapper;
     UserRepository repository;
     PositionRepository positionRepository;
+
+    @PersistenceContext
+    private EntityManager em;
 
     @Override
     public TalentPagePagination talentPagination(int page, int size) {
@@ -60,9 +66,12 @@ public class TalentServiceImpl implements TalentServiceInterface {
             return mapper.toTalentFullInfo(talent);
         }).orElseThrow(() -> new TalentNotFoundException(id));
     }
+
     @Override
     @Transactional
-    public void deleteTalentProfile(long talentId){
-        repository.deleteById(talentId);
+    public void deleteTalentProfile(long talentId) {
+        UserEntity user = em.find(UserEntity.class, 1);
+        user.setPositions(null);
+        em.remove(user);
     }
 }
