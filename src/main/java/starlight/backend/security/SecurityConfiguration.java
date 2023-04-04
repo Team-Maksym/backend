@@ -45,7 +45,15 @@ class SecurityConfiguration {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http.authorizeHttpRequests(c -> c
+                ////////////////////////////////////////////////////////////////////////////////////////////////
+                .requestMatchers(antMatcher("/api-docs/**")).permitAll()
+                .requestMatchers(antMatcher("/swagger-resources/**")).permitAll()
+                .requestMatchers(antMatcher("/configuration/**")).permitAll()
+                .requestMatchers(antMatcher("/swagger*/**")).permitAll()
+                .requestMatchers(antMatcher("/webjars/**")).permitAll()
+//                .requestMatchers(antMatcher("/swagger-ui/**")).permitAll()
                 .requestMatchers(antMatcher("/h2/**")).permitAll()
+                ////////////////////////////////////////////////////////////////////////////////////////////////
                 .requestMatchers("/error").permitAll()
                 .requestMatchers("/api/v1/talents").permitAll()
                 .requestMatchers(POST, "/api/v1/talents/login").permitAll()
@@ -61,6 +69,7 @@ class SecurityConfiguration {
                         .accessDeniedHandler(new BearerTokenAccessDeniedHandler()));
         return http.build();
     }
+
 
     @Bean
     public WebMvcConfigurer corsConfigurer() {

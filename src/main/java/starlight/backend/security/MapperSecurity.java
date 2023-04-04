@@ -8,7 +8,7 @@ import starlight.backend.security.model.response.SessionInfo;
 import static org.mapstruct.ReportingPolicy.IGNORE;
 
 @Mapper(componentModel = "spring", unmappedTargetPolicy = IGNORE)
-public interface SecurityMapper {
+public interface MapperSecurity {
     default SessionInfo toSessionInfo(String token) {
         return SessionInfo.builder()
                 .token(token)
