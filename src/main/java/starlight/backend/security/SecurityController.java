@@ -1,5 +1,11 @@
 package starlight.backend.security;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -12,12 +18,38 @@ import starlight.backend.security.model.response.SessionInfo;
 @AllArgsConstructor
 @RestController
 @RequestMapping("/api/v1")
-//@Api
+@Tag(name = "Security", description = "Security related endpoints")
 public class SecurityController {
     private SecurityServiceInterface service;
 
     @PostMapping("/talents/login")
 //    @ApiOperation(value = "Login in system")
+    @ResponseStatus(HttpStatus.OK)
+    @Operation(
+            summary = "Login in system",
+            description = "Login in system",
+            tags = {"Security"}
+    )
+    @ApiResponses(
+            value = {
+                    @ApiResponse(
+                            responseCode = "200",
+                            description = "Success",
+                            content = @Content(
+                                    mediaType = "application/json",
+                                    schema = @Schema(implementation = SessionInfo.class)
+                            )
+                    ),
+                    @ApiResponse(
+                            responseCode = "401",
+                            description = "Unauthorized",
+                            content = @Content(
+                                    mediaType = "application/json",
+                                    schema = @Schema(implementation = SessionInfo.class)
+                            )
+                    )
+            }
+    )
     public SessionInfo login(Authentication authentication) {
         return service.loginInfo(authentication.getName());
     }
@@ -25,6 +57,38 @@ public class SecurityController {
     @PostMapping("/talents")
 //    @ApiOperation(value = "Create a new talent")
     @ResponseStatus(HttpStatus.CREATED)
+    @Operation(
+            summary = "Create a new talent",
+            description = "Create a new talent",
+            tags = {"Security"}
+    )
+    @ApiResponses(
+            value = {
+                    @ApiResponse(
+                            responseCode = "201",
+                            description = "Created",
+                            content = @Content(
+                                    mediaType = "application/json",
+                                    schema = @Schema(
+                                            implementation = SessionInfo.class)
+                            )
+                    ),
+                    @ApiResponse(
+                            responseCode = "400",
+                            description = "Validation error",
+                            content = @Content(
+                                    mediaType = "application/json",
+                                    schema = @Schema(implementation = SessionInfo.class)
+                            )
+                    ),
+                    @ApiResponse(
+                            responseCode = "409",
+                            description = "Conflict",
+                            content = @Content(
+                                    mediaType = "application/json")
+                    )
+            }
+    )
     public SessionInfo register(@Valid @RequestBody NewUser newUser) {
         return service.register(newUser);
     }
