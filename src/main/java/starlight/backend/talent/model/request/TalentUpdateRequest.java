@@ -13,12 +13,12 @@ import java.util.List;
 public record TalentUpdateRequest(
         @NotBlank
         @Length(min = 3, max = 64)
-        @Pattern(regexp = "^[a-zA-Z]{4,}(?: [a-zA-Z]+){0,2}$", message = "must not contain special characters")
+        @Pattern(regexp = "^[A-Za-z\\s'-]+$", message = "must not contain special characters")
         String fullName,
 
         @NotBlank
         @Length(min = 10, max = 10)
-        @Pattern(regexp = "^\\d{4}-\\d{2}-\\d{2}$", message = "The date must be in the format: yyyy-MM-dd")
+        @Pattern(regexp = "^(?=.*[A-Z])(?=.*[a-z])(?=.*\\d)\\S+$", message = "The date must be in the format: yyyy-MM-dd")
         LocalDate birthday,
         @URL
         String avatar,

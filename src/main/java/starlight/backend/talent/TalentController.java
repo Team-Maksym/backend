@@ -132,7 +132,10 @@ public class TalentController {
                     responseCode = "401",
                     description = "Unauthorized",
                     content = @Content(
-                            mediaType = MediaType.APPLICATION_JSON_VALUE
+                            mediaType = MediaType.APPLICATION_JSON_VALUE,
+                            schema = @Schema(
+                                    implementation = Exception.class
+                            )
                     )
             ),
             @ApiResponse(
@@ -141,7 +144,7 @@ public class TalentController {
                     content = @Content(
                             mediaType = MediaType.APPLICATION_JSON_VALUE,
                             schema = @Schema(
-                                    implementation = HttpClientErrorException.BadRequest.class
+                                    implementation = Exception.class
                             )
                     )
             ),
@@ -151,7 +154,7 @@ public class TalentController {
                     content = @Content(
                             mediaType = MediaType.APPLICATION_JSON_VALUE,
                             schema = @Schema(
-                                    implementation = HttpClientErrorException.BadRequest.class
+                                    implementation = Exception.class
                             )
                     )
             ),
@@ -161,7 +164,7 @@ public class TalentController {
                     content = @Content(
                             mediaType = MediaType.APPLICATION_JSON_VALUE,
                             schema = @Schema(
-                                    implementation = HttpClientErrorException.BadRequest.class
+                                    implementation = Exception.class
                             )
                     )
             )
