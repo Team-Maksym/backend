@@ -16,8 +16,8 @@ public class OpenAPIManagerConfig {
     @Value("${app.openapi.dev-url}")
     private String devUrl;
 
-//    @Value("${app.openapi.prod-url}")
-//    private String prodUrl;
+    @Value("${app.openapi.prod-url}")
+    private String prodUrl;
 
     @Bean
     public OpenAPI myOpenAPI() {
@@ -25,9 +25,9 @@ public class OpenAPIManagerConfig {
         devServer.setUrl(devUrl);
         devServer.setDescription("Server URL in Development environment");
 
-//        Server prodServer = new Server();
-//        prodServer.setUrl(prodUrl);
-//        prodServer.setDescription("Server URL in Production environment");
+        Server prodServer = new Server();
+        prodServer.setUrl(prodUrl);
+        prodServer.setDescription("Server URL in Production environment");
 
         Contact contact = new Contact();
         contact.setEmail("java.team.maksym@gmail.com");
@@ -43,7 +43,7 @@ public class OpenAPIManagerConfig {
                 .description("This API exposes endpoints to manage Starlight project.");
 //                .license(mitLicense);
 
-        return new OpenAPI().info(info).servers(List.of(devServer));
-//        return new OpenAPI().info(info).servers(List.of(devServer, prodServer));
+//        return new OpenAPI().info(info).servers(List.of(devServer));
+        return new OpenAPI().info(info).servers(List.of(devServer, prodServer));
     }
 }
