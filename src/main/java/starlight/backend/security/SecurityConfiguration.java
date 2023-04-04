@@ -48,6 +48,7 @@ class SecurityConfiguration {
                 .requestMatchers(antMatcher("/h2/**")).permitAll()
                 .requestMatchers("/error").permitAll()
                 .requestMatchers("/api/v1/talents").permitAll()
+                .requestMatchers("/api/v1/proofs").permitAll()
                 .requestMatchers(POST, "/api/v1/talents/login").permitAll()
                 .anyRequest().authenticated());
         http.sessionManagement().sessionCreationPolicy(STATELESS);

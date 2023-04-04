@@ -218,3 +218,45 @@ VALUES (29,'ROLE_TALENT');
 INSERT INTO user_entity_authorities (user_entity_user_id,authorities)
 VALUES (30,'ROLE_TALENT');
 
+/*proof*/
+
+INSERT INTO proof_entity_status (proof_entity_proof_id,status)
+VALUES (1,'PUBLISHER');
+INSERT INTO proof_entity_status (proof_entity_proof_id,status)
+VALUES (2,'HIDDEN');
+INSERT INTO proof_entity_status (proof_entity_proof_id,status)
+VALUES (3,'DRAFT');
+INSERT INTO proof_entity_status (proof_entity_proof_id,status)
+VALUES (4,'PUBLISHER');
+INSERT INTO proof_entity_status (proof_entity_proof_id,status)
+VALUES (5,'DRAFT');
+INSERT INTO proof_entity_status (proof_entity_proof_id,status)
+VALUES (6,'DRAFT');
+INSERT INTO proof_entity_status (proof_entity_proof_id,status)
+VALUES (7,'PUBLISHER');
+INSERT INTO proof_entity_status (proof_entity_proof_id,status)
+VALUES (8,'DRAFT');
+INSERT INTO proof_entity_status (proof_entity_proof_id,status)
+VALUES (9,'PUBLISHER');
+INSERT INTO proof_entity_status (proof_entity_proof_id,status)
+VALUES (10,'HIDDEN');
+
+
+INSERT INTO proof_entity (title,description,link,date_created,user_id )
+VALUES ('cdvbnm,k.ldfghjmk,vbnm,','vcdbfngfjngjmyhgkmyhmghjngtugnjgm','https://drive.google.com/file/d/19zB-HGRRAJIjsKaxLZxD6ZNmEZtn2mjc/view?usp=share_link','2001-09-14 22:11:12',1);
+INSERT INTO proof_entity (title,description,link,date_created,user_id )
+VALUES ('cdvbnm,k.ldfghjmk,vbnm,','vcdbfngfjngjmyhgkmyhmghjngtugnjgm',null,'1988-09-14 13:20:12',1);
+INSERT INTO proof_entity (title,description,link,date_created,user_id )
+VALUES ('cdvbnm,k.ldfghjmk,vbnm,','vcdbfngfjngjmyhgkmyhmghjngtugnjgm','https://drive.google.com/file/d/19zB-HGRRAJIjsKaxLZxD6ZNmEZtn2mjc/view?usp=share_link','2004-09-14 10:30:12',2);
+INSERT INTO proof_entity (title,description,link,date_created,user_id )
+VALUES ('cdvbnm,k.ldfghjmk,vbnm,','vcdbротxcdvfbghnmjxcvbnmxcgvbhnhdfjkdlkjdsgthujfngfjngjmyhgkmyhmghjngtugnjgm','https://drive.google.com/file/d/19zB-HGRRAJIjsKaxLZxD6ZNmEZtn2mjc/view?usp=share_link','1988-09-14 09:10:12',2);
+INSERT INTO proof_entity (title,description,link,date_created,user_id )
+VALUES ('cdvbnm,k.ldfghjmk,vbnm,','vcdbfngfjngjmyhgkmyhmghjngtugnjgm',null,'2023-09-14 17:40:12',2);
+INSERT INTO proof_entity (title,description,link,date_created,user_id )
+VALUES ('cdvbnm,k.ldfghjmk,vbnm,','vcdbfngfjngjmyhgkmyhmghjngtugnjgm',null,'2006-09-14 18:08:12',4);
+INSERT INTO proof_entity (title,description,link,date_created,user_id )
+VALUES ('cdvbnm,k.ldfghjmk,vbnm,','vcdbfngfjngjmyhgkmyhmghjngtugnjgm','https://drive.google.com/file/d/19zB-HGRRAJIjsKaxLZxD6ZNmEZtn2mjc/view?usp=share_link','1678-09-14 14:10:12',3);
+INSERT INTO proof_entity (title,description,link,date_created,user_id )
+VALUES ('cdvbnm,k.ldfghjmk,vbnm,','vcdbfngfjngjmyhgkmyhmghjngtugnjgm','https://drive.google.com/file/d/19zB-HGRRAJIjsKaxLZxD6ZNmEZtn2mjc/view?usp=share_link','1999-09-14 22:45:12',3);
+INSERT INTO proof_entity (title,description,link,date_created,user_id )
+VALUES ('cdvbnm,k.ldfghjmk,vbnm,','vcdbfngfjngjmyhgkmyhmghjngtugnjgm','https://drive.google.com/file/d/19zB-HGRRAJIjsKaxLZxD6ZNmEZtn2mjc/view?usp=share_link','2023-09-14 17:40:11',2);
