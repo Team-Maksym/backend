@@ -3,13 +3,17 @@ package starlight.backend.proof;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.Positive;
 import lombok.AllArgsConstructor;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
+import starlight.backend.proof.model.request.ProofAddRequest;
 import starlight.backend.proof.model.response.ProofPagePagination;
 import starlight.backend.proof.service.ProofServiceInterface;
+
+import java.net.URI;
 
 @RestController
 @AllArgsConstructor
@@ -24,4 +28,19 @@ public class ProofController {
                                           @RequestParam(defaultValue = "true") Boolean sortDate) {
         return proofService.proofsPagination(page, size, sortDate);
     }
+
+    @PreAuthorize("hasRole('TALENT')")
+    @PostMapping("/talents/{talent-id}/proofs")
+    public ResponseEntity<?> addTalentFullInfo(@PathVariable("talent-id") long talentId,
+                                               @RequestBody ProofAddRequest proofAddRequest,
+                                               Authentication auth) {
+        var proofId = proofService.validationProof(talentId, proofAddRequest, auth);
+        URI location = ServletUriComponentsBuilder
+                .fromCurrentRequest()
+                .path("/{proof-id}")
+                .buildAndExpand(proofId)
+                .toUri();
+        return ResponseEntity.created(location).build();
+    }
+
 }

@@ -2,15 +2,14 @@ package starlight.backend.proof.model.entity;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Pattern;
 import lombok.*;
 import org.hibernate.validator.constraints.Length;
 import org.hibernate.validator.constraints.URL;
 import org.springframework.validation.annotation.Validated;
+import starlight.backend.proof.model.enums.Status;
 import starlight.backend.user.model.entity.UserEntity;
 
-import java.time.LocalDateTime;
-import java.util.Collection;
+import java.time.Instant;
 
 import static jakarta.persistence.GenerationType.IDENTITY;
 
@@ -35,12 +34,10 @@ public class ProofEntity {
     @URL
     private String link;
 
-    @Pattern(regexp = "[0-9]{4}-(0[1-9]|1[0-2])-(0[1-9]|[1-2][0-9]|3[0-1]) (2[0-3]|[01][0-9]):[0-5][0-9]:[0-5][0-9]"
-            , message = "The date must be in the format: yyyy-MM-dd HH:mm:ss")
-    private LocalDateTime dateCreated;
+    private Instant dateCreated;
 
-    @ElementCollection(fetch = FetchType.EAGER)
-    private Collection<String> status;
+    @Enumerated(EnumType.STRING)
+    private Status status;
 
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
