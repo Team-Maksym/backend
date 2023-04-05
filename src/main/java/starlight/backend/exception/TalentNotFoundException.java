@@ -1,7 +1,7 @@
 package starlight.backend.exception;
 
 public class TalentNotFoundException extends RuntimeException{
-    public TalentNotFoundException(Long id) {
+    public TalentNotFoundException(long id) {
         super("Talent not found by id " + id);
     }
 }

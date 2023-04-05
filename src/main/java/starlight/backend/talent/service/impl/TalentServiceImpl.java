@@ -4,11 +4,12 @@ import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.http.HttpStatus;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 import starlight.backend.exception.PageNotFoundException;
 import starlight.backend.exception.TalentNotFoundException;
 import starlight.backend.talent.MapperTalent;
@@ -21,12 +22,12 @@ import starlight.backend.user.model.entity.UserEntity;
 import starlight.backend.user.repository.PositionRepository;
 import starlight.backend.user.repository.UserRepository;
 
+import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
 @AllArgsConstructor
 @Service
-@Slf4j
 public class TalentServiceImpl implements TalentServiceInterface {
     MapperTalent mapper;
     UserRepository repository;
@@ -39,7 +40,7 @@ public class TalentServiceImpl implements TalentServiceInterface {
     @Transactional
     public TalentPagePagination talentPagination(int page, int size) {
         var pageRequest = repository.findAll(
-                PageRequest.of(page, size,Sort.by("userId").descending())
+                PageRequest.of(page, size, Sort.by("userId").descending())
         );
         if (page >= pageRequest.getTotalPages())
             throw new PageNotFoundException(page);
@@ -52,6 +53,23 @@ public class TalentServiceImpl implements TalentServiceInterface {
         return Optional.of(repository.findById(id)
                 .map(mapper::toTalentFullInfo)
                 .orElseThrow(() -> new TalentNotFoundException(id)));
+    }
+
+    @Override
+    public TalentFullInfo validationUpdateTalent(long talentId,
+                                                 TalentUpdateRequest talentUpdateRequest,
+                                                 Authentication auth) {
+        if (auth != null && auth.isAuthenticated() &&
+                (Objects.equals(auth.getName(), String.valueOf(talentId)))) {
+            return updateTalentProfile(talentId, talentUpdateRequest);
+        } else if (!(Objects.equals(auth.getName(), String.valueOf(talentId)))) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "you cannot change someone else's profile");
+
+        } else if (!(auth != null && auth.isAuthenticated())) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "invalid credential");
+        } else {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
+        }
     }
 
     @Override
