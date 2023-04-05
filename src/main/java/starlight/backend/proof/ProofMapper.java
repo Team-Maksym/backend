@@ -12,6 +12,7 @@ import static org.mapstruct.ReportingPolicy.IGNORE;
 public interface ProofMapper {
     default ProofInfo toProofInfo(ProofEntity proof) {
         return ProofInfo.builder()
+                .id(proof.getProofId())
                 .dateCreated(proof.getDateCreated())
                 .description(proof.getDescription())
                 .title(proof.getTitle())

@@ -19,9 +19,9 @@ public class ProofServiceImpl implements ProofServiceInterface {
 
     @Override
     @Transactional
-    public ProofPagePagination proofsPagination(int page, int size, boolean ascending) {
+    public ProofPagePagination proofsPagination(int page, int size, boolean sortDate) {
         Sort dateSort;
-        if (ascending) {
+        if (sortDate) {
             dateSort = Sort.by("dateCreated").descending();
         } else {
             dateSort = Sort.by("dateCreated");

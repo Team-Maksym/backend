@@ -1,4 +1,4 @@
-package starlight.backend.user.model.enums;
+package starlight.backend.proof.model.enums;
 
 public enum Status {
     DRAFT, PUBLISHER, HIDDEN;

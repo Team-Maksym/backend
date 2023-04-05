@@ -1,7 +1,6 @@
 package starlight.backend.proof;
 
 import jakarta.validation.constraints.Min;
-import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Positive;
 import lombok.AllArgsConstructor;
 import org.springframework.validation.annotation.Validated;
@@ -22,7 +21,7 @@ public class ProofController {
     @GetMapping("/proofs")
     public ProofPagePagination pagination(@RequestParam(defaultValue = "0") @Min(0) int page,
                                           @RequestParam(defaultValue = "10") @Positive int size,
-                                          @RequestParam(defaultValue = "true") Boolean ascending) {
-        return proofService.proofsPagination(page, size, ascending);
+                                          @RequestParam(defaultValue = "true") Boolean sortDate) {
+        return proofService.proofsPagination(page, size, sortDate);
     }
 }
