@@ -38,7 +38,7 @@ public class UserEntity {
     private LocalDate birthday;
     @URL
     private String avatar;
-    @Length(max = 100)
+    @Length(max = 255)
     private String education;
     @Length(max = 255)
     private String experience;
