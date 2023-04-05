@@ -37,7 +37,6 @@ public interface ProofMapper {
         return ProofFullInfo.builder()
                 .title(proof.getTitle())
                 .link(proof.getLink())
-                .id(proof.getProofId())
                 .status(proof.getStatus())
                 .dateCreated(proof.getDateCreated())
                 .description(proof.getDescription())

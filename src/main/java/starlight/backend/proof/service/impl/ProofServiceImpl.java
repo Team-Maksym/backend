@@ -65,7 +65,7 @@ public class ProofServiceImpl implements ProofServiceInterface {
     }
 
     @Override
-    public long validationProof(long talentId, ProofAddRequest proofAddRequest, Authentication auth) {
+    public long validationProofAdded(long talentId, ProofAddRequest proofAddRequest, Authentication auth) {
         if (auth != null && auth.isAuthenticated() &&
                 (Objects.equals(auth.getName(), String.valueOf(talentId)))) {
             return getAddedProofId(talentId, proofAddRequest);

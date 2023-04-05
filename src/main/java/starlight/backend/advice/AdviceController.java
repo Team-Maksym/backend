@@ -14,6 +14,7 @@ public class AdviceController {
     @ExceptionHandler({
             TalentNotFoundException.class,
             PageNotFoundException.class,
+            PageNotFoundException.class,
     })
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ErrorDTO notFound(Exception exception) {

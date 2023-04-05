@@ -10,5 +10,7 @@ public interface ProofServiceInterface {
 
     ProofEntity addProofProfile(long talentId, ProofAddRequest proofUpdateRequest);
 
-    long validationProof(long talentId, ProofAddRequest proofAddRequest, Authentication auth);
+    long validationProofAdded(long talentId, ProofAddRequest proofAddRequest, Authentication auth);
+
+
 }

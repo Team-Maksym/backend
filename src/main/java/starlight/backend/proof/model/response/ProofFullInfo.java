@@ -7,7 +7,6 @@ import java.time.Instant;
 
 @Builder
 public record ProofFullInfo(
-        long id,
         String title,
         String description,
         String link,
