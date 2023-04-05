@@ -9,7 +9,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import starlight.backend.exception.PageNotFoundException;
 import starlight.backend.exception.TalentNotFoundException;
-import starlight.backend.talent.TalentMapper;
+import starlight.backend.talent.MapperTalent;
 import starlight.backend.talent.model.request.TalentUpdateRequest;
 import starlight.backend.talent.model.response.TalentFullInfo;
 import starlight.backend.talent.model.response.TalentPagePagination;
@@ -25,7 +25,7 @@ import java.util.stream.Collectors;
 @AllArgsConstructor
 @Service
 public class TalentServiceImpl implements TalentServiceInterface {
-    TalentMapper mapper;
+    MapperTalent mapper;
     UserRepository repository;
     PositionRepository positionRepository;
 
