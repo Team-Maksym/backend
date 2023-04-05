@@ -14,6 +14,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.server.ResponseStatusException;
 import starlight.backend.talent.model.request.TalentUpdateRequest;
 import starlight.backend.talent.model.response.TalentFullInfo;
@@ -34,7 +35,7 @@ public class TalentController {
 
     @Operation(
             summary = "Get all talents",
-            description = "Get list of all talents. The response is list of talent objects with fields 'id','full_name', 'position' and 'avatar'."
+            description = "Get list of all talents. The response is list of talent objects with fields 'full_name', 'position' and 'avatar'."
     )
     @ApiResponses(value = {
             @ApiResponse(
@@ -173,7 +174,17 @@ public class TalentController {
     public TalentFullInfo updateTalentFullInfo(@PathVariable("talent-id") long talentId,
                                                @RequestBody TalentUpdateRequest talentUpdateRequest,
                                                Authentication auth) {
-       return talentService.validationUpdateTalent(talentId,talentUpdateRequest,auth);
+        if (auth != null && auth.isAuthenticated() &&
+                (Objects.equals(auth.getName(), String.valueOf(talentId)))) {
+            return talentService.updateTalentProfile(talentId, talentUpdateRequest);
+        } else if (!(Objects.equals(auth.getName(), String.valueOf(talentId)))) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "you cannot change someone else's profile");
+
+        } else if (!(auth != null && auth.isAuthenticated())) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "invalid credential");
+        } else {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
+        }
     }
 
     @Operation(summary = "Delete talent by id")
