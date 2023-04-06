@@ -179,6 +179,7 @@ public class TalentController {
             return talentService.updateTalentProfile(talentId, talentUpdateRequest);
         } else if (!(Objects.equals(auth.getName(), String.valueOf(talentId)))) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "you cannot change someone else's profile");
+
         } else if (!(auth != null && auth.isAuthenticated())) {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "invalid credential");
         } else {
