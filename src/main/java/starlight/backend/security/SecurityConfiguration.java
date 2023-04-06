@@ -51,6 +51,7 @@ class SecurityConfiguration {
                 .requestMatchers(antMatcher("/configuration/**")).permitAll()
                 .requestMatchers(antMatcher("/swagger*/**")).permitAll()
                 .requestMatchers(antMatcher("/webjars/**")).permitAll()
+                .requestMatchers(antMatcher("api/v1/user-profile/**")).permitAll()
 //                .requestMatchers(antMatcher("/swagger-ui/**")).permitAll()
                 .requestMatchers(antMatcher("/h2/**")).permitAll()
                 ////////////////////////////////////////////////////////////////////////////////////////////////
