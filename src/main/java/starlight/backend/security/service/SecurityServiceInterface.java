@@ -19,10 +19,7 @@ public interface SecurityServiceInterface {
             return true;
         } else if (!(Objects.equals(auth.getName(), String.valueOf(talentId)))) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "you cannot change someone else's profile");
-        } else if (!auth.isAuthenticated()) {
-            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "invalid credential");
-        } else {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
         }
+        throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "invalid credential");
     }
 }
