@@ -14,10 +14,9 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
-@NoArgsConstructor
+@AllArgsConstructor
 @Slf4j
 public class AmazonConfig {
-    @Autowired
     S3Props s3Props;
 
     @Bean
