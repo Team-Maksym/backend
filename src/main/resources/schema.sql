@@ -1,8 +1,7 @@
-
-DROP TABLE IF EXISTS user_entity;
-DROP TABLE IF EXISTS position_entity;
-DROP TABLE IF EXISTS user_entity_authorities;
-DROP TABLE IF EXISTS user_position;
+DROP TABLE IF EXISTS user_entity CASCADE;
+DROP TABLE IF EXISTS position_entity CASCADE;
+DROP TABLE IF EXISTS user_entity_authorities CASCADE;
+DROP TABLE IF EXISTS user_position CASCADE;
 
 CREATE TABLE user_entity
 (
@@ -39,8 +38,9 @@ CREATE TABLE user_entity_authorities
     CONSTRAINT pk_userentityauthorities PRIMARY KEY (user_entity_authorities_id)
 );
 
+
 ALTER TABLE user_position
-    ADD CONSTRAINT fk_usepos_on_position_entity FOREIGN KEY (position_id) REFERENCES position_entity (position_id);
+     ADD CONSTRAINT fk_usepos_on_position_entity FOREIGN KEY (position_id) REFERENCES position_entity (position_id);
 
 ALTER TABLE user_position
     ADD CONSTRAINT fk_usepos_on_user_entity FOREIGN KEY (user_id) REFERENCES user_entity (user_id);
