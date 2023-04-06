@@ -1,16 +1,13 @@
 package starlight.backend.proof.service;
 
-import org.springframework.security.core.Authentication;
+import org.springframework.http.ResponseEntity;
 import starlight.backend.proof.model.entity.ProofEntity;
 import starlight.backend.proof.model.request.ProofAddRequest;
 import starlight.backend.proof.model.response.ProofPagePagination;
 
 public interface ProofServiceInterface {
-    ProofPagePagination proofsPagination(int page, int size, boolean sortDate);
+    ProofPagePagination proofsPagination(int page, int size, boolean sort);
 
     ProofEntity addProofProfile(long talentId, ProofAddRequest proofUpdateRequest);
-
-    long validationProofAdded(long talentId, ProofAddRequest proofAddRequest, Authentication auth);
-
-
+    ResponseEntity<?> getLocation(long talentId, ProofAddRequest proofAddRequest);
 }

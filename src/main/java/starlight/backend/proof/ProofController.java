@@ -16,12 +16,13 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
+import org.springframework.web.server.ResponseStatusException;
+import starlight.backend.exception.PageNotFoundException;
 import starlight.backend.proof.model.request.ProofAddRequest;
 import starlight.backend.proof.model.response.ProofPagePagination;
 import starlight.backend.proof.service.ProofServiceInterface;
+import starlight.backend.security.service.SecurityServiceInterface;
 
-import java.net.URI;
 
 @RestController
 @AllArgsConstructor
@@ -30,6 +31,8 @@ import java.net.URI;
 @Tag(name = "Proof", description = "Proof API")
 public class ProofController {
     private ProofServiceInterface proofService;
+    private SecurityServiceInterface securityService;
+
     @Operation(
             summary = "Get all proofs",
             description = "Get list of all proofs. The response is list of talent objects with fields 'id','title', 'description' and 'dateCreated'."
@@ -51,7 +54,7 @@ public class ProofController {
                     content = @Content(
                             mediaType = MediaType.APPLICATION_JSON_VALUE,
                             schema = @Schema(
-                                    implementation = Exception.class
+                                    implementation = PageNotFoundException.class
                             )
                     )
             )
@@ -59,8 +62,8 @@ public class ProofController {
     @GetMapping("/proofs")
     public ProofPagePagination pagination(@RequestParam(defaultValue = "0") @Min(0) int page,
                                           @RequestParam(defaultValue = "5") @Positive int size,
-                                          @RequestParam(defaultValue = "true") Boolean sortDate) {
-        return proofService.proofsPagination(page, size, sortDate);
+                                          @RequestParam(defaultValue = "true") boolean sort) {
+        return proofService.proofsPagination(page, size, sort);
     }
 
     @Operation(
@@ -105,12 +108,9 @@ public class ProofController {
     public ResponseEntity<?> addProofFullInfo(@PathVariable("talent-id") long talentId,
                                               @RequestBody ProofAddRequest proofAddRequest,
                                               Authentication auth) {
-        var proofId = proofService.validationProofAdded(talentId, proofAddRequest, auth);
-        URI location = ServletUriComponentsBuilder
-                .fromCurrentRequest()
-                .path("/{proof-id}")
-                .buildAndExpand(proofId)
-                .toUri();
-        return ResponseEntity.created(location).build();
+        if (!securityService.checkingLoggedAndTokenValid(talentId, auth)) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
+        }
+        return proofService.getLocation(talentId, proofAddRequest);
     }
 }
