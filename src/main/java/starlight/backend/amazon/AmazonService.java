@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
+import starlight.backend.config.S3Props;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -17,10 +18,13 @@ import java.util.stream.Collectors;
 @Service
 @NoArgsConstructor
 public class AmazonService {
-    private String bucketName = "maksym-team-backend";
-
     @Autowired
     AmazonS3 s3;
+    @Autowired
+    S3Props s3Props;
+    private String bucketName = s3Props.bucket();
+
+
 
 
     public String saveFile(MultipartFile file) {
