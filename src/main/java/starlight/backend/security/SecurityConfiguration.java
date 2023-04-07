@@ -56,6 +56,7 @@ class SecurityConfiguration {
                 ////////////////////////////////////////////////////////////////////////////////////////////////
                 .requestMatchers("/error").permitAll()
                 .requestMatchers("/api/v1/talents").permitAll()
+                .requestMatchers("/api/v1/test").permitAll()
                 .requestMatchers(POST, "/api/v1/talents/login").permitAll()
                 .anyRequest().authenticated());
         http.sessionManagement().sessionCreationPolicy(STATELESS);
