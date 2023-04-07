@@ -20,19 +20,6 @@ import org.springframework.context.annotation.Configuration;
 public class AmazonConfig {
     S3Props s3Props;
 
-/*    @Bean
-    public AmazonS3 s3() {
-        AWSCredentials awsCredentials = new BasicAWSCredentials(
-                s3Props.accessKey(),
-                s3Props.secretKey()
-        );
-        return AmazonS3ClientBuilder
-                .standard()
-                .withRegion(s3Props.region())
-                .withCredentials(new AWSStaticCredentialsProvider(awsCredentials))
-                .build();
-    }*/
-
     public AWSCredentials credentials() {
         AWSCredentials credentials = new BasicAWSCredentials(
                 s3Props.accessKey(),
