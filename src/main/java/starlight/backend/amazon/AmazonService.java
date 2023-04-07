@@ -3,7 +3,11 @@ package starlight.backend.amazon;
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.model.*;
 import com.amazonaws.util.IOUtils;
+import jakarta.annotation.PostConstruct;
+import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -16,31 +20,26 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
-@NoArgsConstructor
+//@NoArgsConstructor
+@AllArgsConstructor
+@Slf4j
 public class AmazonService {
-    @Autowired
     AmazonS3 s3;
-    @Autowired
     S3Props s3Props;
-    private String bucketName = s3Props.bucket();
-
-
-
 
     public String saveFile(MultipartFile file) {
         String originalFilename = file.getOriginalFilename();
         try {
             File file1 = convertMultiPartToFile(file);
-            PutObjectResult objectResult = s3.putObject(bucketName, originalFilename, file1);
+            PutObjectResult objectResult = s3.putObject(s3Props.bucket(), originalFilename, file1);
             return objectResult.getContentMd5();
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
     }
 
-
     public byte[] downloadFile(String filename) {
-        S3Object object = s3.getObject(bucketName, filename);
+        S3Object object = s3.getObject(s3Props.bucket(), filename);
         S3ObjectInputStream objectContent = object.getObjectContent();
         try {
             return IOUtils.toByteArray(objectContent);
@@ -49,16 +48,14 @@ public class AmazonService {
         }
     }
 
-
     public String deleteFile(String filename) {
-        s3.deleteObject(bucketName, filename);
+        s3.deleteObject(s3Props.bucket(), filename);
 
         return "Deleting file completed";
     }
 
-
     public List<String> listAllFiles() {
-        ListObjectsV2Result listObjectsV2Result = s3.listObjectsV2(bucketName);
+        ListObjectsV2Result listObjectsV2Result = s3.listObjectsV2(s3Props.bucket());
         return listObjectsV2Result.getObjectSummaries().stream().map(S3ObjectSummary::getKey).collect(Collectors.toList());
     }
 
@@ -68,5 +65,10 @@ public class AmazonService {
         fos.write(file.getBytes());
         fos.close();
         return convFile;
+    }
+
+    @PostConstruct
+    void logLoaded() {
+        log.info("ServiceBucket = {}", s3Props.bucket());
     }
 }
