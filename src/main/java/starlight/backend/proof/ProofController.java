@@ -66,4 +66,51 @@ public class ProofController {
         return proofService.proofsPagination(page, size, sort);
     }
 
+    @Operation(
+            summary = "Add proof in status draft",
+            description = "Adding a proof for a specific talent, issuing a link in Location to a page with a full description of the proof."
+    )
+    @ApiResponses(value = {
+            @ApiResponse(
+                    responseCode = "201",
+                    description = "Created",
+                    content = @Content(
+                            mediaType = MediaType.APPLICATION_JSON_VALUE,
+                            schema = @Schema(
+                                    implementation = ResponseEntity.class
+                            )
+                    )
+            ),
+            @ApiResponse(
+                    responseCode = "404",
+                    description = "Not found",
+                    content = @Content(
+                            mediaType = MediaType.APPLICATION_JSON_VALUE,
+                            schema = @Schema(
+                                    implementation = Exception.class
+                            )
+                    )
+            ),
+            @ApiResponse(
+                    responseCode = "401",
+                    description = "Unauthorized",
+                    content = @Content(
+                            mediaType = MediaType.APPLICATION_JSON_VALUE,
+                            schema = @Schema(
+                                    implementation = Exception.class
+                            )
+                    )
+            )
+    })
+    @PreAuthorize("hasRole('TALENT')")
+    @ResponseStatus(HttpStatus.CREATED)
+    @PostMapping("/talents/{talent-id}/proofs")
+    public ResponseEntity<?> addProofFullInfo(@PathVariable("talent-id") long talentId,
+                                              @RequestBody ProofAddRequest proofAddRequest,
+                                              Authentication auth) {
+        if (!securityService.checkingLoggedAndTokenValid(talentId, auth)) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
+        }
+        return proofService.getLocation(talentId, proofAddRequest);
+    }
 }
