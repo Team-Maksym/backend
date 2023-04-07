@@ -10,13 +10,9 @@ import org.springframework.stereotype.Component;
 @Slf4j
 @ConfigurationProperties(prefix = "s3")
 public record S3Props (
-//        @Value("${s3.bucket}")
         String bucket,
-//        @Value("${s3.access-key}")
         String accessKey,
-//        @Value("${s3.secret-key}")
         String secretKey,
-//        @Value("${s3.region}")
         String region
 ){
     @PostConstruct
