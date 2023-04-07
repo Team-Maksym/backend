@@ -73,7 +73,7 @@ public class SecurityServiceImpl implements SecurityServiceInterface {
         var claims = JwtClaimsSet.builder()
                 .issuer("self")
                 .issuedAt(now)
-                .expiresAt(now.plus(60, MINUTES))
+                .expiresAt(now.plus(180, MINUTES))
                 .subject(getUserIdByEmail(authentication.getUsername()))
                 .claim("scope", createScope(authentication))
                 .build();

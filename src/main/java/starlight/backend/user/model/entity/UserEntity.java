@@ -5,8 +5,10 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import lombok.*;
+import org.hibernate.validator.constraints.Length;
 import org.hibernate.validator.constraints.URL;
 import org.springframework.validation.annotation.Validated;
+import starlight.backend.proof.model.entity.ProofEntity;
 
 import java.time.LocalDate;
 import java.util.Collection;
@@ -36,7 +38,9 @@ public class UserEntity {
     private LocalDate birthday;
     @URL
     private String avatar;
+    @Length(max = 255)
     private String education;
+    @Length(max = 255)
     private String experience;
 
     @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH})
@@ -49,4 +53,7 @@ public class UserEntity {
 
     @ElementCollection(fetch = FetchType.EAGER)
     private Collection<String> authorities;
+
+    @OneToMany(mappedBy = "user")
+    private Set<ProofEntity> proofs;
 }
