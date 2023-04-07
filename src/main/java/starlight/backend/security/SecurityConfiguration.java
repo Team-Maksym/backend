@@ -45,20 +45,23 @@ class SecurityConfiguration {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http.authorizeHttpRequests(c -> c
-                ////////////////////////////////////////////////////////////////////////////////////////////////
+                /////////////////////////Tests/////////////////////////////////////////////////////
+                .requestMatchers("/test").permitAll()
+                .requestMatchers(antMatcher("/h2/**")).permitAll()
+                /////////////////////////OpenApi///////////////////////////////////////////////////
                 .requestMatchers(antMatcher("/api-docs/**")).permitAll()
                 .requestMatchers(antMatcher("/swagger-resources/**")).permitAll()
                 .requestMatchers(antMatcher("/configuration/**")).permitAll()
                 .requestMatchers(antMatcher("/swagger*/**")).permitAll()
                 .requestMatchers(antMatcher("/webjars/**")).permitAll()
-//                .requestMatchers(antMatcher("/swagger-ui/**")).permitAll()
-                .requestMatchers(antMatcher("/h2/**")).permitAll()
-                ////////////////////////////////////////////////////////////////////////////////////////////////
+                /////////////////////////DevOps////////////////////////////////////////////////////
                 .requestMatchers("/error").permitAll()
+                /////////////////////////Production////////////////////////////////////////////////
                 .requestMatchers("/api/v1/talents").permitAll()
-                .requestMatchers("/api/v1/test").permitAll()
                 .requestMatchers(POST, "/api/v1/talents/login").permitAll()
-                .anyRequest().authenticated());
+                /////////////////////////Another///////////////////////////////////////////////////
+                .anyRequest().authenticated()
+        );
         http.sessionManagement().sessionCreationPolicy(STATELESS);
         http.httpBasic();
         http.csrf().disable();
@@ -70,7 +73,6 @@ class SecurityConfiguration {
                         .accessDeniedHandler(new BearerTokenAccessDeniedHandler()));
         return http.build();
     }
-
 
     @Bean
     public WebMvcConfigurer corsConfigurer() {

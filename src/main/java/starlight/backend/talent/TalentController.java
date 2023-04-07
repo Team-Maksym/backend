@@ -231,9 +231,4 @@ public class TalentController {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "you cannot delete someone else's profile");
         }
     }
-
-    @GetMapping("/test")
-    public String test() {
-        return "test";
-    }
 }
