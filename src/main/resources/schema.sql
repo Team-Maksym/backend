@@ -57,12 +57,12 @@ CREATE TABLE proof_entity
     link         VARCHAR(255),
     status       VARCHAR(255),
     date_created TIMESTAMP WITH TIME ZONE,
+    date_last_updated TIMESTAMP WITHOUT TIME ZONE,
     user_id      BIGINT                                  NOT NULL,
     CONSTRAINT pk_proof PRIMARY KEY (proof_id)
 );
 
 ALTER TABLE proof_entity
     ADD CONSTRAINT FK_PROOF_ON_USER FOREIGN KEY (user_id) REFERENCES user_entity (user_id);
-
 
 

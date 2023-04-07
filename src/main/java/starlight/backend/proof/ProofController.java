@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 import starlight.backend.exception.PageNotFoundException;
 import starlight.backend.proof.model.request.ProofAddRequest;
+import starlight.backend.proof.model.request.ProofUpdateRequest;
 import starlight.backend.proof.model.response.ProofPagePagination;
 import starlight.backend.proof.service.ProofServiceInterface;
 import starlight.backend.security.service.SecurityServiceInterface;
@@ -113,4 +114,17 @@ public class ProofController {
         }
         return proofService.getLocation(talentId, proofAddRequest);
     }
-}
+
+    @PatchMapping("/talents/{talent-id}/proofs/{proof-id}")
+    @PreAuthorize("hasRole('TALENT')")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void updateProofFullInfo(@PathVariable("talent-id") long talentId,
+                                      @PathVariable("proof-id") long proofId,
+                                      @RequestBody ProofUpdateRequest proofUpdateRequest,
+                                    Authentication auth) {
+        if (!securityService.checkingLoggedAndTokenValid(talentId, auth)) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
+        }
+        proofService.proofUpdateRequest(proofId, proofUpdateRequest);
+        }
+    }

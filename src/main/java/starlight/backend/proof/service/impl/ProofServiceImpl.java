@@ -4,26 +4,25 @@ import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
-import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import starlight.backend.exception.PageNotFoundException;
+import starlight.backend.exception.ProofNotFoundException;
 import starlight.backend.exception.TalentNotFoundException;
 import starlight.backend.proof.ProofMapper;
 import starlight.backend.proof.ProofRepository;
 import starlight.backend.proof.model.entity.ProofEntity;
 import starlight.backend.proof.model.enums.Status;
 import starlight.backend.proof.model.request.ProofAddRequest;
+import starlight.backend.proof.model.request.ProofUpdateRequest;
+import starlight.backend.proof.model.response.ProofFullInfo;
 import starlight.backend.proof.model.response.ProofPagePagination;
 import starlight.backend.proof.service.ProofServiceInterface;
 import starlight.backend.user.repository.UserRepository;
 
 import java.net.URI;
 import java.time.Instant;
-import java.util.Objects;
 
 @AllArgsConstructor
 @Service
@@ -72,5 +71,18 @@ public class ProofServiceImpl implements ProofServiceInterface {
                 .buildAndExpand(proofId)
                 .toUri();
         return ResponseEntity.created(location).build();
+    }
+
+    @Override
+    @Transactional
+    public ProofFullInfo proofUpdateRequest(long id, ProofUpdateRequest proofUpdateRequest) {
+        return repository.findById(id).map(proof -> {
+            proof.setTitle(proofUpdateRequest.title());
+            proof.setDescription(proofUpdateRequest.description());
+            proof.setLink(proofUpdateRequest.link());
+            proof.setDateLastUpdated(Instant.now());
+            repository.save(proof);
+            return mapper.toProofFullInfo(proof);
+        }).orElseThrow(() -> new ProofNotFoundException(id));
     }
 }

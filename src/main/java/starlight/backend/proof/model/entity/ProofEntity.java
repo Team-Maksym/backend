@@ -36,10 +36,16 @@ public class ProofEntity {
 
     private Instant dateCreated;
 
+    private Instant dateLastUpdated;
+
     @Enumerated(EnumType.STRING)
     private Status status;
 
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
     private UserEntity user;
+
+    public void setDateLastUpdated(Instant now) {
+        this.dateLastUpdated = now;
+    }
 }
