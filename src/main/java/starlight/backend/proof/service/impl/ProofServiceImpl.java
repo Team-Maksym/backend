@@ -1,5 +1,7 @@
 package starlight.backend.proof.service.impl;
 
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.PageRequest;
@@ -16,6 +18,7 @@ import starlight.backend.proof.model.enums.Status;
 import starlight.backend.proof.model.request.ProofAddRequest;
 import starlight.backend.proof.model.response.ProofPagePagination;
 import starlight.backend.proof.service.ProofServiceInterface;
+import starlight.backend.user.model.entity.UserEntity;
 import starlight.backend.user.repository.UserRepository;
 
 import java.net.URI;
@@ -27,6 +30,8 @@ public class ProofServiceImpl implements ProofServiceInterface {
     ProofRepository repository;
     UserRepository userRepository;
     ProofMapper mapper;
+    @PersistenceContext
+    private EntityManager em;
 
     @Override
     @Transactional
@@ -68,5 +73,13 @@ public class ProofServiceImpl implements ProofServiceInterface {
                 .buildAndExpand(proofId)
                 .toUri();
         return ResponseEntity.created(location).build();
+    }
+
+    @Override
+    @Transactional
+    public void deleteProof(long talentId, long proofId) {
+        ProofEntity proof = em.find(ProofEntity.class,proofId);
+        proof.setUser(null);
+        em.remove(proof);
     }
 }

@@ -18,10 +18,13 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 import starlight.backend.exception.PageNotFoundException;
+import starlight.backend.exception.TalentAlreadyOccupiedException;
 import starlight.backend.proof.model.request.ProofAddRequest;
 import starlight.backend.proof.model.response.ProofPagePagination;
 import starlight.backend.proof.service.ProofServiceInterface;
 import starlight.backend.security.service.SecurityServiceInterface;
+import starlight.backend.talent.model.response.TalentFullInfo;
+
 
 @RestController
 @AllArgsConstructor
@@ -111,5 +114,58 @@ public class ProofController {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
         }
         return proofService.getLocation(talentId, proofAddRequest);
+    }
+    @Operation(summary = "Delete proof by proof_id and talent_id")
+    @ApiResponses(value = {
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "Success",
+                    content = @Content(
+                            mediaType = MediaType.APPLICATION_JSON_VALUE,
+                            schema = @Schema(
+                                    implementation = TalentFullInfo.class
+                            )
+                    )
+            ),
+            @ApiResponse(
+                    responseCode = "401",
+                    description = "Unauthorized",
+                    content = @Content(
+                            mediaType = MediaType.APPLICATION_JSON_VALUE,
+                            schema = @Schema(
+                                    implementation = Exception.class
+                            )
+                    )
+            ),
+            @ApiResponse(
+                    responseCode = "403",
+                    description = "Forbidden",
+                    content = @Content(
+                            mediaType = MediaType.APPLICATION_JSON_VALUE,
+                            schema = @Schema(
+                                    implementation = Exception.class
+                            )
+                    )
+            ),
+            @ApiResponse(
+                    responseCode = "409",
+                    description = "Conflict",
+                    content = @Content(
+                            mediaType = MediaType.APPLICATION_JSON_VALUE,
+                            schema = @Schema(
+                                    implementation = TalentAlreadyOccupiedException.class
+                            )
+                    )
+            )
+    })
+    @PreAuthorize("hasRole('TALENT')")
+    @DeleteMapping("/talents/{talent-id}/proofs/{proof-id}")
+    public void deleteTalent(@PathVariable("talent-id") long talentId,
+                             @PathVariable("proof-id") long proofId,
+                             Authentication auth) {
+        if (!securityService.checkingLoggedAndTokenValid(talentId, auth)) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
+        }
+        proofService.deleteProof(talentId,proofId);
     }
 }
