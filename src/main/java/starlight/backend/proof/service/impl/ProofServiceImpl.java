@@ -21,7 +21,6 @@ import starlight.backend.proof.model.response.ProofPagePagination;
 import starlight.backend.proof.service.ProofServiceInterface;
 import starlight.backend.user.repository.UserRepository;
 
-import java.net.URI;
 import java.time.Instant;
 import java.util.Objects;
 
