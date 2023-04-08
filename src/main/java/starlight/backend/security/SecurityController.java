@@ -49,7 +49,6 @@ public class SecurityController {
             }
     )
     @PostMapping("/talents/login")
-//    @ApiOperation(value = "Login in system")
     @ResponseStatus(HttpStatus.OK)
     public SessionInfo login(Authentication authentication) {
         return service.loginInfo(authentication.getName());
@@ -96,7 +95,6 @@ public class SecurityController {
             }
     )
     @PostMapping("/talents")
-//    @ApiOperation(value = "Create a new talent")
     @ResponseStatus(HttpStatus.CREATED)
     public SessionInfo register(@Valid @RequestBody NewUser newUser) {
         return service.register(newUser);
