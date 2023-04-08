@@ -1,3 +1,5 @@
+-- liquibase formatted sql
+-- changeset kate:1
 DROP TABLE IF EXISTS user_entity CASCADE;
 DROP TABLE IF EXISTS position_entity CASCADE;
 DROP TABLE IF EXISTS user_entity_authorities CASCADE;
@@ -40,10 +42,11 @@ CREATE TABLE user_entity_authorities
 
 
 ALTER TABLE user_position
-     ADD CONSTRAINT fk_usepos_on_position_entity FOREIGN KEY (position_id) REFERENCES position_entity (position_id);
+    ADD CONSTRAINT fk_usepos_on_position_entity FOREIGN KEY (position_id) REFERENCES position_entity (position_id);
 
 ALTER TABLE user_position
     ADD CONSTRAINT fk_usepos_on_user_entity FOREIGN KEY (user_id) REFERENCES user_entity (user_id);
 
 ALTER TABLE user_entity_authorities
-     ADD CONSTRAINT fk_userlpos_on_pk_user_entity_authorities FOREIGN KEY (user_entity_authorities_id) REFERENCES user_entity_authorities (user_entity_authorities_id);
+    ADD CONSTRAINT fk_userlpos_on_pk_user_entity_authorities FOREIGN KEY (user_entity_authorities_id) REFERENCES user_entity_authorities (user_entity_authorities_id);
+
