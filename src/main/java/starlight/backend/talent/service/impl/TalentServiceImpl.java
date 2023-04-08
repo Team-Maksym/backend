@@ -4,7 +4,9 @@ import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import starlight.backend.exception.PageNotFoundException;
@@ -24,6 +26,7 @@ import java.util.stream.Collectors;
 
 @AllArgsConstructor
 @Service
+@Slf4j
 public class TalentServiceImpl implements TalentServiceInterface {
     MapperTalent mapper;
     UserRepository repository;
@@ -36,7 +39,7 @@ public class TalentServiceImpl implements TalentServiceInterface {
     @Transactional
     public TalentPagePagination talentPagination(int page, int size) {
         var pageRequest = repository.findAll(
-                PageRequest.of(page, size, Sort.by("userId").descending())
+                PageRequest.of(page, size,Sort.by("userId").descending())
         );
         if (page >= pageRequest.getTotalPages())
             throw new PageNotFoundException(page);
