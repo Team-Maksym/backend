@@ -1,5 +1,5 @@
 --liquibase formatted sql
---changeset kate:create-multiple-tables splitStatements:true endDelimiter:;
+--changeset kate:inset-auth-01
 INSERT INTO user_entity_authorities (user_entity_user_id,authorities)
 VALUES (1,'ROLE_TALENT');
 INSERT INTO user_entity_authorities (user_entity_user_id,authorities)

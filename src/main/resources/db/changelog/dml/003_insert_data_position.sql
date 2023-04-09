@@ -1,5 +1,5 @@
 --liquibase formatted sql
---changeset kate:inset-position-01
+--changeset kate:create-multiple-tables splitStatements:true endDelimiter:;
 INSERT INTO position_entity (position)
 VALUES ('manager');
 INSERT INTO position_entity (position)

@@ -19,6 +19,10 @@ databaseChangeLog:
       file: dml/003_insert_data_position.sql
       relativeToChangelogFile: true
 
+  - changeSet:
+      id: 2
+      author: kate
+
   - include:
       file: dml/004_insert_data_proof.sql
       relativeToChangelogFile: true

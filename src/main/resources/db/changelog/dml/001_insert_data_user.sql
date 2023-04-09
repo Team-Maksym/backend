@@ -1,3 +1,5 @@
+--liquibase formatted sql
+--changeset kate:inset-user-01
 INSERT INTO user_entity (full_name,email,password,birthday,avatar,education,experience)
 VALUES ('Maksym Khudoliy','zaxaqueiboigreu-5997@gmail.com','$2a$10$A40TjVC8xC1tC7uChck0BOWVxgMKY..7sfG2.YHrjkrG2GLSy4YLW','1980-08-22','https://drive.google.com/file/d/14KHHoX72gArjYtbdIeFrE6y3qjiW08YH/view?usp=share_link','education','experience');
 INSERT INTO user_entity (full_name,email,password,birthday,avatar,education,experience)
