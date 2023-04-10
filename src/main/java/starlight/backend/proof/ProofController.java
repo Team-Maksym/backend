@@ -24,6 +24,7 @@ import starlight.backend.proof.model.response.ProofPagePagination;
 import starlight.backend.proof.service.ProofServiceInterface;
 import starlight.backend.security.service.SecurityServiceInterface;
 import starlight.backend.talent.model.response.TalentFullInfo;
+import starlight.backend.talent.model.response.TalentPagePagination;
 
 
 @RestController
@@ -167,5 +168,51 @@ public class ProofController {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
         }
         proofService.deleteProof(talentId,proofId);
+    }
+
+    @Operation(summary = "Return list of all proofs for talent by talent_id")
+    @ApiResponses(value = {
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "Success",
+                    content = @Content(
+                            mediaType = MediaType.APPLICATION_JSON_VALUE,
+                            schema = @Schema(
+                                    implementation = TalentPagePagination.class
+                            )
+                    )
+            ),
+            @ApiResponse(
+                    responseCode = "401",
+                    description = "Unauthorized",
+                    content = @Content(
+                            mediaType = MediaType.APPLICATION_JSON_VALUE,
+                            schema = @Schema(
+                                    implementation = Exception.class
+                            )
+                    )
+            ),
+            @ApiResponse(
+                    responseCode = "403",
+                    description = "Forbidden",
+                    content = @Content(
+                            mediaType = MediaType.APPLICATION_JSON_VALUE,
+                            schema = @Schema(
+                                    implementation = Exception.class
+                            )
+                    )
+            )
+    })
+    @PreAuthorize("hasRole('TALENT')")
+    @GetMapping("/talents/{talent-id}/proofs")
+    public ProofPagePagination getTalentProofs(@PathVariable("talent-id") long talentId,
+                             Authentication auth,
+                             @RequestParam(defaultValue = "0") @Min(0) int page,
+                             @RequestParam(defaultValue = "5") @Positive int size,
+                             @RequestParam(defaultValue = "true") boolean sort) {
+        if (!securityService.checkingLoggedAndTokenValid(talentId, auth)) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
+        }
+        return proofService.getTalentAllProofs(talentId, page, size, sort);
     }
 }

@@ -18,7 +18,6 @@ import starlight.backend.proof.model.enums.Status;
 import starlight.backend.proof.model.request.ProofAddRequest;
 import starlight.backend.proof.model.response.ProofPagePagination;
 import starlight.backend.proof.service.ProofServiceInterface;
-import starlight.backend.user.model.entity.UserEntity;
 import starlight.backend.user.repository.UserRepository;
 
 import java.net.URI;
@@ -36,14 +35,8 @@ public class ProofServiceImpl implements ProofServiceInterface {
     @Override
     @Transactional
     public ProofPagePagination proofsPagination(int page, int size, boolean sort) {
-        Sort dateSort;
-        if (sort) {
-            dateSort = Sort.by("dateCreated").descending();
-        } else {
-            dateSort = Sort.by("dateCreated");
-        }
         var pageRequest = repository.findAll(
-                PageRequest.of(page, size, dateSort)
+                PageRequest.of(page, size, doDateSort(sort))
         );
         if (page >= pageRequest.getTotalPages())
             throw new PageNotFoundException(page);
@@ -81,5 +74,24 @@ public class ProofServiceImpl implements ProofServiceInterface {
         ProofEntity proof = em.find(ProofEntity.class,proofId);
         proof.setUser(null);
         em.remove(proof);
+    }
+
+    @Override
+    @Transactional
+    public ProofPagePagination getTalentAllProofs(long talentId, int page, int size, boolean sort) {
+        var pageRequest = repository.findByUser_UserId(talentId, PageRequest.of(page, size, doDateSort(sort)));
+        if (page >= pageRequest.getTotalPages())
+            throw new PageNotFoundException(page);
+        return mapper.toProofPagePagination(pageRequest);
+    }
+
+    private Sort doDateSort(boolean sort) {
+        Sort dateSort;
+        if (sort) {
+            dateSort = Sort.by("dateCreated").descending();
+        } else {
+            dateSort = Sort.by("dateCreated");
+        }
+        return dateSort;
     }
 }
