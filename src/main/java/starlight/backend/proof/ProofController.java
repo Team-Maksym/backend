@@ -183,6 +183,16 @@ public class ProofController {
                     )
             ),
             @ApiResponse(
+                    responseCode = "400",
+                    description = "Bad Request",
+                    content = @Content(
+                            mediaType = MediaType.APPLICATION_JSON_VALUE,
+                            schema = @Schema(
+                                    implementation = Exception.class
+                            )
+                    )
+            ),
+            @ApiResponse(
                     responseCode = "401",
                     description = "Unauthorized",
                     content = @Content(
@@ -193,8 +203,8 @@ public class ProofController {
                     )
             ),
             @ApiResponse(
-                    responseCode = "403",
-                    description = "Forbidden",
+                    responseCode = "404",
+                    description = "Not found",
                     content = @Content(
                             mediaType = MediaType.APPLICATION_JSON_VALUE,
                             schema = @Schema(
@@ -210,9 +220,6 @@ public class ProofController {
                              @RequestParam(defaultValue = "0") @Min(0) int page,
                              @RequestParam(defaultValue = "5") @Positive int size,
                              @RequestParam(defaultValue = "true") boolean sort) {
-        if (!securityService.checkingLoggedAndTokenValid(talentId, auth)) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
-        }
-        return proofService.getTalentAllProofs(talentId, page, size, sort);
+        return proofService.getTalentAllProofs(auth, talentId, page, size, sort);
     }
 }
