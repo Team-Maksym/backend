@@ -2,12 +2,12 @@ package starlight.backend.proof.service.impl;
 
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
-import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import starlight.backend.exception.PageNotFoundException;
 import starlight.backend.exception.ProofNotFoundException;
@@ -28,6 +28,7 @@ import java.time.Instant;
 
 @AllArgsConstructor
 @Service
+@Transactional
 public class ProofServiceImpl implements ProofServiceInterface {
     ProofRepository repository;
     UserRepository userRepository;
@@ -36,7 +37,6 @@ public class ProofServiceImpl implements ProofServiceInterface {
     private EntityManager em;
 
     @Override
-    @Transactional
     public ProofPagePagination proofsPagination(int page, int size, boolean sort) {
         var pageRequest = repository.findAll(
                 PageRequest.of(page, size, doDateSort(sort))
@@ -47,7 +47,6 @@ public class ProofServiceImpl implements ProofServiceInterface {
     }
 
     @Override
-    @Transactional
     public ProofEntity addProofProfile(long talentId, ProofAddRequest proofAddRequest) {
         return repository.save(ProofEntity.builder()
                 .title(proofAddRequest.title())
@@ -61,6 +60,7 @@ public class ProofServiceImpl implements ProofServiceInterface {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public ResponseEntity<?> getLocation(long talentId, ProofAddRequest proofAddRequest) {
         long proofId = addProofProfile(talentId, proofAddRequest).getProofId();
         URI location = ServletUriComponentsBuilder
@@ -72,7 +72,6 @@ public class ProofServiceImpl implements ProofServiceInterface {
     }
 
     @Override
-    @Transactional
     public ProofFullInfo proofUpdateRequest(long id, ProofUpdateRequest proofUpdateRequest) {
         return repository.findById(id).map(proof -> {
             proof.setTitle(proofUpdateRequest.title());
@@ -85,7 +84,6 @@ public class ProofServiceImpl implements ProofServiceInterface {
     }
 
     @Override
-    @Transactional
     public void deleteProof(long talentId, long proofId) {
         ProofEntity proof = em.find(ProofEntity.class, proofId);
         proof.setUser(null);
@@ -93,7 +91,6 @@ public class ProofServiceImpl implements ProofServiceInterface {
     }
 
     @Override
-    @Transactional
     public ProofPagePagination getTalentAllProofs(long talentId, int page, int size, boolean sort) {
         var pageRequest = repository.findByUser_UserId(talentId, PageRequest.of(page, size, doDateSort(sort)));
         if (page >= pageRequest.getTotalPages())
@@ -101,7 +98,8 @@ public class ProofServiceImpl implements ProofServiceInterface {
         return mapper.toProofPagePagination(pageRequest);
     }
 
-    private Sort doDateSort(boolean sort) {
+    @Transactional(readOnly = true)
+    Sort doDateSort(boolean sort) {
         Sort dateSort;
         if (sort) {
             dateSort = Sort.by("dateCreated").descending();

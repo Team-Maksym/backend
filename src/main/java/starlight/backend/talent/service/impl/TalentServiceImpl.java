@@ -2,11 +2,11 @@ package starlight.backend.talent.service.impl;
 
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
-import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import starlight.backend.exception.PageNotFoundException;
 import starlight.backend.exception.TalentNotFoundException;
 import starlight.backend.talent.MapperTalent;
@@ -24,6 +24,7 @@ import java.util.stream.Collectors;
 
 @AllArgsConstructor
 @Service
+@Transactional
 public class TalentServiceImpl implements TalentServiceInterface {
     MapperTalent mapper;
     UserRepository repository;
@@ -33,7 +34,6 @@ public class TalentServiceImpl implements TalentServiceInterface {
     private EntityManager em;
 
     @Override
-    @Transactional
     public TalentPagePagination talentPagination(int page, int size) {
         var pageRequest = repository.findAll(
                 PageRequest.of(page, size, Sort.by("userId").descending())
@@ -44,7 +44,6 @@ public class TalentServiceImpl implements TalentServiceInterface {
     }
 
     @Override
-    @Transactional
     public Optional<TalentFullInfo> talentFullInfo(long id) {
         return Optional.of(repository.findById(id)
                 .map(mapper::toTalentFullInfo)
@@ -52,7 +51,6 @@ public class TalentServiceImpl implements TalentServiceInterface {
     }
 
     @Override
-    @Transactional
     public TalentFullInfo updateTalentProfile(long id, TalentUpdateRequest talentUpdateRequest) {
         return repository.findById(id).map(talent -> {
             talent.setFullName(talentUpdateRequest.fullName());
@@ -72,7 +70,6 @@ public class TalentServiceImpl implements TalentServiceInterface {
     }
 
     @Override
-    @Transactional
     public void deleteTalentProfile(long talentId) {
         UserEntity user = em.find(UserEntity.class, talentId);
         user.setPositions(null);
