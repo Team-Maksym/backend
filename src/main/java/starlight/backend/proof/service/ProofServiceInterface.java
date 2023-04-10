@@ -1,6 +1,7 @@
 package starlight.backend.proof.service;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import starlight.backend.proof.model.entity.ProofEntity;
 import starlight.backend.proof.model.request.ProofAddRequest;
 import starlight.backend.proof.model.request.ProofUpdateRequest;

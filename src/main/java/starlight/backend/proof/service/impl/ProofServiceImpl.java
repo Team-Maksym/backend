@@ -3,9 +3,13 @@ package starlight.backend.proof.service.impl;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import lombok.AllArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
@@ -21,6 +25,8 @@ import starlight.backend.proof.model.request.ProofUpdateRequest;
 import starlight.backend.proof.model.response.ProofFullInfo;
 import starlight.backend.proof.model.response.ProofPagePagination;
 import starlight.backend.proof.service.ProofServiceInterface;
+import starlight.backend.security.service.SecurityServiceInterface;
+import starlight.backend.security.service.impl.SecurityServiceImpl;
 import starlight.backend.user.repository.UserRepository;
 
 import java.net.URI;
@@ -33,6 +39,7 @@ public class ProofServiceImpl implements ProofServiceInterface {
     ProofRepository repository;
     UserRepository userRepository;
     ProofMapper mapper;
+    private SecurityServiceInterface securityService;
     @PersistenceContext
     private EntityManager em;
 
@@ -91,8 +98,14 @@ public class ProofServiceImpl implements ProofServiceInterface {
     }
 
     @Override
-    public ProofPagePagination getTalentAllProofs(long talentId, int page, int size, boolean sort) {
-        var pageRequest = repository.findByUser_UserId(talentId, PageRequest.of(page, size, doDateSort(sort)));
+    public ProofPagePagination getTalentAllProofs(Authentication auth, long talentId, int page, int size, boolean sort) {
+        if (securityService.checkingLogged(talentId, auth)) {
+            var pageRequest = repository.findByUser_UserId(talentId, PageRequest.of(page, size, doDateSort(sort)));
+            if (page >= pageRequest.getTotalPages())
+                throw new PageNotFoundException(page);
+            return mapper.toProofPagePagination(pageRequest);
+        }
+        var pageRequest = repository.findByUser_UserIdAndStatus(talentId, Status.PUBLISHED, PageRequest.of(page, size, doDateSort(sort)));
         if (page >= pageRequest.getTotalPages())
             throw new PageNotFoundException(page);
         return mapper.toProofPagePagination(pageRequest);
