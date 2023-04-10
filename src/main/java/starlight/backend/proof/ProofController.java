@@ -17,7 +17,6 @@ import org.springframework.web.bind.annotation.*;
 import starlight.backend.proof.model.request.ProofAddRequest;
 import starlight.backend.proof.service.ProofServiceInterface;
 
-
 @RestController
 @AllArgsConstructor
 @Validated

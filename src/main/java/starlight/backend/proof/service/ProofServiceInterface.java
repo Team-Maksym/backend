@@ -17,7 +17,7 @@ public interface ProofServiceInterface {
 
     void deleteProof(long talentId, long proofId);
 
-    ProofPagePagination getTalentAllProofs(long talentId, int page, int size, boolean sort);
+    ProofPagePagination getTalentAllProofs(Authentication auth, long talentId, int page, int size, boolean sort);
 
     ProofFullInfo proofUpdateRequest(long id, ProofUpdateRequest proofUpdateRequest);
 }

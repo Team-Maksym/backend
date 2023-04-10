@@ -3,6 +3,7 @@ package starlight.backend.proof.service.impl;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import lombok.AllArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
@@ -100,8 +101,14 @@ public class ProofServiceImpl implements ProofServiceInterface {
     }
 
     @Override
-    public ProofPagePagination getTalentAllProofs(long talentId, int page, int size, boolean sort) {
-        var pageRequest = repository.findByUser_UserId(talentId, PageRequest.of(page, size, doDateSort(sort)));
+    public ProofPagePagination getTalentAllProofs(Authentication auth, long talentId, int page, int size, boolean sort) {
+        if (securityService.checkingLogged(talentId, auth)) {
+            var pageRequest = repository.findByUser_UserId(talentId, PageRequest.of(page, size, doDateSort(sort)));
+            if (page >= pageRequest.getTotalPages())
+                throw new PageNotFoundException(page);
+            return mapper.toProofPagePagination(pageRequest);
+        }
+        var pageRequest = repository.findByUser_UserIdAndStatus(talentId, Status.PUBLISHED, PageRequest.of(page, size, doDateSort(sort)));
         if (page >= pageRequest.getTotalPages())
             throw new PageNotFoundException(page);
         return mapper.toProofPagePagination(pageRequest);
