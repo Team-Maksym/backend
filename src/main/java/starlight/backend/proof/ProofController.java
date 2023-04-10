@@ -20,9 +20,12 @@ import org.springframework.web.server.ResponseStatusException;
 import starlight.backend.exception.PageNotFoundException;
 import starlight.backend.proof.model.request.ProofAddRequest;
 import starlight.backend.proof.model.request.ProofUpdateRequest;
+import starlight.backend.proof.model.response.ProofFullInfo;
 import starlight.backend.proof.model.response.ProofPagePagination;
 import starlight.backend.proof.service.ProofServiceInterface;
 import starlight.backend.security.service.SecurityServiceInterface;
+
+import java.util.Optional;
 
 
 @RestController
@@ -33,6 +36,8 @@ import starlight.backend.security.service.SecurityServiceInterface;
 public class ProofController {
     private ProofServiceInterface proofService;
     private SecurityServiceInterface securityService;
+    private ProofRepository proofRepository;
+    private final ProofMapper proofMapper;
 
     @Operation(
             summary = "Get all proofs",
@@ -103,6 +108,7 @@ public class ProofController {
                     )
             )
     })
+
     @PreAuthorize("hasRole('TALENT')")
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping("/talents/{talent-id}/proofs")
@@ -115,16 +121,53 @@ public class ProofController {
         return proofService.getLocation(talentId, proofAddRequest);
     }
 
+    @Operation(
+            summary = "Update proof in status draft",
+            description = "Update proof args title, description, link."
+    )
+    @ApiResponses(value = {
+            @ApiResponse(
+                    responseCode = "202",
+                    description = "Updated",
+                    content = @Content(
+                            mediaType = MediaType.APPLICATION_JSON_VALUE,
+                            schema = @Schema(
+                                    implementation = ResponseEntity.class
+                            )
+                    )
+            ),
+            @ApiResponse(
+                    responseCode = "404",
+                    description = "Not found",
+                    content = @Content(
+                            mediaType = MediaType.APPLICATION_JSON_VALUE,
+                            schema = @Schema(
+                                    implementation = Exception.class
+                            )
+                    )
+            ),
+            @ApiResponse(
+                    responseCode = "401",
+                    description = "Unauthorized",
+                    content = @Content(
+                            mediaType = MediaType.APPLICATION_JSON_VALUE,
+                            schema = @Schema(
+                                    implementation = Exception.class
+                            )
+                    )
+            )
+    })
     @PatchMapping("/talents/{talent-id}/proofs/{proof-id}")
     @PreAuthorize("hasRole('TALENT')")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void updateProofFullInfo(@PathVariable("talent-id") long talentId,
-                                      @PathVariable("proof-id") long proofId,
-                                      @RequestBody ProofUpdateRequest proofUpdateRequest,
-                                    Authentication auth) {
+    public Optional<ProofFullInfo> updateProofFullInfo(@PathVariable("talent-id") long talentId,
+                                                       @PathVariable("proof-id") long proofId,
+                                                       @RequestBody ProofUpdateRequest proofUpdateRequest,
+                                                       Authentication auth) {
         if (!securityService.checkingLoggedAndTokenValid(talentId, auth)) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
         }
         proofService.proofUpdateRequest(proofId, proofUpdateRequest);
-        }
+        return proofRepository.findById(proofId).map(proofMapper::toProofFullInfo);
     }
+}
