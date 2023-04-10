@@ -3,12 +3,9 @@ package starlight.backend.proof.service.impl;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import lombok.AllArgsConstructor;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -26,7 +23,6 @@ import starlight.backend.proof.model.response.ProofFullInfo;
 import starlight.backend.proof.model.response.ProofPagePagination;
 import starlight.backend.proof.service.ProofServiceInterface;
 import starlight.backend.security.service.SecurityServiceInterface;
-import starlight.backend.security.service.impl.SecurityServiceImpl;
 import starlight.backend.user.repository.UserRepository;
 
 import java.net.URI;
@@ -36,9 +32,10 @@ import java.time.Instant;
 @Service
 @Transactional
 public class ProofServiceImpl implements ProofServiceInterface {
-    ProofRepository repository;
-    UserRepository userRepository;
-    ProofMapper mapper;
+    private final String DATA_CREATED = "dateCreated";
+    private ProofRepository repository;
+    private UserRepository userRepository;
+    private ProofMapper mapper;
     private SecurityServiceInterface securityService;
     @PersistenceContext
     private EntityManager em;
@@ -46,7 +43,7 @@ public class ProofServiceImpl implements ProofServiceInterface {
     @Override
     public ProofPagePagination proofsPagination(int page, int size, boolean sort) {
         var pageRequest = repository.findAll(
-                PageRequest.of(page, size, doDateSort(sort))
+                PageRequest.of(page, size, doSort(sort, DATA_CREATED))
         );
         if (page >= pageRequest.getTotalPages())
             throw new PageNotFoundException(page);
@@ -98,26 +95,28 @@ public class ProofServiceImpl implements ProofServiceInterface {
     }
 
     @Override
-    public ProofPagePagination getTalentAllProofs(Authentication auth, long talentId, int page, int size, boolean sort) {
+    public ProofPagePagination getTalentAllProofs(Authentication auth, long talentId,
+                                                  int page, int size, boolean sort) {
         if (securityService.checkingLogged(talentId, auth)) {
-            var pageRequest = repository.findByUser_UserId(talentId, PageRequest.of(page, size, doDateSort(sort)));
+            var pageRequest = repository.findByUser_UserId(talentId,
+                    PageRequest.of(page, size, doSort(sort, DATA_CREATED)));
             if (page >= pageRequest.getTotalPages())
                 throw new PageNotFoundException(page);
             return mapper.toProofPagePagination(pageRequest);
         }
-        var pageRequest = repository.findByUser_UserIdAndStatus(talentId, Status.PUBLISHED, PageRequest.of(page, size, doDateSort(sort)));
+        var pageRequest = repository.findByUser_UserIdAndStatus(talentId,
+                Status.PUBLISHED,
+                PageRequest.of(page, size, doSort(sort, DATA_CREATED)));
         if (page >= pageRequest.getTotalPages())
             throw new PageNotFoundException(page);
         return mapper.toProofPagePagination(pageRequest);
     }
 
     @Transactional(readOnly = true)
-    Sort doDateSort(boolean sort) {
-        Sort dateSort;
+    Sort doSort(boolean sort, String sortParam) {
+        Sort dateSort = Sort.by(sortParam);
         if (sort) {
-            dateSort = Sort.by("dateCreated").descending();
-        } else {
-            dateSort = Sort.by("dateCreated");
+            dateSort.descending();
         }
         return dateSort;
     }
