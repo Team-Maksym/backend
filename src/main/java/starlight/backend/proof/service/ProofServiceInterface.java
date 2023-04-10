@@ -14,7 +14,6 @@ public interface ProofServiceInterface {
     ProofEntity addProofProfile(long talentId, ProofAddRequest proofUpdateRequest);
     ResponseEntity<?> getLocation(long talentId, ProofAddRequest proofAddRequest);
 
-    @Transactional
     ProofFullInfo proofUpdateRequest(long id, ProofUpdateRequest proofUpdateRequest);
 
 
