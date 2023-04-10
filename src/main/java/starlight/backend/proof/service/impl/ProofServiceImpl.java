@@ -3,7 +3,6 @@ package starlight.backend.proof.service.impl;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import lombok.AllArgsConstructor;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
@@ -36,7 +35,6 @@ import java.time.Instant;
 @Transactional
 public class ProofServiceImpl implements ProofServiceInterface {
     ProofRepository repository;
-
     private SecurityServiceInterface securityService;
     UserRepository userRepository;
     ProofMapper mapper;
