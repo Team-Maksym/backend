@@ -15,7 +15,7 @@ public interface ProofServiceInterface {
 
     ResponseEntity<?> getLocation(long talentId, ProofAddRequest proofAddRequest, Authentication auth);
 
-    void deleteProof(long talentId, long proofId);
+    void deleteProof(long talentId, long proofId, Authentication auth);
 
     ProofPagePagination getTalentAllProofs(Authentication auth, long talentId, int page, int size, boolean sort);
 
