@@ -14,5 +14,4 @@ public interface TalentServiceInterface {
     TalentFullInfo updateTalentProfile(long id, TalentUpdateRequest talentUpdateRequest);
 
     void deleteTalentProfile(long talentId);
-
 }
