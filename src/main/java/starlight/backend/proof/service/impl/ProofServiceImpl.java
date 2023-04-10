@@ -25,8 +25,6 @@ import starlight.backend.proof.model.response.ProofFullInfo;
 import starlight.backend.proof.model.response.ProofPagePagination;
 import starlight.backend.proof.service.ProofServiceInterface;
 import starlight.backend.security.service.SecurityServiceInterface;
-import org.springframework.security.core.Authentication;
-import org.springframework.web.server.ResponseStatusException;
 import starlight.backend.user.repository.UserRepository;
 
 import java.net.URI;
@@ -69,8 +67,10 @@ public class ProofServiceImpl implements ProofServiceInterface {
 
     @Override
     @Transactional(readOnly = true)
-    public ResponseEntity<?> getLocation(long talentId, ProofAddRequest proofAddRequest, Authentication auth) {
-        if (!securityService.checkingLoggedAndTokenValid(talentId, auth)) {
+    public ResponseEntity<?> getLocation(long talentId,
+                                         ProofAddRequest proofAddRequest,
+                                         Authentication auth) {
+        if (securityService.checkingLoggedAndToken(talentId, auth)) {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
         }
         long proofId = addProofProfile(talentId, proofAddRequest).getProofId();
