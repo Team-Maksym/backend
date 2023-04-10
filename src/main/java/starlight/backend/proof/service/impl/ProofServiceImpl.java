@@ -5,9 +5,12 @@ import jakarta.persistence.PersistenceContext;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import starlight.backend.exception.PageNotFoundException;
 import starlight.backend.exception.ProofNotFoundException;
@@ -21,6 +24,7 @@ import starlight.backend.proof.model.request.ProofUpdateRequest;
 import starlight.backend.proof.model.response.ProofFullInfo;
 import starlight.backend.proof.model.response.ProofPagePagination;
 import starlight.backend.proof.service.ProofServiceInterface;
+import starlight.backend.security.service.SecurityServiceInterface;
 import starlight.backend.user.repository.UserRepository;
 
 import java.net.URI;
@@ -31,6 +35,8 @@ import java.time.Instant;
 @Transactional
 public class ProofServiceImpl implements ProofServiceInterface {
     ProofRepository repository;
+
+    private SecurityServiceInterface securityService;
     UserRepository userRepository;
     ProofMapper mapper;
     @PersistenceContext
@@ -61,7 +67,10 @@ public class ProofServiceImpl implements ProofServiceInterface {
 
     @Override
     @Transactional(readOnly = true)
-    public ResponseEntity<?> getLocation(long talentId, ProofAddRequest proofAddRequest) {
+    public ResponseEntity<?> getLocation(long talentId, ProofAddRequest proofAddRequest, Authentication auth) {
+        if (!securityService.checkingLoggedAndTokenValid(talentId, auth)) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
+        }
         long proofId = addProofProfile(talentId, proofAddRequest).getProofId();
         URI location = ServletUriComponentsBuilder
                 .fromCurrentRequest()
