@@ -96,7 +96,7 @@ public class ProofServiceImpl implements ProofServiceInterface {
 
     @Override
     public void deleteProof(long talentId, long proofId, Authentication auth) {
-        if (!securityService.checkingLoggedAndTokenValid(talentId, auth)) {
+        if (securityService.checkingLoggedAndToken(talentId, auth)) {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
         }
         ProofEntity proof = em.find(ProofEntity.class, proofId);
