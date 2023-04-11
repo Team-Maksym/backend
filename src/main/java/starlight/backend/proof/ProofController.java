@@ -20,9 +20,11 @@ import starlight.backend.exception.PageNotFoundException;
 import starlight.backend.exception.TalentAlreadyOccupiedException;
 import starlight.backend.proof.model.request.ProofAddRequest;
 import starlight.backend.proof.model.response.ProofFullInfo;
+import starlight.backend.proof.model.request.ProofUpdateRequest;
 import starlight.backend.proof.model.response.ProofPagePagination;
 import starlight.backend.proof.service.ProofServiceInterface;
 import starlight.backend.talent.model.response.TalentFullInfo;
+
 import starlight.backend.talent.model.response.TalentPagePagination;
 
 @RestController
@@ -32,6 +34,8 @@ import starlight.backend.talent.model.response.TalentPagePagination;
 @Tag(name = "Proof", description = "Proof API")
 public class ProofController {
     private ProofServiceInterface proofService;
+    private ProofRepository proofRepository;
+    private final ProofMapper proofMapper;
 
     @Operation(
             summary = "Get all proofs",
@@ -102,6 +106,7 @@ public class ProofController {
                     )
             )
     })
+
     @PreAuthorize("hasRole('TALENT')")
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping("/talents/{talent-id}/proofs")
@@ -162,6 +167,53 @@ public class ProofController {
         proofService.deleteProof(talentId, proofId, auth);
     }
 
+    @Operation(
+            summary = "Update proof in status draft",
+            description = "Update proof args title, description, link."
+    )
+    @ApiResponses(value = {
+            @ApiResponse(
+                    responseCode = "204",
+                    description = "No Content",
+                    content = @Content(
+                            mediaType = MediaType.APPLICATION_JSON_VALUE,
+                            schema = @Schema(
+                                    implementation = ProofFullInfo.class
+                            )
+                    )
+            ),
+            @ApiResponse(
+                    responseCode = "401",
+                    description = "Unauthorized",
+                    content = @Content(
+                            mediaType = MediaType.APPLICATION_JSON_VALUE,
+                            schema = @Schema(
+                                    implementation = Exception.class
+                            )
+                    )
+            ),
+            @ApiResponse(
+                    responseCode = "404",
+                    description = "Not found",
+                    content = @Content(
+                            mediaType = MediaType.APPLICATION_JSON_VALUE,
+                            schema = @Schema(
+                                    implementation = Exception.class
+                            )
+                    )
+            )
+    })
+    @PatchMapping("/talents/{talent-id}/proofs/{proof-id}")
+    @PreAuthorize("hasRole('TALENT')")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public ProofFullInfo updateProofFullInfo(@PathVariable("talent-id") long talentId,
+                                                       @PathVariable("proof-id") long proofId,
+                                                       @RequestBody ProofUpdateRequest proofUpdateRequest,
+                                                       Authentication auth) {
+
+        return proofService.proofUpdateRequest(proofId, proofUpdateRequest, auth);
+    }
+
     @Operation(summary = "Return list of all proofs for talent by talent_id")
     @ApiResponses(value = {
             @ApiResponse(
@@ -205,7 +257,6 @@ public class ProofController {
                     )
             )
     })
-    @PreAuthorize("hasRole('TALENT')")
     @GetMapping("/talents/{talent-id}/proofs")
     public ProofPagePagination getTalentProofs(@PathVariable("talent-id") long talentId,
                                                Authentication auth,

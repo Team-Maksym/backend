@@ -14,6 +14,7 @@ import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import starlight.backend.exception.PageNotFoundException;
 import starlight.backend.exception.ProofNotFoundException;
+import starlight.backend.exception.UserAccesDeniedToProofException;
 import starlight.backend.exception.TalentNotFoundException;
 import starlight.backend.proof.ProofMapper;
 import starlight.backend.proof.ProofRepository;
@@ -83,7 +84,10 @@ public class ProofServiceImpl implements ProofServiceInterface {
     }
 
     @Override
-    public ProofFullInfo proofUpdateRequest(long id, ProofUpdateRequest proofUpdateRequest) {
+    public ProofFullInfo proofUpdateRequest(long id, ProofUpdateRequest proofUpdateRequest, Authentication auth) {
+        if (securityService.checkingLoggedAndToken(id, auth)){
+            throw new UserAccesDeniedToProofException();
+        }
         return repository.findById(id).map(proof -> {
             proof.setTitle(proofUpdateRequest.title());
             proof.setDescription(proofUpdateRequest.description());
@@ -141,7 +145,7 @@ public class ProofServiceImpl implements ProofServiceInterface {
     }
 
     @Transactional(readOnly = true)
-    Sort doSort(boolean sort, String sortParam) {
+    public Sort doSort(boolean sort, String sortParam) {
         Sort dateSort = Sort.by(sortParam);
         if (sort) {
             dateSort.descending();
