@@ -1,9 +1,8 @@
 package starlight.backend.proof.model.request;
 
+import jakarta.validation.constraints.NotBlank;
 import lombok.Builder;
-import lombok.Getter;
 import org.hibernate.validator.constraints.Length;
-import org.hibernate.validator.constraints.NotBlank;
 import org.hibernate.validator.constraints.URL;
 import starlight.backend.proof.model.enums.Status;
 
