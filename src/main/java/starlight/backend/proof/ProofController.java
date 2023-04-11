@@ -16,6 +16,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import starlight.backend.exception.PageNotFoundException;
 import starlight.backend.exception.TalentAlreadyOccupiedException;
 import starlight.backend.proof.model.request.ProofAddRequest;
 import starlight.backend.proof.model.response.ProofPagePagination;
@@ -30,6 +31,39 @@ import starlight.backend.talent.model.response.TalentPagePagination;
 @Tag(name = "Proof", description = "Proof API")
 public class ProofController {
     private ProofServiceInterface proofService;
+
+    @Operation(
+            summary = "Get all proofs",
+            description = "Get list of all proofs. The response is list of talent objects with fields 'id','title', 'description' and 'dateCreated'."
+    )
+    @ApiResponses(value = {
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "Success",
+                    content = @Content(
+                            mediaType = MediaType.APPLICATION_JSON_VALUE,
+                            schema = @Schema(
+                                    implementation = ProofPagePagination.class
+                            )
+                    )
+            ),
+            @ApiResponse(
+                    responseCode = "404",
+                    description = "Not found",
+                    content = @Content(
+                            mediaType = MediaType.APPLICATION_JSON_VALUE,
+                            schema = @Schema(
+                                    implementation = PageNotFoundException.class
+                            )
+                    )
+            )
+    })
+    @GetMapping("/proofs")
+    public ProofPagePagination pagination(@RequestParam(defaultValue = "0") @Min(0) int page,
+                                          @RequestParam(defaultValue = "5") @Positive int size,
+                                          @RequestParam(defaultValue = "true") boolean sort) {
+        return proofService.proofsPagination(page, size, sort);
+    }
 
     @Operation(
             summary = "Add proof in status draft",
@@ -124,8 +158,9 @@ public class ProofController {
     public void deleteTalent(@PathVariable("talent-id") long talentId,
                              @PathVariable("proof-id") long proofId,
                              Authentication auth) {
-        proofService.deleteProof(talentId,proofId,auth);
+        proofService.deleteProof(talentId, proofId, auth);
     }
+
     @Operation(summary = "Return list of all proofs for talent by talent_id")
     @ApiResponses(value = {
             @ApiResponse(
