@@ -1,5 +1,6 @@
 --liquibase formatted sql
 --changeset kate:create-multiple-tables splitStatements:true endDelimiter:;
+--validCheckSum 8:b4c1b2ecee5457bbaae3d9de69045848
 INSERT INTO position_entity (position)
 VALUES ('manager');
 INSERT INTO position_entity (position)
