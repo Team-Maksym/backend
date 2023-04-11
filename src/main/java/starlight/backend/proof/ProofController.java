@@ -22,7 +22,7 @@ import starlight.backend.proof.model.request.ProofAddRequest;
 import starlight.backend.proof.model.response.ProofPagePagination;
 import starlight.backend.proof.service.ProofServiceInterface;
 import starlight.backend.talent.model.response.TalentFullInfo;
-
+import starlight.backend.talent.model.response.TalentPagePagination;
 
 @RestController
 @AllArgsConstructor
@@ -159,5 +159,58 @@ public class ProofController {
                              @PathVariable("proof-id") long proofId,
                              Authentication auth) {
         proofService.deleteProof(talentId, proofId, auth);
+    }
+
+    @Operation(summary = "Return list of all proofs for talent by talent_id")
+    @ApiResponses(value = {
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "Success",
+                    content = @Content(
+                            mediaType = MediaType.APPLICATION_JSON_VALUE,
+                            schema = @Schema(
+                                    implementation = TalentPagePagination.class
+                            )
+                    )
+            ),
+            @ApiResponse(
+                    responseCode = "400",
+                    description = "Bad Request",
+                    content = @Content(
+                            mediaType = MediaType.APPLICATION_JSON_VALUE,
+                            schema = @Schema(
+                                    implementation = Exception.class
+                            )
+                    )
+            ),
+            @ApiResponse(
+                    responseCode = "401",
+                    description = "Unauthorized",
+                    content = @Content(
+                            mediaType = MediaType.APPLICATION_JSON_VALUE,
+                            schema = @Schema(
+                                    implementation = Exception.class
+                            )
+                    )
+            ),
+            @ApiResponse(
+                    responseCode = "404",
+                    description = "Not found",
+                    content = @Content(
+                            mediaType = MediaType.APPLICATION_JSON_VALUE,
+                            schema = @Schema(
+                                    implementation = Exception.class
+                            )
+                    )
+            )
+    })
+    @PreAuthorize("hasRole('TALENT')")
+    @GetMapping("/talents/{talent-id}/proofs")
+    public ProofPagePagination getTalentProofs(@PathVariable("talent-id") long talentId,
+                                               Authentication auth,
+                                               @RequestParam(defaultValue = "0") @Min(0) int page,
+                                               @RequestParam(defaultValue = "5") @Positive int size,
+                                               @RequestParam(defaultValue = "true") boolean sort) {
+        return proofService.getTalentAllProofs(auth, talentId, page, size, sort);
     }
 }
