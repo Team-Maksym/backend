@@ -38,6 +38,7 @@ public interface ProofMapper {
                 .link(proof.getLink())
                 .status(proof.getStatus())
                 .dateCreated(proof.getDateCreated())
+                .dateLastUpdated(proof.getDateLastUpdated())
                 .description(proof.getDescription())
                 .build();
     }

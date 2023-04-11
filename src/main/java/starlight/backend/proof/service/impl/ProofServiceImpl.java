@@ -12,10 +12,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
-import starlight.backend.exception.PageNotFoundException;
-import starlight.backend.exception.ProofNotFoundException;
-import starlight.backend.exception.UserAccesDeniedToProofException;
-import starlight.backend.exception.TalentNotFoundException;
+import starlight.backend.exception.*;
 import starlight.backend.proof.ProofMapper;
 import starlight.backend.proof.ProofRepository;
 import starlight.backend.proof.model.entity.ProofEntity;
@@ -85,15 +82,31 @@ public class ProofServiceImpl implements ProofServiceInterface {
 
     @Override
     public ProofFullInfo proofUpdateRequest(long id, ProofUpdateRequest proofUpdateRequest, Authentication auth) {
-        if (securityService.checkingLoggedAndToken(id, auth)){
+        if (securityService.checkingLoggedAndToken(id, auth)) {
             throw new UserAccesDeniedToProofException();
         }
+        if (proofUpdateRequest.status().equals(Status.DRAFT)) {
+            return repository.findById(id).map(proof -> {
+                if (!proof.getStatus().equals(Status.DRAFT)) {
+                    throw new UserCanNotEditProofNotInDraftException();
+                }
+                proof.setTitle(proofUpdateRequest.title());
+                proof.setDescription(proofUpdateRequest.description());
+                proof.setLink(proofUpdateRequest.link());
+                proof.setStatus(proofUpdateRequest.status());
+                proof.setDateLastUpdated(Instant.now());
+                repository.save(proof);
+                return mapper.toProofFullInfo(proof);
+            }).orElseThrow(() -> new ProofNotFoundException(id));
+        }
         return repository.findById(id).map(proof -> {
-            proof.setTitle(proofUpdateRequest.title());
-            proof.setDescription(proofUpdateRequest.description());
-            proof.setLink(proofUpdateRequest.link());
-            proof.setDateLastUpdated(Instant.now());
+            if (proofUpdateRequest.status().equals(Status.HIDDEN)
+                    || proofUpdateRequest.status().equals(Status.PUBLISHED)
+            ) {
+                proof.setStatus(proofUpdateRequest.status());
+            }
             repository.save(proof);
+            proof.setDateLastUpdated(Instant.now());
             return mapper.toProofFullInfo(proof);
         }).orElseThrow(() -> new ProofNotFoundException(id));
     }
@@ -101,7 +114,7 @@ public class ProofServiceImpl implements ProofServiceInterface {
     @Override
     public void deleteProof(long talentId, long proofId, Authentication auth) {
         if (securityService.checkingLoggedAndToken(talentId, auth)) {
-            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED,"you cannot delete proof another talent");
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "you cannot delete proof another talent");
         }
         ProofEntity proof = em.find(ProofEntity.class, proofId);
         proof.setUser(null);
@@ -132,7 +145,7 @@ public class ProofServiceImpl implements ProofServiceInterface {
         if (!repository.existsByProofId(proofId)) {
             throw new ProofNotFoundException(proofId);
         }
-        ProofEntity proof = em.find(ProofEntity.class,proofId);
+        ProofEntity proof = em.find(ProofEntity.class, proofId);
         var talentId = proof.getUser().getUserId();
         if (securityService.checkingLogged(talentId, auth)) {
             var optionalProof = repository.findById(proofId);

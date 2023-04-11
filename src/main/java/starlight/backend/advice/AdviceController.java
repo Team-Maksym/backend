@@ -9,9 +9,13 @@ import starlight.backend.exception.*;
 @RestControllerAdvice
 public class AdviceController {
 
-    @ExceptionHandler(PageNotFoundException.class)
+    @ExceptionHandler({
+            PageNotFoundException.class,
+            UserCanNotEditProofNotInDraftException.class,
+            UserAccesDeniedToProofException.class,
+    })
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ErrorDTO notFound(Exception exception) {
+    public ErrorDTO badRequest(Exception exception) {
         return new ErrorDTO(exception.getMessage());
     }
 
@@ -27,13 +31,6 @@ public class AdviceController {
     })
     @ResponseStatus(HttpStatus.NOT_FOUND)
     public ErrorDTO notExists(Exception exception) {
-        return new ErrorDTO(exception.getMessage());
-    }
-    @ExceptionHandler({
-            UserAccesDeniedToProofException.class,
-    })
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ErrorDTO accessDenied(Exception exception) {
         return new ErrorDTO(exception.getMessage());
     }
 

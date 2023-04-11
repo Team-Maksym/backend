@@ -173,8 +173,8 @@ public class ProofController {
     )
     @ApiResponses(value = {
             @ApiResponse(
-                    responseCode = "204",
-                    description = "No Content",
+                    responseCode = "200",
+                    description = "Success",
                     content = @Content(
                             mediaType = MediaType.APPLICATION_JSON_VALUE,
                             schema = @Schema(
@@ -205,7 +205,6 @@ public class ProofController {
     })
     @PatchMapping("/talents/{talent-id}/proofs/{proof-id}")
     @PreAuthorize("hasRole('TALENT')")
-    @ResponseStatus(HttpStatus.NO_CONTENT)
     public ProofFullInfo updateProofFullInfo(@PathVariable("talent-id") long talentId,
                                                        @PathVariable("proof-id") long proofId,
                                                        @RequestBody ProofUpdateRequest proofUpdateRequest,

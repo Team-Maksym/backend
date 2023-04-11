@@ -13,6 +13,8 @@ public record ProofFullInfo(
         String link,
         @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss.SSSXXX")
         Instant dateCreated,
+        @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss.SSSXXX")
+        Instant dateLastUpdated,
         Status status
 ) {
 }
