@@ -9,6 +9,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.server.ResponseStatusException;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import starlight.backend.exception.PageNotFoundException;
 import starlight.backend.exception.ProofNotFoundException;
@@ -18,6 +20,8 @@ import starlight.backend.proof.ProofRepository;
 import starlight.backend.proof.model.entity.ProofEntity;
 import starlight.backend.proof.model.enums.Status;
 import starlight.backend.proof.model.request.ProofAddRequest;
+import starlight.backend.proof.model.response.ProofFullInfo;
+import starlight.backend.proof.model.request.ProofUpdateRequest;
 import starlight.backend.proof.model.response.ProofFullInfo;
 import starlight.backend.proof.model.response.ProofPagePagination;
 import starlight.backend.proof.service.ProofServiceInterface;
@@ -33,18 +37,19 @@ import java.util.Optional;
 @Service
 @Transactional
 public class ProofServiceImpl implements ProofServiceInterface {
-    ProofRepository repository;
-    UserRepository userRepository;
-    ProofMapper mapper;
+    private final String DATA_CREATED = "dateCreated";
+    private ProofRepository repository;
+    private UserRepository userRepository;
+    private ProofMapper mapper;
     private SecurityServiceInterface securityService;
     @PersistenceContext
     private EntityManager em;
 
     @Override
     public ProofPagePagination proofsPagination(int page, int size, boolean sort) {
-        var pageRequest = repository.findAll(
-                PageRequest.of(page, size, doDateSort(sort))
-        );
+        var pageRequest = repository.findByStatus(
+                Status.PUBLISHED,
+                PageRequest.of(page, size, doSort(sort, DATA_CREATED)));
         if (page >= pageRequest.getTotalPages())
             throw new PageNotFoundException(page);
         return mapper.toProofPagePagination(pageRequest);
@@ -65,7 +70,12 @@ public class ProofServiceImpl implements ProofServiceInterface {
 
     @Override
     @Transactional(readOnly = true)
-    public ResponseEntity<?> getLocation(long talentId, ProofAddRequest proofAddRequest) {
+    public ResponseEntity<?> getLocation(long talentId,
+                                         ProofAddRequest proofAddRequest,
+                                         Authentication auth) {
+        if (securityService.checkingLoggedAndToken(talentId, auth)) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
+        }
         long proofId = addProofProfile(talentId, proofAddRequest).getProofId();
         URI location = ServletUriComponentsBuilder
                 .fromCurrentRequest()
@@ -76,23 +86,40 @@ public class ProofServiceImpl implements ProofServiceInterface {
     }
 
     @Override
-    public void deleteProof(long talentId, long proofId) {
-        ProofEntity proof = em.find(ProofEntity.class,proofId);
+    public ProofFullInfo proofUpdateRequest(long id, ProofUpdateRequest proofUpdateRequest) {
+        return repository.findById(id).map(proof -> {
+            proof.setTitle(proofUpdateRequest.title());
+            proof.setDescription(proofUpdateRequest.description());
+            proof.setLink(proofUpdateRequest.link());
+            proof.setDateLastUpdated(Instant.now());
+            repository.save(proof);
+            return mapper.toProofFullInfo(proof);
+        }).orElseThrow(() -> new ProofNotFoundException(id));
+    }
+
+    @Override
+    public void deleteProof(long talentId, long proofId, Authentication auth) {
+        if (securityService.checkingLoggedAndToken(talentId, auth)) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED,"you cannot delete proof another talent");
+        }
+        ProofEntity proof = em.find(ProofEntity.class, proofId);
         proof.setUser(null);
         em.remove(proof);
     }
 
     @Override
-    public ProofPagePagination getTalentAllProofs(Authentication auth, long talentId, int page, int size, boolean sort) {
+    public ProofPagePagination getTalentAllProofs(Authentication auth, long talentId,
+                                                  int page, int size, boolean sort) {
         if (securityService.checkingLogged(talentId, auth)) {
             var pageRequest = repository.findByUser_UserId(talentId,
-                    PageRequest.of(page, size, doDateSort(sort)));
+                    PageRequest.of(page, size, doSort(sort, DATA_CREATED)));
             if (page >= pageRequest.getTotalPages())
                 throw new PageNotFoundException(page);
             return mapper.toProofPagePagination(pageRequest);
         }
         var pageRequest = repository.findByUser_UserIdAndStatus(talentId,
-                Status.PUBLISHED, PageRequest.of(page, size, doDateSort(sort)));
+                Status.PUBLISHED,
+                PageRequest.of(page, size, doSort(sort, DATA_CREATED)));
         if (page >= pageRequest.getTotalPages())
             throw new PageNotFoundException(page);
         return mapper.toProofPagePagination(pageRequest);
@@ -116,12 +143,11 @@ public class ProofServiceImpl implements ProofServiceInterface {
         return mapper.toProofFullInfo(requestProof);
     }
 
-    private Sort doDateSort(boolean sort) {
+    @Transactional(readOnly = true)
+    Sort doDateSort(boolean sort) {
         Sort dateSort;
         if (sort) {
-            dateSort = Sort.by("dateCreated").descending();
-        } else {
-            dateSort = Sort.by("dateCreated");
+            dateSort.descending();
         }
         return dateSort;
     }

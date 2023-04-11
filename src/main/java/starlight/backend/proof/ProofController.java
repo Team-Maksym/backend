@@ -16,17 +16,14 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.server.ResponseStatusException;
 import starlight.backend.exception.PageNotFoundException;
 import starlight.backend.exception.TalentAlreadyOccupiedException;
 import starlight.backend.proof.model.request.ProofAddRequest;
 import starlight.backend.proof.model.response.ProofFullInfo;
 import starlight.backend.proof.model.response.ProofPagePagination;
 import starlight.backend.proof.service.ProofServiceInterface;
-import starlight.backend.security.service.SecurityServiceInterface;
 import starlight.backend.talent.model.response.TalentFullInfo;
 import starlight.backend.talent.model.response.TalentPagePagination;
-
 
 @RestController
 @AllArgsConstructor
@@ -35,7 +32,6 @@ import starlight.backend.talent.model.response.TalentPagePagination;
 @Tag(name = "Proof", description = "Proof API")
 public class ProofController {
     private ProofServiceInterface proofService;
-    private SecurityServiceInterface securityService;
 
     @Operation(
             summary = "Get all proofs",
@@ -112,11 +108,9 @@ public class ProofController {
     public ResponseEntity<?> addProofFullInfo(@PathVariable("talent-id") long talentId,
                                               @RequestBody ProofAddRequest proofAddRequest,
                                               Authentication auth) {
-        if (!securityService.checkingLoggedAndTokenValid(talentId, auth)) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
-        }
-        return proofService.getLocation(talentId, proofAddRequest);
+        return proofService.getLocation(talentId, proofAddRequest, auth);
     }
+
     @Operation(summary = "Delete proof by proof_id and talent_id")
     @ApiResponses(value = {
             @ApiResponse(
@@ -165,10 +159,7 @@ public class ProofController {
     public void deleteTalent(@PathVariable("talent-id") long talentId,
                              @PathVariable("proof-id") long proofId,
                              Authentication auth) {
-        if (!securityService.checkingLoggedAndTokenValid(talentId, auth)) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
-        }
-        proofService.deleteProof(talentId,proofId);
+        proofService.deleteProof(talentId, proofId, auth);
     }
 
     @Operation(summary = "Return list of all proofs for talent by talent_id")
@@ -217,10 +208,10 @@ public class ProofController {
     @PreAuthorize("hasRole('TALENT')")
     @GetMapping("/talents/{talent-id}/proofs")
     public ProofPagePagination getTalentProofs(@PathVariable("talent-id") long talentId,
-                             Authentication auth,
-                             @RequestParam(defaultValue = "0") @Min(0) int page,
-                             @RequestParam(defaultValue = "5") @Positive int size,
-                             @RequestParam(defaultValue = "true") boolean sort) {
+                                               Authentication auth,
+                                               @RequestParam(defaultValue = "0") @Min(0) int page,
+                                               @RequestParam(defaultValue = "5") @Positive int size,
+                                               @RequestParam(defaultValue = "true") boolean sort) {
         return proofService.getTalentAllProofs(auth, talentId, page, size, sort);
     }
 

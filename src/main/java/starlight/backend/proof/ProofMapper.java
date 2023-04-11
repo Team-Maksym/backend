@@ -32,7 +32,7 @@ public interface ProofMapper {
                 .build();
     }
 
-    default ProofFullInfo toProofFullInfo(ProofEntity proof){
+    default ProofFullInfo toProofFullInfo(ProofEntity proof) {
         return ProofFullInfo.builder()
                 .title(proof.getTitle())
                 .link(proof.getLink())
