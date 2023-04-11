@@ -11,10 +11,11 @@ import starlight.backend.talent.model.response.TalentProfile;
 import static org.mapstruct.ReportingPolicy.IGNORE;
 
 @Mapper(componentModel = "spring", unmappedTargetPolicy = IGNORE)
-public interface TalentMapper {
+public interface MapperTalent {
     default TalentProfile toTalentProfile(UserEntity user) {
         return TalentProfile.builder()
                 .fullName(user.getFullName())
+                .id(user.getUserId())
                 .position(user.getPositions().stream()
                         .findAny()
                         .map(PositionEntity::getPosition)

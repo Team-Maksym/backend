@@ -22,7 +22,11 @@ public class PositionEntity {
 
     private String position;
 
-    @ManyToMany(mappedBy = "positions", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @ManyToMany(mappedBy = "positions")
     @JsonBackReference
     private Set<UserEntity> users;
+
+    public PositionEntity(String position) {
+        this.position = position;
+    }
 }

@@ -39,7 +39,7 @@ public class UserEntity {
     private String education;
     private String experience;
 
-    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH})
     @JoinTable(
             name = "user_position",
             joinColumns = @JoinColumn(name = "user_id"),

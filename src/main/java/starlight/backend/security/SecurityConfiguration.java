@@ -5,6 +5,7 @@ import com.nimbusds.jose.jwk.RSAKey;
 import com.nimbusds.jose.jwk.source.ImmutableJWKSet;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -44,11 +45,23 @@ class SecurityConfiguration {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http.authorizeHttpRequests(c -> c
+                /////////////////////////Tests/////////////////////////////////////////////////////
+                .requestMatchers("/test").permitAll()
                 .requestMatchers(antMatcher("/h2/**")).permitAll()
+                /////////////////////////OpenApi///////////////////////////////////////////////////
+                .requestMatchers(antMatcher("/api-docs/**")).permitAll()
+                .requestMatchers(antMatcher("/swagger-resources/**")).permitAll()
+                .requestMatchers(antMatcher("/configuration/**")).permitAll()
+                .requestMatchers(antMatcher("/swagger*/**")).permitAll()
+                .requestMatchers(antMatcher("/webjars/**")).permitAll()
+                /////////////////////////DevOps////////////////////////////////////////////////////
                 .requestMatchers("/error").permitAll()
+                /////////////////////////Production////////////////////////////////////////////////
                 .requestMatchers("/api/v1/talents").permitAll()
                 .requestMatchers(POST, "/api/v1/talents/login").permitAll()
-                .anyRequest().authenticated());
+                /////////////////////////Another///////////////////////////////////////////////////
+                .anyRequest().authenticated()
+        );
         http.sessionManagement().sessionCreationPolicy(STATELESS);
         http.httpBasic();
         http.csrf().disable();
@@ -74,7 +87,7 @@ class SecurityConfiguration {
         };
     }
 
-     @Bean
+    @Bean
     public KeyPair keyPair() throws NoSuchAlgorithmException {
         var keyPairGenerator = KeyPairGenerator.getInstance("RSA");
         keyPairGenerator.initialize(2048);
