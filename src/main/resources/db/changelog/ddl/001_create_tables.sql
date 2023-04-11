@@ -1,7 +1,5 @@
 -- liquibase formatted sql
 -- changeset kate:1
--- delete from databasechangelog
--- delete from databasechangeloglock
 DROP TABLE IF EXISTS user_entity CASCADE;
 DROP TABLE IF EXISTS position_entity CASCADE;
 DROP TABLE IF EXISTS user_entity_authorities CASCADE;
