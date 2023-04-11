@@ -18,16 +18,12 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import starlight.backend.exception.PageNotFoundException;
 import starlight.backend.exception.TalentAlreadyOccupiedException;
-import starlight.backend.exception.PageNotFoundException;
 import starlight.backend.proof.model.request.ProofAddRequest;
 import starlight.backend.proof.model.response.ProofFullInfo;
 import starlight.backend.proof.model.request.ProofUpdateRequest;
-import starlight.backend.proof.model.response.ProofFullInfo;
 import starlight.backend.proof.model.response.ProofPagePagination;
 import starlight.backend.proof.service.ProofServiceInterface;
 import starlight.backend.talent.model.response.TalentFullInfo;
-
-import java.util.Optional;
 
 import starlight.backend.talent.model.response.TalentPagePagination;
 
@@ -40,39 +36,6 @@ public class ProofController {
     private ProofServiceInterface proofService;
     private ProofRepository proofRepository;
     private final ProofMapper proofMapper;
-
-    @Operation(
-            summary = "Get all proofs",
-            description = "Get list of all proofs. The response is list of talent objects with fields 'id','title', 'description' and 'dateCreated'."
-    )
-    @ApiResponses(value = {
-            @ApiResponse(
-                    responseCode = "200",
-                    description = "Success",
-                    content = @Content(
-                            mediaType = MediaType.APPLICATION_JSON_VALUE,
-                            schema = @Schema(
-                                    implementation = ProofPagePagination.class
-                            )
-                    )
-            ),
-            @ApiResponse(
-                    responseCode = "404",
-                    description = "Not found",
-                    content = @Content(
-                            mediaType = MediaType.APPLICATION_JSON_VALUE,
-                            schema = @Schema(
-                                    implementation = PageNotFoundException.class
-                            )
-                    )
-            )
-    })
-    @GetMapping("/proofs")
-    public ProofPagePagination pagination(@RequestParam(defaultValue = "0") @Min(0) int page,
-                                          @RequestParam(defaultValue = "5") @Positive int size,
-                                          @RequestParam(defaultValue = "true") boolean sort) {
-        return proofService.proofsPagination(page, size, sort);
-    }
 
     @Operation(
             summary = "Get all proofs",
@@ -210,12 +173,12 @@ public class ProofController {
     )
     @ApiResponses(value = {
             @ApiResponse(
-                    responseCode = "202",
-                    description = "Updated",
+                    responseCode = "204",
+                    description = "No Content",
                     content = @Content(
                             mediaType = MediaType.APPLICATION_JSON_VALUE,
                             schema = @Schema(
-                                    implementation = ResponseEntity.class
+                                    implementation = ProofFullInfo.class
                             )
                     )
             ),
@@ -242,13 +205,12 @@ public class ProofController {
     })
     @PatchMapping("/talents/{talent-id}/proofs/{proof-id}")
     @PreAuthorize("hasRole('TALENT')")
-    //@ResponseStatus(HttpStatus.NO_CONTENT)
+    @ResponseStatus(HttpStatus.NO_CONTENT)
     public ProofFullInfo updateProofFullInfo(@PathVariable("talent-id") long talentId,
                                                        @PathVariable("proof-id") long proofId,
                                                        @RequestBody ProofUpdateRequest proofUpdateRequest,
                                                        Authentication auth) {
 
-//        return proofRepository.findById(proofId).map(proofMapper::toProofFullInfo);
         return proofService.proofUpdateRequest(proofId, proofUpdateRequest, auth);
     }
 
