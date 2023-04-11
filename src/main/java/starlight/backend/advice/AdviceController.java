@@ -4,10 +4,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
-import starlight.backend.exception.PageNotFoundException;
-import starlight.backend.exception.ProofNotFoundException;
-import starlight.backend.exception.TalentAlreadyOccupiedException;
-import starlight.backend.exception.TalentNotFoundException;
+import starlight.backend.exception.*;
 
 @RestControllerAdvice
 public class AdviceController {
@@ -16,6 +13,7 @@ public class AdviceController {
             TalentNotFoundException.class,
             PageNotFoundException.class,
             ProofNotFoundException.class,
+            UserAccesDeniedToProofException.class,
     })
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ErrorDTO notFound(Exception exception) {

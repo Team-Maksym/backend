@@ -19,5 +19,5 @@ public interface ProofServiceInterface {
 
     ProofPagePagination getTalentAllProofs(Authentication auth, long talentId, int page, int size, boolean sort);
 
-    ProofFullInfo proofUpdateRequest(long id, ProofUpdateRequest proofUpdateRequest);
+    ProofFullInfo proofUpdateRequest(long id, ProofUpdateRequest proofUpdateRequest, Authentication auth);
 }

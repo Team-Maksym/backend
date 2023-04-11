@@ -22,7 +22,6 @@ import starlight.backend.proof.model.request.ProofUpdateRequest;
 import starlight.backend.proof.model.response.ProofFullInfo;
 import starlight.backend.proof.model.response.ProofPagePagination;
 import starlight.backend.proof.service.ProofServiceInterface;
-import starlight.backend.security.service.SecurityServiceInterface;
 
 import java.util.Optional;
 
@@ -133,8 +132,8 @@ public class ProofController {
                     )
             ),
             @ApiResponse(
-                    responseCode = "404",
-                    description = "Not found",
+                    responseCode = "401",
+                    description = "Unauthorized",
                     content = @Content(
                             mediaType = MediaType.APPLICATION_JSON_VALUE,
                             schema = @Schema(
@@ -143,8 +142,8 @@ public class ProofController {
                     )
             ),
             @ApiResponse(
-                    responseCode = "401",
-                    description = "Unauthorized",
+                    responseCode = "404",
+                    description = "Not found",
                     content = @Content(
                             mediaType = MediaType.APPLICATION_JSON_VALUE,
                             schema = @Schema(
@@ -155,13 +154,14 @@ public class ProofController {
     })
     @PatchMapping("/talents/{talent-id}/proofs/{proof-id}")
     @PreAuthorize("hasRole('TALENT')")
-    @ResponseStatus(HttpStatus.NO_CONTENT)
-    public Optional<ProofFullInfo> updateProofFullInfo(@PathVariable("talent-id") long talentId,
+    //@ResponseStatus(HttpStatus.NO_CONTENT)
+    public ProofFullInfo updateProofFullInfo(@PathVariable("talent-id") long talentId,
                                                        @PathVariable("proof-id") long proofId,
                                                        @RequestBody ProofUpdateRequest proofUpdateRequest,
                                                        Authentication auth) {
-        proofService.proofUpdateRequest(proofId, proofUpdateRequest);
-        return proofRepository.findById(proofId).map(proofMapper::toProofFullInfo);
+
+//        return proofRepository.findById(proofId).map(proofMapper::toProofFullInfo);
+        return proofService.proofUpdateRequest(proofId, proofUpdateRequest, auth);
     }
 
     @Operation(summary = "Return list of all proofs for talent by talent_id")
