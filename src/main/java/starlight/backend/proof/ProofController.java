@@ -16,8 +16,6 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.server.ResponseStatusException;
-import starlight.backend.exception.PageNotFoundException;
 import starlight.backend.proof.model.request.ProofAddRequest;
 import starlight.backend.proof.model.request.ProofUpdateRequest;
 import starlight.backend.proof.model.response.ProofFullInfo;
@@ -27,6 +25,7 @@ import starlight.backend.security.service.SecurityServiceInterface;
 
 import java.util.Optional;
 
+import starlight.backend.talent.model.response.TalentPagePagination;
 
 @RestController
 @AllArgsConstructor
@@ -115,10 +114,7 @@ public class ProofController {
     public ResponseEntity<?> addProofFullInfo(@PathVariable("talent-id") long talentId,
                                               @RequestBody ProofAddRequest proofAddRequest,
                                               Authentication auth) {
-        if (!securityService.checkingLoggedAndTokenValid(talentId, auth)) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
-        }
-        return proofService.getLocation(talentId, proofAddRequest);
+        return proofService.getLocation(talentId, proofAddRequest, auth);
     }
 
     @Operation(
@@ -158,6 +154,49 @@ public class ProofController {
             )
     })
     @PatchMapping("/talents/{talent-id}/proofs/{proof-id}")
+    @Operation(summary = "Return list of all proofs for talent by talent_id")
+    @ApiResponses(value = {
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "Success",
+                    content = @Content(
+                            mediaType = MediaType.APPLICATION_JSON_VALUE,
+                            schema = @Schema(
+                                    implementation = TalentPagePagination.class
+                            )
+                    )
+            ),
+            @ApiResponse(
+                    responseCode = "400",
+                    description = "Bad Request",
+                    content = @Content(
+                            mediaType = MediaType.APPLICATION_JSON_VALUE,
+                            schema = @Schema(
+                                    implementation = Exception.class
+                            )
+                    )
+            ),
+            @ApiResponse(
+                    responseCode = "401",
+                    description = "Unauthorized",
+                    content = @Content(
+                            mediaType = MediaType.APPLICATION_JSON_VALUE,
+                            schema = @Schema(
+                                    implementation = Exception.class
+                            )
+                    )
+            ),
+            @ApiResponse(
+                    responseCode = "404",
+                    description = "Not found",
+                    content = @Content(
+                            mediaType = MediaType.APPLICATION_JSON_VALUE,
+                            schema = @Schema(
+                                    implementation = Exception.class
+                            )
+                    )
+            )
+    })
     @PreAuthorize("hasRole('TALENT')")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public Optional<ProofFullInfo> updateProofFullInfo(@PathVariable("talent-id") long talentId,
@@ -170,4 +209,14 @@ public class ProofController {
         proofService.proofUpdateRequest(proofId, proofUpdateRequest);
         return proofRepository.findById(proofId).map(proofMapper::toProofFullInfo);
     }
+}
+    @GetMapping("/talents/{talent-id}/proofs")
+    public ProofPagePagination getTalentProofs(@PathVariable("talent-id") long talentId,
+                                               Authentication auth,
+                                               @RequestParam(defaultValue = "0") @Min(0) int page,
+                                               @RequestParam(defaultValue = "5") @Positive int size,
+                                               @RequestParam(defaultValue = "true") boolean sort) {
+        return proofService.getTalentAllProofs(auth, talentId, page, size, sort);
+    }
+
 }
