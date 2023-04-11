@@ -16,9 +16,11 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import starlight.backend.exception.TalentAlreadyOccupiedException;
 import starlight.backend.proof.model.request.ProofAddRequest;
 import starlight.backend.proof.model.response.ProofPagePagination;
 import starlight.backend.proof.service.ProofServiceInterface;
+import starlight.backend.talent.model.response.TalentFullInfo;
 import starlight.backend.talent.model.response.TalentPagePagination;
 
 @RestController
@@ -74,6 +76,56 @@ public class ProofController {
         return proofService.getLocation(talentId, proofAddRequest, auth);
     }
 
+    @Operation(summary = "Delete proof by proof_id and talent_id")
+    @ApiResponses(value = {
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "Success",
+                    content = @Content(
+                            mediaType = MediaType.APPLICATION_JSON_VALUE,
+                            schema = @Schema(
+                                    implementation = TalentFullInfo.class
+                            )
+                    )
+            ),
+            @ApiResponse(
+                    responseCode = "401",
+                    description = "Unauthorized",
+                    content = @Content(
+                            mediaType = MediaType.APPLICATION_JSON_VALUE,
+                            schema = @Schema(
+                                    implementation = Exception.class
+                            )
+                    )
+            ),
+            @ApiResponse(
+                    responseCode = "403",
+                    description = "Forbidden",
+                    content = @Content(
+                            mediaType = MediaType.APPLICATION_JSON_VALUE,
+                            schema = @Schema(
+                                    implementation = Exception.class
+                            )
+                    )
+            ),
+            @ApiResponse(
+                    responseCode = "409",
+                    description = "Conflict",
+                    content = @Content(
+                            mediaType = MediaType.APPLICATION_JSON_VALUE,
+                            schema = @Schema(
+                                    implementation = TalentAlreadyOccupiedException.class
+                            )
+                    )
+            )
+    })
+    @PreAuthorize("hasRole('TALENT')")
+    @DeleteMapping("/talents/{talent-id}/proofs/{proof-id}")
+    public void deleteTalent(@PathVariable("talent-id") long talentId,
+                             @PathVariable("proof-id") long proofId,
+                             Authentication auth) {
+        proofService.deleteProof(talentId,proofId,auth);
+    }
     @Operation(summary = "Return list of all proofs for talent by talent_id")
     @ApiResponses(value = {
             @ApiResponse(
@@ -126,5 +178,4 @@ public class ProofController {
                                                @RequestParam(defaultValue = "true") boolean sort) {
         return proofService.getTalentAllProofs(auth, talentId, page, size, sort);
     }
-
 }

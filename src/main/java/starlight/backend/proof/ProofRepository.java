@@ -11,4 +11,5 @@ import starlight.backend.proof.model.enums.Status;
 public interface ProofRepository extends JpaRepository<ProofEntity, Long> {
     Page<ProofEntity> findByUser_UserIdAndStatus(Long userId, Status status, Pageable pageable);
     Page<ProofEntity> findByUser_UserId(Long userId, Pageable pageable);
+    Page<ProofEntity> findByStatus(Status status,Pageable pageable);
 }

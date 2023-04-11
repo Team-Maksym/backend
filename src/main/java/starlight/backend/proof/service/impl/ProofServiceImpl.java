@@ -44,9 +44,9 @@ public class ProofServiceImpl implements ProofServiceInterface {
 
     @Override
     public ProofPagePagination proofsPagination(int page, int size, boolean sort) {
-        var pageRequest = repository.findAll(
-                PageRequest.of(page, size, doSort(sort, DATA_CREATED))
-        );
+        var pageRequest = repository.findByStatus(
+                Status.PUBLISHED,
+                PageRequest.of(page, size, doSort(sort, DATA_CREATED)));
         if (page >= pageRequest.getTotalPages())
             throw new PageNotFoundException(page);
         return mapper.toProofPagePagination(pageRequest);
@@ -95,7 +95,10 @@ public class ProofServiceImpl implements ProofServiceInterface {
     }
 
     @Override
-    public void deleteProof(long talentId, long proofId) {
+    public void deleteProof(long talentId, long proofId, Authentication auth) {
+        if (securityService.checkingLoggedAndToken(talentId, auth)) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
+        }
         ProofEntity proof = em.find(ProofEntity.class, proofId);
         proof.setUser(null);
         em.remove(proof);
