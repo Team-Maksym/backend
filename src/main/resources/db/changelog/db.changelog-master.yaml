@@ -22,7 +22,6 @@ databaseChangeLog:
   - changeSet:
       id: 2
       author: kate
-    
 
   - include:
       file: dml/004_insert_data_proof.sql

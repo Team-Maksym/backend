@@ -17,7 +17,7 @@ INSERT INTO position_entity (position)
 VALUES ('typescript');
 INSERT INTO position_entity (position)
 VALUES ('data engineer');
-/*
+
 INSERT INTO user_position ( position_id,user_id)
 VALUES (1,1);
 INSERT INTO user_position ( position_id,user_id)
@@ -94,4 +94,3 @@ INSERT INTO user_position ( position_id,user_id)
 VALUES (2,30);
 INSERT INTO user_position ( position_id,user_id)
 VALUES (3,30);
-*/
