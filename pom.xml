@@ -108,10 +108,10 @@
               <version>1.11.163</version>
         </dependency> -->
 		<!--migration-->
-		<dependency>
+		<!--<dependency>
 			<groupId>org.liquibase</groupId>
 			<artifactId>liquibase-core</artifactId>
-		</dependency>
+		</dependency>-->
 		<!--migration-->
 	</dependencies>
 
