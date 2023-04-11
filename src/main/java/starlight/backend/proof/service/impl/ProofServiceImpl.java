@@ -2,16 +2,13 @@ package starlight.backend.proof.service.impl;
 
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
-import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
-import org.springframework.web.server.ResponseStatusException;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import starlight.backend.exception.PageNotFoundException;
 import starlight.backend.exception.ProofNotFoundException;
@@ -34,6 +31,7 @@ import java.util.Optional;
 
 @AllArgsConstructor
 @Service
+@Transactional
 public class ProofServiceImpl implements ProofServiceInterface {
     ProofRepository repository;
     UserRepository userRepository;
@@ -43,7 +41,6 @@ public class ProofServiceImpl implements ProofServiceInterface {
     private EntityManager em;
 
     @Override
-    @Transactional
     public ProofPagePagination proofsPagination(int page, int size, boolean sort) {
         var pageRequest = repository.findAll(
                 PageRequest.of(page, size, doDateSort(sort))
@@ -54,7 +51,6 @@ public class ProofServiceImpl implements ProofServiceInterface {
     }
 
     @Override
-    @Transactional
     public ProofEntity addProofProfile(long talentId, ProofAddRequest proofAddRequest) {
         return repository.save(ProofEntity.builder()
                 .title(proofAddRequest.title())
@@ -68,6 +64,7 @@ public class ProofServiceImpl implements ProofServiceInterface {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public ResponseEntity<?> getLocation(long talentId, ProofAddRequest proofAddRequest) {
         long proofId = addProofProfile(talentId, proofAddRequest).getProofId();
         URI location = ServletUriComponentsBuilder
@@ -79,7 +76,6 @@ public class ProofServiceImpl implements ProofServiceInterface {
     }
 
     @Override
-    @Transactional
     public void deleteProof(long talentId, long proofId) {
         ProofEntity proof = em.find(ProofEntity.class,proofId);
         proof.setUser(null);
@@ -87,7 +83,6 @@ public class ProofServiceImpl implements ProofServiceInterface {
     }
 
     @Override
-    @Transactional
     public ProofPagePagination getTalentAllProofs(Authentication auth, long talentId, int page, int size, boolean sort) {
         if (securityService.checkingLogged(talentId, auth)) {
             var pageRequest = repository.findByUser_UserId(talentId,
