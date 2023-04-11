@@ -27,7 +27,6 @@ CREATE TABLE user_position
 (
     position_id BIGINT NOT NULL,
     user_id     BIGINT NOT NULL
-
 );
 
 CREATE TABLE user_entity_authorities
@@ -38,10 +37,11 @@ CREATE TABLE user_entity_authorities
     CONSTRAINT pk_userentityauthorities PRIMARY KEY (user_entity_authorities_id)
 );
 
-
 ALTER TABLE user_entity_authorities
-    ADD CONSTRAINT fk_userlpos_on_pk_user_entity_authorities FOREIGN KEY (user_entity_authorities_id) REFERENCES user_entity_authorities (user_entity_authorities_id);
+     ADD CONSTRAINT fk_userlpos_on_pk_user_entity_authorities FOREIGN KEY (user_entity_authorities_id) REFERENCES user_entity_authorities (user_entity_authorities_id);
 /*proof*/
+
+DROP TABLE IF EXISTS proof_entity CASCADE;
 
 CREATE TABLE proof_entity
 (
