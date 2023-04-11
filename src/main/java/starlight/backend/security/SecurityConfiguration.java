@@ -58,6 +58,7 @@ class SecurityConfiguration {
                 .requestMatchers("/error").permitAll()
                 /////////////////////////Production////////////////////////////////////////////////
                 .requestMatchers("/api/v1/talents").permitAll()
+                .requestMatchers("/api/v1/proofs").permitAll()
                 .requestMatchers(POST, "/api/v1/talents/login").permitAll()
                 /////////////////////////Another///////////////////////////////////////////////////
                 .anyRequest().authenticated()
