@@ -1,6 +1,6 @@
 -- liquibase formatted sql
 -- changeset kate:1
---validCheckSum 8:811143860429aaa45e4f93071190581e
+--validCheckSum 8:b4c1b2ecee5457bbaae3d9de69045848
 DROP TABLE IF EXISTS user_entity CASCADE;
 DROP TABLE IF EXISTS position_entity CASCADE;
 DROP TABLE IF EXISTS user_entity_authorities CASCADE;
