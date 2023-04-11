@@ -14,20 +14,23 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import starlight.backend.exception.PageNotFoundException;
+import starlight.backend.exception.ProofNotFoundException;
 import starlight.backend.exception.TalentNotFoundException;
 import starlight.backend.proof.ProofMapper;
 import starlight.backend.proof.ProofRepository;
 import starlight.backend.proof.model.entity.ProofEntity;
 import starlight.backend.proof.model.enums.Status;
 import starlight.backend.proof.model.request.ProofAddRequest;
+import starlight.backend.proof.model.response.ProofFullInfo;
 import starlight.backend.proof.model.response.ProofPagePagination;
 import starlight.backend.proof.service.ProofServiceInterface;
 import starlight.backend.security.service.SecurityServiceInterface;
-import starlight.backend.security.service.impl.SecurityServiceImpl;
+import starlight.backend.user.model.entity.UserEntity;
 import starlight.backend.user.repository.UserRepository;
 
 import java.net.URI;
 import java.time.Instant;
+import java.util.Optional;
 
 @AllArgsConstructor
 @Service
@@ -96,6 +99,24 @@ public class ProofServiceImpl implements ProofServiceInterface {
         if (page >= pageRequest.getTotalPages())
             throw new PageNotFoundException(page);
         return mapper.toProofPagePagination(pageRequest);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public ProofFullInfo getProofFullInfo(Authentication auth, long proofId) {
+        if (!repository.existsByProofId(proofId)) {
+            throw new ProofNotFoundException(proofId);
+        }
+        ProofEntity proof = em.find(ProofEntity.class,proofId);
+        var talentId = proof.getUser().getUserId();
+        if (securityService.checkingLogged(talentId, auth)) {
+            var optionalProof = repository.findById(proofId);
+            ProofEntity requestProof = optionalProof.orElseThrow(() -> new ProofNotFoundException(proofId));
+            return mapper.toProofFullInfo(requestProof);
+        }
+        var optionalProof = repository.findByProofIdAndStatus(proofId, Status.PUBLISHED);
+        ProofEntity requestProof = optionalProof.orElseThrow(() -> new ProofNotFoundException(proofId));
+        return mapper.toProofFullInfo(requestProof);
     }
 
     private Sort doDateSort(boolean sort) {

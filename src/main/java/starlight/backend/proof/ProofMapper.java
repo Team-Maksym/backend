@@ -3,12 +3,11 @@ package starlight.backend.proof;
 import org.mapstruct.Mapper;
 import org.springframework.data.domain.Page;
 import starlight.backend.proof.model.entity.ProofEntity;
-import starlight.backend.proof.model.request.ProofAddRequest;
 import starlight.backend.proof.model.response.ProofFullInfo;
 import starlight.backend.proof.model.response.ProofInfo;
 import starlight.backend.proof.model.response.ProofPagePagination;
 
-import java.util.List;
+import java.util.Optional;
 
 import static org.mapstruct.ReportingPolicy.IGNORE;
 
