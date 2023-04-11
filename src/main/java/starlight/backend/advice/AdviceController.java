@@ -12,11 +12,7 @@ import starlight.backend.exception.TalentNotFoundException;
 @RestControllerAdvice
 public class AdviceController {
 
-    @ExceptionHandler({
-            TalentNotFoundException.class,
-            PageNotFoundException.class,
-            ProofNotFoundException.class,
-    })
+    @ExceptionHandler(PageNotFoundException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ErrorDTO notFound(Exception exception) {
         return new ErrorDTO(exception.getMessage());
@@ -25,6 +21,15 @@ public class AdviceController {
     @ExceptionHandler(TalentAlreadyOccupiedException.class)
     @ResponseStatus(HttpStatus.CONFLICT)
     public ErrorDTO alreadyIs(Exception exception) {
+        return new ErrorDTO(exception.getMessage());
+    }
+
+    @ExceptionHandler({
+            ProofNotFoundException.class,
+            TalentNotFoundException.class,
+    })
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public ErrorDTO notExists(Exception exception) {
         return new ErrorDTO(exception.getMessage());
     }
 

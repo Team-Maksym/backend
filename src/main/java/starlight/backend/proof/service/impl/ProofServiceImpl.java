@@ -90,12 +90,14 @@ public class ProofServiceImpl implements ProofServiceInterface {
     @Transactional
     public ProofPagePagination getTalentAllProofs(Authentication auth, long talentId, int page, int size, boolean sort) {
         if (securityService.checkingLogged(talentId, auth)) {
-            var pageRequest = repository.findByUser_UserId(talentId, PageRequest.of(page, size, doDateSort(sort)));
+            var pageRequest = repository.findByUser_UserId(talentId,
+                    PageRequest.of(page, size, doDateSort(sort)));
             if (page >= pageRequest.getTotalPages())
                 throw new PageNotFoundException(page);
             return mapper.toProofPagePagination(pageRequest);
         }
-        var pageRequest = repository.findByUser_UserIdAndStatus(talentId, Status.PUBLISHED, PageRequest.of(page, size, doDateSort(sort)));
+        var pageRequest = repository.findByUser_UserIdAndStatus(talentId,
+                Status.PUBLISHED, PageRequest.of(page, size, doDateSort(sort)));
         if (page >= pageRequest.getTotalPages())
             throw new PageNotFoundException(page);
         return mapper.toProofPagePagination(pageRequest);
