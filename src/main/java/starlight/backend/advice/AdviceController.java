@@ -9,6 +9,7 @@ import starlight.backend.exception.*;
 @RestControllerAdvice
 public class AdviceController {
 
+    @ExceptionHandler(PageNotFoundException.class)
     @ExceptionHandler({
             TalentNotFoundException.class,
             PageNotFoundException.class,
@@ -23,6 +24,15 @@ public class AdviceController {
     @ExceptionHandler(TalentAlreadyOccupiedException.class)
     @ResponseStatus(HttpStatus.CONFLICT)
     public ErrorDTO alreadyIs(Exception exception) {
+        return new ErrorDTO(exception.getMessage());
+    }
+
+    @ExceptionHandler({
+            ProofNotFoundException.class,
+            TalentNotFoundException.class,
+    })
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public ErrorDTO notExists(Exception exception) {
         return new ErrorDTO(exception.getMessage());
     }
 

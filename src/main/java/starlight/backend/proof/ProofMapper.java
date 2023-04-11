@@ -7,6 +7,8 @@ import starlight.backend.proof.model.response.ProofFullInfo;
 import starlight.backend.proof.model.response.ProofInfo;
 import starlight.backend.proof.model.response.ProofPagePagination;
 
+import java.util.Optional;
+
 import static org.mapstruct.ReportingPolicy.IGNORE;
 
 @Mapper(componentModel = "spring", unmappedTargetPolicy = IGNORE)

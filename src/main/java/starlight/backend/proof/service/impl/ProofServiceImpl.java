@@ -45,9 +45,9 @@ public class ProofServiceImpl implements ProofServiceInterface {
 
     @Override
     public ProofPagePagination proofsPagination(int page, int size, boolean sort) {
-        var pageRequest = repository.findAll(
-                PageRequest.of(page, size, doSort(sort, DATA_CREATED))
-        );
+        var pageRequest = repository.findByStatus(
+                Status.PUBLISHED,
+                PageRequest.of(page, size, doSort(sort, DATA_CREATED)));
         if (page >= pageRequest.getTotalPages())
             throw new PageNotFoundException(page);
         return mapper.toProofPagePagination(pageRequest);
@@ -99,7 +99,10 @@ public class ProofServiceImpl implements ProofServiceInterface {
     }
 
     @Override
-    public void deleteProof(long talentId, long proofId) {
+    public void deleteProof(long talentId, long proofId, Authentication auth) {
+        if (securityService.checkingLoggedAndToken(talentId, auth)) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED,"you cannot delete proof another talent");
+        }
         ProofEntity proof = em.find(ProofEntity.class, proofId);
         proof.setUser(null);
         em.remove(proof);
@@ -121,6 +124,24 @@ public class ProofServiceImpl implements ProofServiceInterface {
         if (page >= pageRequest.getTotalPages())
             throw new PageNotFoundException(page);
         return mapper.toProofPagePagination(pageRequest);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public ProofFullInfo getProofFullInfo(Authentication auth, long proofId) {
+        if (!repository.existsByProofId(proofId)) {
+            throw new ProofNotFoundException(proofId);
+        }
+        ProofEntity proof = em.find(ProofEntity.class,proofId);
+        var talentId = proof.getUser().getUserId();
+        if (securityService.checkingLogged(talentId, auth)) {
+            var optionalProof = repository.findById(proofId);
+            ProofEntity requestProof = optionalProof.orElseThrow(() -> new ProofNotFoundException(proofId));
+            return mapper.toProofFullInfo(requestProof);
+        }
+        var optionalProof = repository.findByProofIdAndStatus(proofId, Status.PUBLISHED);
+        ProofEntity requestProof = optionalProof.orElseThrow(() -> new ProofNotFoundException(proofId));
+        return mapper.toProofFullInfo(requestProof);
     }
 
     @Transactional(readOnly = true)
