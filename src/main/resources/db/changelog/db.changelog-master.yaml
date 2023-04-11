@@ -2,7 +2,7 @@ databaseChangeLog:
   - changeSet:
       id: 1
       author: kate
-      validCheckSum: 8:b4c1b2ecee5457bbaae3d9de69045848
+      validCheckSum: 8:811143860429aaa45e4f93071190581e
 
   - include:
       file: ddl/001_create_tables.sql
