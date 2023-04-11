@@ -122,6 +122,24 @@ public class ProofServiceImpl implements ProofServiceInterface {
         return mapper.toProofPagePagination(pageRequest);
     }
 
+    @Override
+    @Transactional(readOnly = true)
+    public ProofFullInfo getProofFullInfo(Authentication auth, long proofId) {
+        if (!repository.existsByProofId(proofId)) {
+            throw new ProofNotFoundException(proofId);
+        }
+        ProofEntity proof = em.find(ProofEntity.class,proofId);
+        var talentId = proof.getUser().getUserId();
+        if (securityService.checkingLogged(talentId, auth)) {
+            var optionalProof = repository.findById(proofId);
+            ProofEntity requestProof = optionalProof.orElseThrow(() -> new ProofNotFoundException(proofId));
+            return mapper.toProofFullInfo(requestProof);
+        }
+        var optionalProof = repository.findByProofIdAndStatus(proofId, Status.PUBLISHED);
+        ProofEntity requestProof = optionalProof.orElseThrow(() -> new ProofNotFoundException(proofId));
+        return mapper.toProofFullInfo(requestProof);
+    }
+
     @Transactional(readOnly = true)
     Sort doSort(boolean sort, String sortParam) {
         Sort dateSort = Sort.by(sortParam);
