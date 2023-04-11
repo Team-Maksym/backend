@@ -16,6 +16,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import starlight.backend.exception.PageNotFoundException;
 import starlight.backend.proof.model.request.ProofAddRequest;
 import starlight.backend.proof.model.request.ProofUpdateRequest;
 import starlight.backend.proof.model.response.ProofFullInfo;
@@ -34,7 +35,6 @@ import starlight.backend.talent.model.response.TalentPagePagination;
 @Tag(name = "Proof", description = "Proof API")
 public class ProofController {
     private ProofServiceInterface proofService;
-    private SecurityServiceInterface securityService;
     private ProofRepository proofRepository;
     private final ProofMapper proofMapper;
 
@@ -154,6 +154,16 @@ public class ProofController {
             )
     })
     @PatchMapping("/talents/{talent-id}/proofs/{proof-id}")
+    @PreAuthorize("hasRole('TALENT')")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public Optional<ProofFullInfo> updateProofFullInfo(@PathVariable("talent-id") long talentId,
+                                                       @PathVariable("proof-id") long proofId,
+                                                       @RequestBody ProofUpdateRequest proofUpdateRequest,
+                                                       Authentication auth) {
+        proofService.proofUpdateRequest(proofId, proofUpdateRequest);
+        return proofRepository.findById(proofId).map(proofMapper::toProofFullInfo);
+    }
+
     @Operation(summary = "Return list of all proofs for talent by talent_id")
     @ApiResponses(value = {
             @ApiResponse(
@@ -197,19 +207,6 @@ public class ProofController {
                     )
             )
     })
-    @PreAuthorize("hasRole('TALENT')")
-    @ResponseStatus(HttpStatus.NO_CONTENT)
-    public Optional<ProofFullInfo> updateProofFullInfo(@PathVariable("talent-id") long talentId,
-                                                       @PathVariable("proof-id") long proofId,
-                                                       @RequestBody ProofUpdateRequest proofUpdateRequest,
-                                                       Authentication auth) {
-        if (!securityService.checkingLoggedAndTokenValid(talentId, auth)) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
-        }
-        proofService.proofUpdateRequest(proofId, proofUpdateRequest);
-        return proofRepository.findById(proofId).map(proofMapper::toProofFullInfo);
-    }
-}
     @GetMapping("/talents/{talent-id}/proofs")
     public ProofPagePagination getTalentProofs(@PathVariable("talent-id") long talentId,
                                                Authentication auth,

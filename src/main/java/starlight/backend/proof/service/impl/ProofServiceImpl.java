@@ -120,7 +120,7 @@ public class ProofServiceImpl implements ProofServiceInterface {
     }
 
     @Transactional(readOnly = true)
-    Sort doSort(boolean sort, String sortParam) {
+    public Sort doSort(boolean sort, String sortParam) {
         Sort dateSort = Sort.by(sortParam);
         if (sort) {
             dateSort.descending();
