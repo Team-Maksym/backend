@@ -28,7 +28,7 @@ public interface MapperTalent {
         return TalentPagePagination.builder()
                 .data(user.getContent().
                         stream().map(this::toTalentProfile).toList())
-                .totalTalents(user.getTotalElements())
+                .total(user.getTotalElements())
                 .build();
     }
 
