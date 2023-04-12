@@ -7,8 +7,6 @@ import starlight.backend.proof.model.response.ProofFullInfo;
 import starlight.backend.proof.model.response.ProofInfo;
 import starlight.backend.proof.model.response.ProofPagePagination;
 
-import java.util.Optional;
-
 import static org.mapstruct.ReportingPolicy.IGNORE;
 
 @Mapper(componentModel = "spring", unmappedTargetPolicy = IGNORE)
@@ -24,8 +22,8 @@ public interface ProofMapper {
 
     default ProofPagePagination toProofPagePagination(Page<ProofEntity> proofs) {
         return ProofPagePagination.builder()
-                .totalProofs(proofs.getTotalElements())
-                .proofs(proofs.getContent()
+                .total(proofs.getTotalElements())
+                .data(proofs.getContent()
                         .stream()
                         .map(this::toProofInfo)
                         .toList())
