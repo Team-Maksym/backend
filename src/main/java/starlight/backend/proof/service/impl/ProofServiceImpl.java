@@ -159,9 +159,11 @@ public class ProofServiceImpl implements ProofServiceInterface {
 
     @Transactional(readOnly = true)
     public Sort doSort(boolean sort, String sortParam) {
-        Sort dateSort = Sort.by(sortParam);
+        Sort dateSort;
         if (sort) {
-            dateSort.descending();
+            dateSort = Sort.by(sortParam).descending();
+        }else {
+            dateSort = Sort.by(sortParam);
         }
         return dateSort;
     }
