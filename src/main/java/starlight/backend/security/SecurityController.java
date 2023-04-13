@@ -8,6 +8,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.security.core.Authentication;
@@ -16,9 +17,11 @@ import starlight.backend.security.service.SecurityServiceInterface;
 import starlight.backend.security.model.request.NewUser;
 import starlight.backend.security.model.response.SessionInfo;
 
+
 @AllArgsConstructor
 @RestController
 @RequestMapping("/api/v1")
+@Slf4j
 @Tag(name = "Security", description = "Security related endpoints")
 public class SecurityController {
     private SecurityServiceInterface service;
@@ -97,6 +100,10 @@ public class SecurityController {
     @PostMapping("/talents")
     @ResponseStatus(HttpStatus.CREATED)
     public SessionInfo register(@Valid @RequestBody NewUser newUser) {
+
+        log.info("NewUser = {}", newUser);
+        log.info("Ошибка в регистрации");
+
         return service.register(newUser);
     }
 }
