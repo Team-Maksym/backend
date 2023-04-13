@@ -140,7 +140,7 @@ public class ProofServiceImpl implements ProofServiceInterface {
     @Override
     @Transactional(readOnly = true)
     public ProofFullInfo getProofFullInfo(Authentication auth, long proofId) {
-        if (!repository.existsByProofId(proofId)) {
+        if (repository.existsByProofId(proofId)) {
             throw new ProofNotFoundException(proofId);
         }
         ProofEntity proof = em.find(ProofEntity.class, proofId);
