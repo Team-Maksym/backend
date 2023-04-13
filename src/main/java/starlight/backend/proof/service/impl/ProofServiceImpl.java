@@ -68,7 +68,7 @@ public class ProofServiceImpl implements ProofServiceInterface {
     public ResponseEntity<?> getLocation(long talentId,
                                          ProofAddRequest proofAddRequest,
                                          Authentication auth) {
-        if (securityService.checkingLoggedAndToken(talentId, auth)) {
+        if (!securityService.checkingLoggedAndToken(talentId, auth)) {
             throw new UserAccesDeniedToProofException();
         }
         long proofId = addProofProfile(talentId, proofAddRequest).getProofId();
@@ -111,7 +111,7 @@ public class ProofServiceImpl implements ProofServiceInterface {
 
     @Override
     public void deleteProof(long talentId, long proofId, Authentication auth) {
-        if (securityService.checkingLoggedAndToken(talentId, auth)) {
+        if (!securityService.checkingLoggedAndToken(talentId, auth)) {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "you cannot delete proof another talent");
         }
         ProofEntity proof = em.find(ProofEntity.class, proofId);

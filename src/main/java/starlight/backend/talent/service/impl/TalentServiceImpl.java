@@ -56,7 +56,7 @@ public class TalentServiceImpl implements TalentServiceInterface {
 
     @Override
     public TalentFullInfo updateTalentProfile(long id, TalentUpdateRequest talentUpdateRequest,Authentication auth) {
-        if (securityService.checkingLoggedAndToken(id, auth)) {
+        if (!securityService.checkingLoggedAndToken(id, auth)) {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED,"you cannot change another talent");
         }
         return repository.findById(id).map(talent -> {
@@ -78,7 +78,7 @@ public class TalentServiceImpl implements TalentServiceInterface {
 
     @Override
     public void deleteTalentProfile(long talentId, Authentication auth) {
-        if (securityService.checkingLoggedAndToken(talentId, auth)) {
+        if (!securityService.checkingLoggedAndToken(talentId, auth)) {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED,"you cannot delete another talent");
         }
         UserEntity user = em.find(UserEntity.class, talentId);
