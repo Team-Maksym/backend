@@ -54,6 +54,7 @@ public class SecurityController {
     @PostMapping("/talents/login")
     @ResponseStatus(HttpStatus.OK)
     public SessionInfo login(Authentication authentication) {
+        log.info("@PostMapping(\"/talents/login\")");
         return service.loginInfo(authentication.getName());
     }
 
@@ -101,8 +102,7 @@ public class SecurityController {
     @ResponseStatus(HttpStatus.CREATED)
     public SessionInfo register(@Valid @RequestBody NewUser newUser) {
 
-        log.info("NewUser = {}", newUser);
-        log.info("Ошибка в регистрации");
+        log.info("@PostMapping(\"/talents\")");
 
         return service.register(newUser);
     }

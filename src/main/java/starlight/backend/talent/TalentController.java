@@ -9,6 +9,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.Positive;
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
@@ -27,6 +28,7 @@ import java.util.Optional;
 @Validated
 @RequestMapping("/api/v1")
 @Tag(name = "Talent", description = "Talent API")
+@Slf4j
 public class TalentController {
     private TalentServiceInterface talentService;
 
@@ -59,6 +61,8 @@ public class TalentController {
     @GetMapping("/talents")
     public TalentPagePagination pagination(@RequestParam(defaultValue = "0") @Min(0) int page,
                                            @RequestParam(defaultValue = "10") @Positive int size) {
+
+        log.info("@GetMapping(\"/talents\")");
         return talentService.talentPagination(page, size);
     }
 
@@ -100,6 +104,7 @@ public class TalentController {
     @PreAuthorize("hasRole('TALENT')")
     @GetMapping("/talents/{talent-id}")
     public Optional<TalentFullInfo> searchTalentById(@PathVariable("talent-id") long talentId) {
+        log.
         return talentService.talentFullInfo(talentId);
     }
 

@@ -9,6 +9,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.Positive;
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -27,6 +28,7 @@ import starlight.backend.talent.model.response.TalentFullInfo;
 
 import starlight.backend.talent.model.response.TalentPagePagination;
 
+@Slf4j
 @RestController
 @AllArgsConstructor
 @Validated
@@ -67,6 +69,7 @@ public class ProofController {
     public ProofPagePagination pagination(@RequestParam(defaultValue = "0") @Min(0) int page,
                                           @RequestParam(defaultValue = "5") @Positive int size,
                                           @RequestParam(defaultValue = "true") boolean sort) {
+        log.info("@GetMapping(\"/proofs\")");
         return proofService.proofsPagination(page, size, sort);
     }
 
@@ -113,6 +116,7 @@ public class ProofController {
     public ResponseEntity<?> addProofFullInfo(@PathVariable("talent-id") long talentId,
                                               @RequestBody ProofAddRequest proofAddRequest,
                                               Authentication auth) {
+        log.info("@PostMapping(\"/talents/{talent-id}/proofs\")");
         return proofService.getLocation(talentId, proofAddRequest, auth);
     }
 
@@ -164,6 +168,7 @@ public class ProofController {
     public void deleteTalent(@PathVariable("talent-id") long talentId,
                              @PathVariable("proof-id") long proofId,
                              Authentication auth) {
+        log.info("@DeleteMapping(\"/talents/{talent-id}/proofs/{proof-id}\")");
         proofService.deleteProof(talentId, proofId, auth);
     }
 
@@ -209,7 +214,7 @@ public class ProofController {
                                                        @PathVariable("proof-id") long proofId,
                                                        @RequestBody ProofUpdateRequest proofUpdateRequest,
                                                        Authentication auth) {
-
+        log.info("@PatchMapping(\"/talents/{talent-id}/proofs/{proof-id}\")");
         return proofService.proofUpdateRequest(proofId, proofUpdateRequest, auth);
     }
 
@@ -312,6 +317,7 @@ public class ProofController {
     @GetMapping("/proofs/{proof-id}")
     public ProofFullInfo getFullProof(@PathVariable("proof-id") long proofId,
                                          Authentication auth) {
+        log.info("@GetMapping(\"/proofs/{proof-id}\")");
         return proofService.getProofFullInfo(auth, proofId);
     }
 }
