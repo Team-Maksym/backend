@@ -216,7 +216,7 @@ public class ProofController {
                                                        @RequestBody ProofUpdateRequest proofUpdateRequest,
                                                        Authentication auth) {
         log.info("@PatchMapping(\"/talents/{talent-id}/proofs/{proof-id}\")");
-        return proofService.proofUpdateRequest(proofId, proofUpdateRequest, auth);
+        return proofService.proofUpdateRequest(talentId,proofId, proofUpdateRequest, auth);
     }
 
     @Operation(summary = "Return list of all proofs for talent by talent_id")

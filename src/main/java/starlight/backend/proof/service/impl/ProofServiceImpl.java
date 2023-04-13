@@ -81,11 +81,16 @@ public class ProofServiceImpl implements ProofServiceInterface {
     }
 
     @Override
-    public ProofFullInfo proofUpdateRequest(long id, ProofUpdateRequest proofUpdateRequest, Authentication auth) {
-        if (securityService.checkingLoggedAndToken(id, auth)) {
+    public ProofFullInfo proofUpdateRequest(long talentId, long id, ProofUpdateRequest proofUpdateRequest, Authentication auth) {
+        if (!securityService.checkingLoggedAndToken(talentId, auth)) {
             throw new UserAccesDeniedToProofException();
         }
-        if (proofUpdateRequest.status().equals(Status.DRAFT)) {
+        if (!repository.existsByUser_UserIdAndProofId(talentId, id)) {
+            throw new UserAccesDeniedToProofException();
+        }
+        var status = repository.findById(id)
+                .orElseThrow(() -> new ProofNotFoundException(id));
+        if (status.getStatus().equals(Status.DRAFT)) {
             return repository.findById(id).map(proof -> {
                 if (!proof.getStatus().equals(Status.DRAFT)) {
                     throw new UserCanNotEditProofNotInDraftException();
@@ -100,7 +105,8 @@ public class ProofServiceImpl implements ProofServiceInterface {
             }).orElseThrow(() -> new ProofNotFoundException(id));
         }
         return repository.findById(id).map(proof -> {
-            if (proofUpdateRequest.status().equals(Status.HIDDEN) || proofUpdateRequest.status().equals(Status.PUBLISHED)) {
+            if (proofUpdateRequest.status().equals(Status.HIDDEN)
+                    || proofUpdateRequest.status().equals(Status.PUBLISHED)) {
                 proof.setStatus(proofUpdateRequest.status());
             }
             proof.setDateLastUpdated(Instant.now());
@@ -125,14 +131,14 @@ public class ProofServiceImpl implements ProofServiceInterface {
         if (securityService.checkingLoggedAndToken(talentId, auth)) {
             Page<ProofEntity> pageRequest;
             if (status.equals(Status.DRAFT)) {
-               pageRequest = repository.findByUser_UserIdAndStatus(talentId,
+                pageRequest = repository.findByUser_UserIdAndStatus(talentId,
                         Status.DRAFT,
                         PageRequest.of(page, size, Sort.by(DATA_CREATED)));
             } else if (status.equals(Status.HIDDEN)) {
                 pageRequest = repository.findByUser_UserIdAndStatus(talentId,
                         Status.HIDDEN,
                         PageRequest.of(page, size, Sort.by(DATA_CREATED)));
-            }else if (status.equals(Status.PUBLISHED)) {
+            } else if (status.equals(Status.PUBLISHED)) {
                 pageRequest = repository.findByUser_UserIdAndStatus(talentId,
                         Status.PUBLISHED,
                         PageRequest.of(page, size, Sort.by(DATA_CREATED)));
@@ -152,7 +158,7 @@ public class ProofServiceImpl implements ProofServiceInterface {
     }
 
     @Override
-    @Transactional(readOnly = true)
+    // @Transactional(readOnly = true)
     public ProofFullInfo getProofFullInfo(Authentication auth, long proofId) {
         if (!repository.existsByProofId(proofId)) {
             throw new ProofNotFoundException(proofId);
@@ -169,12 +175,12 @@ public class ProofServiceImpl implements ProofServiceInterface {
         return mapper.toProofFullInfo(requestProof);
     }
 
-    @Transactional(readOnly = true)
+    // @Transactional(readOnly = true)
     public Sort doSort(boolean sort, String sortParam) {
         Sort dateSort;
         if (sort) {
             dateSort = Sort.by(sortParam).descending();
-        }else {
+        } else {
             dateSort = Sort.by(sortParam);
         }
         return dateSort;

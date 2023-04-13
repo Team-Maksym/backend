@@ -23,5 +23,5 @@ public interface ProofServiceInterface {
 
     ProofFullInfo getProofFullInfo(Authentication auth, long proofId);
 
-    ProofFullInfo proofUpdateRequest(long id, ProofUpdateRequest proofUpdateRequest, Authentication auth);
+    ProofFullInfo proofUpdateRequest(long talentId,long id, ProofUpdateRequest proofUpdateRequest, Authentication auth);
 }
