@@ -19,5 +19,4 @@ public interface SecurityServiceInterface {
     default boolean checkingLogged(long talentId, Authentication auth) {
         return Objects.equals(auth.getName(), String.valueOf(talentId));
     }
-
 }

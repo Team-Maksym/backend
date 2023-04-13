@@ -68,6 +68,9 @@ public class ProofServiceImpl implements ProofServiceInterface {
     public ResponseEntity<?> getLocation(long talentId,
                                          ProofAddRequest proofAddRequest,
                                          Authentication auth) {
+        if (securityService.checkingLoggedAndToken(talentId, auth)) {
+            throw new UserAccesDeniedToProofException();
+        }
         long proofId = addProofProfile(talentId, proofAddRequest).getProofId();
         URI location = ServletUriComponentsBuilder
                 .fromCurrentRequest()
@@ -79,7 +82,7 @@ public class ProofServiceImpl implements ProofServiceInterface {
 
     @Override
     public ProofFullInfo proofUpdateRequest(long id, ProofUpdateRequest proofUpdateRequest, Authentication auth) {
-        if (securityService.checkingLoggedAndToken(id, auth)) {
+        if (!securityService.checkingLoggedAndToken(id, auth)) {
             throw new UserAccesDeniedToProofException();
         }
         if (proofUpdateRequest.status() == Status.DRAFT) {
@@ -163,3 +166,4 @@ public class ProofServiceImpl implements ProofServiceInterface {
         return dateSort;
     }
 }
+
