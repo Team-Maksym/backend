@@ -6,6 +6,6 @@ import java.util.List;
 
 @Builder
 public record TalentPagePagination(
-       long totalTalents,
+       long total,
        List<TalentProfile> data
 ) {}

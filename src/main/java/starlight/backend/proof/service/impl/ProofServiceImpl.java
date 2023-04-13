@@ -82,9 +82,9 @@ public class ProofServiceImpl implements ProofServiceInterface {
         if (securityService.checkingLoggedAndToken(id, auth)) {
             throw new UserAccesDeniedToProofException();
         }
-        if (proofUpdateRequest.status().equals(Status.DRAFT)) {
+        if (proofUpdateRequest.status() == Status.DRAFT) {
             return repository.findById(id).map(proof -> {
-                if (!proof.getStatus().equals(Status.DRAFT)) {
+                if (proof.getStatus() != Status.DRAFT) {
                     throw new UserCanNotEditProofNotInDraftException();
                 }
                 proof.setTitle(proofUpdateRequest.title());
@@ -97,13 +97,11 @@ public class ProofServiceImpl implements ProofServiceInterface {
             }).orElseThrow(() -> new ProofNotFoundException(id));
         }
         return repository.findById(id).map(proof -> {
-            if (proofUpdateRequest.status().equals(Status.HIDDEN)
-                    || proofUpdateRequest.status().equals(Status.PUBLISHED)
-            ) {
+            if (proofUpdateRequest.status() == Status.HIDDEN || proofUpdateRequest.status() == Status.PUBLISHED) {
                 proof.setStatus(proofUpdateRequest.status());
             }
-            repository.save(proof);
             proof.setDateLastUpdated(Instant.now());
+            repository.save(proof);
             return mapper.toProofFullInfo(proof);
         }).orElseThrow(() -> new ProofNotFoundException(id));
     }
