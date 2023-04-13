@@ -24,6 +24,7 @@ import starlight.backend.user.repository.PositionRepository;
 import starlight.backend.user.repository.UserRepository;
 
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @AllArgsConstructor
@@ -59,21 +60,25 @@ public class TalentServiceImpl implements TalentServiceInterface {
         if (!securityService.checkingLoggedAndToken(id, auth)) {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED,"you cannot change another talent");
         }
+        var positions =findOrAddPositions(talentUpdateRequest);
         return repository.findById(id).map(talent -> {
             talent.setFullName(talentUpdateRequest.fullName());
             talent.setBirthday(talentUpdateRequest.birthday());
             talent.setAvatar(talentUpdateRequest.avatar());
             talent.setEducation(talentUpdateRequest.education());
             talent.setExperience(talentUpdateRequest.experience());
-            var positions = talentUpdateRequest.positions().stream()
-                    .map(position ->
-                            positionRepository.findByPosition(position)
-                                    .orElse(new PositionEntity(position)))
-                    .collect(Collectors.toSet());
             talent.setPositions(positions);
             repository.save(talent);
             return mapper.toTalentFullInfo(talent);
         }).orElseThrow(() -> new TalentNotFoundException(id));
+    }
+    
+    Set<PositionEntity> findOrAddPositions(TalentUpdateRequest talentUpdateRequest){
+       return talentUpdateRequest.positions().stream()
+                .map(position ->
+                        positionRepository.findByPosition(position)
+                                .orElse(new PositionEntity(position)))
+                .collect(Collectors.toSet());
     }
 
     @Override
