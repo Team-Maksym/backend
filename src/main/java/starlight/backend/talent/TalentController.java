@@ -104,7 +104,7 @@ public class TalentController {
     @PreAuthorize("hasRole('TALENT')")
     @GetMapping("/talents/{talent-id}")
     public Optional<TalentFullInfo> searchTalentById(@PathVariable("talent-id") long talentId) {
-        log.
+        log.info("@GetMapping(\"/talents/{talent-id}\")");
         return talentService.talentFullInfo(talentId);
     }
 
@@ -176,6 +176,7 @@ public class TalentController {
     public TalentFullInfo updateTalentFullInfo(@PathVariable("talent-id") long talentId,
                                                @RequestBody TalentUpdateRequest talentUpdateRequest,
                                                Authentication auth) {
+        log.info("@PatchMapping(\"/talents/{talent-id}\")");
         return talentService.updateTalentProfile(talentId, talentUpdateRequest, auth);
     }
 
@@ -226,6 +227,7 @@ public class TalentController {
     @DeleteMapping("/talents/{talent-id}")
     public void deleteTalent(@PathVariable("talent-id") long talentId,
                              Authentication auth) {
+        log.info("@DeleteMapping(\"/talents/{talent-id}\")");
         talentService.deleteTalentProfile(talentId, auth);
     }
 }
