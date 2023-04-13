@@ -43,7 +43,6 @@ public class SecurityServiceImpl implements SecurityServiceInterface {
     }
 
     @Override
-    @Transactional(readOnly = true)
     public SessionInfo register(NewUser newUser) {
         var user = saveNewUser(newUser);
         var token = getJWTToken(mapperSecurity.toUserDetailsImpl(user));
