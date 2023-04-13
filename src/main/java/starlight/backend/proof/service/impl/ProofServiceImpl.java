@@ -3,6 +3,7 @@ package starlight.backend.proof.service.impl;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import lombok.AllArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
@@ -64,7 +65,6 @@ public class ProofServiceImpl implements ProofServiceInterface {
     }
 
     @Override
-    @Transactional(readOnly = true)
     public ResponseEntity<?> getLocation(long talentId,
                                          ProofAddRequest proofAddRequest,
                                          Authentication auth) {
@@ -82,12 +82,12 @@ public class ProofServiceImpl implements ProofServiceInterface {
 
     @Override
     public ProofFullInfo proofUpdateRequest(long id, ProofUpdateRequest proofUpdateRequest, Authentication auth) {
-        if (!securityService.checkingLoggedAndToken(id, auth)) {
+        if (securityService.checkingLoggedAndToken(id, auth)) {
             throw new UserAccesDeniedToProofException();
         }
-        if (proofUpdateRequest.status() == Status.DRAFT) {
+        if (proofUpdateRequest.status().equals(Status.DRAFT)) {
             return repository.findById(id).map(proof -> {
-                if (proof.getStatus() != Status.DRAFT) {
+                if (!proof.getStatus().equals(Status.DRAFT)) {
                     throw new UserCanNotEditProofNotInDraftException();
                 }
                 proof.setTitle(proofUpdateRequest.title());
@@ -100,7 +100,7 @@ public class ProofServiceImpl implements ProofServiceInterface {
             }).orElseThrow(() -> new ProofNotFoundException(id));
         }
         return repository.findById(id).map(proof -> {
-            if (proofUpdateRequest.status() == Status.HIDDEN || proofUpdateRequest.status() == Status.PUBLISHED) {
+            if (proofUpdateRequest.status().equals(Status.HIDDEN) || proofUpdateRequest.status().equals(Status.PUBLISHED)) {
                 proof.setStatus(proofUpdateRequest.status());
             }
             proof.setDateLastUpdated(Instant.now());
@@ -121,10 +121,24 @@ public class ProofServiceImpl implements ProofServiceInterface {
 
     @Override
     public ProofPagePagination getTalentAllProofs(Authentication auth, long talentId,
-                                                  int page, int size, boolean sort) {
-        if (securityService.checkingLogged(talentId, auth)) {
-            var pageRequest = repository.findByUser_UserId(talentId,
-                    PageRequest.of(page, size, doSort(sort, DATA_CREATED)));
+                                                  int page, int size, boolean sort, Status status) {
+        if (securityService.checkingLoggedAndToken(talentId, auth)) {
+            Page<ProofEntity> pageRequest;
+            if (status.equals(Status.DRAFT)) {
+               pageRequest = repository.findByUser_UserIdAndStatus(talentId,
+                        Status.DRAFT,
+                        PageRequest.of(page, size, Sort.by(DATA_CREATED)));
+            } else if (status.equals(Status.HIDDEN)) {
+                pageRequest = repository.findByUser_UserIdAndStatus(talentId,
+                        Status.HIDDEN,
+                        PageRequest.of(page, size, Sort.by(DATA_CREATED)));
+            }else if (status.equals(Status.PUBLISHED)) {
+                pageRequest = repository.findByUser_UserIdAndStatus(talentId,
+                        Status.PUBLISHED,
+                        PageRequest.of(page, size, Sort.by(DATA_CREATED)));
+            } else {
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "♥ Bad status in page request. ♥ this page never used");
+            }
             if (page >= pageRequest.getTotalPages())
                 throw new PageNotFoundException(page);
             return mapper.toProofPagePagination(pageRequest);
@@ -140,12 +154,12 @@ public class ProofServiceImpl implements ProofServiceInterface {
     @Override
     @Transactional(readOnly = true)
     public ProofFullInfo getProofFullInfo(Authentication auth, long proofId) {
-        if (repository.existsByProofId(proofId)) {
+        if (!repository.existsByProofId(proofId)) {
             throw new ProofNotFoundException(proofId);
         }
         ProofEntity proof = em.find(ProofEntity.class, proofId);
         var talentId = proof.getUser().getUserId();
-        if (securityService.checkingLogged(talentId, auth)) {
+        if (securityService.checkingLoggedAndToken(talentId, auth)) {
             var optionalProof = repository.findById(proofId);
             ProofEntity requestProof = optionalProof.orElseThrow(() -> new ProofNotFoundException(proofId));
             return mapper.toProofFullInfo(requestProof);

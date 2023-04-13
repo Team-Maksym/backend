@@ -3,6 +3,7 @@ package starlight.backend.proof.service;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import starlight.backend.proof.model.entity.ProofEntity;
+import starlight.backend.proof.model.enums.Status;
 import starlight.backend.proof.model.request.ProofAddRequest;
 import starlight.backend.proof.model.response.ProofFullInfo;
 import starlight.backend.proof.model.request.ProofUpdateRequest;
@@ -18,7 +19,7 @@ public interface ProofServiceInterface {
 
     void deleteProof(long talentId, long proofId, Authentication auth);
 
-    ProofPagePagination getTalentAllProofs(Authentication auth, long talentId, int page, int size, boolean sort);
+    ProofPagePagination getTalentAllProofs(Authentication auth, long talentId, int page, int size, boolean sort, Status status);
 
     ProofFullInfo getProofFullInfo(Authentication auth, long proofId);
 

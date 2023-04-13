@@ -12,11 +12,6 @@ public interface SecurityServiceInterface {
     SessionInfo loginInfo(String userName);
 
     default boolean checkingLoggedAndToken(long talentId, Authentication auth) {
-        return auth == null || !auth.isAuthenticated() ||
-                (!Objects.equals(auth.getName(), String.valueOf(talentId)));
-    }
-
-    default boolean checkingLogged(long talentId, Authentication auth) {
         return Objects.equals(auth.getName(), String.valueOf(talentId));
     }
 }

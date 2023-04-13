@@ -19,6 +19,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import starlight.backend.exception.PageNotFoundException;
 import starlight.backend.exception.TalentAlreadyOccupiedException;
+import starlight.backend.proof.model.enums.Status;
 import starlight.backend.proof.model.request.ProofAddRequest;
 import starlight.backend.proof.model.response.ProofFullInfo;
 import starlight.backend.proof.model.request.ProofUpdateRequest;
@@ -266,8 +267,10 @@ public class ProofController {
                                                Authentication auth,
                                                @RequestParam(defaultValue = "0") @Min(0) int page,
                                                @RequestParam(defaultValue = "5") @Positive int size,
-                                               @RequestParam(defaultValue = "true") boolean sort) {
-        return proofService.getTalentAllProofs(auth, talentId, page, size, sort);
+                                               @RequestParam(defaultValue = "true") boolean sort,
+                                               @RequestParam(defaultValue = "PUBLISHED") Status status) {
+        log.info("@GetMapping(\"/talents/{talent-id}/proofs\")");
+        return proofService.getTalentAllProofs(auth, talentId, page, size, sort, status);
     }
 
     @Operation(summary = "Return Proof information for an authenticated user")
