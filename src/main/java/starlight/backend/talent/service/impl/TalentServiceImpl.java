@@ -72,27 +72,27 @@ public class TalentServiceImpl implements TalentServiceInterface {
                             talent.getPassword() :
                             passwordEncoder.encode(talentUpdateRequest.password())
             );
-            talent.setAvatar(
-                    talentUpdateRequest.avatar() == null ?
-                            talent.getAvatar() :
-                            talentUpdateRequest.avatar()
-            );
-            talent.setEducation(
-                    talentUpdateRequest.education() == null ?
-                            talent.getEducation() :
-                            talentUpdateRequest.education()
-            );
-            talent.setExperience(
-                    talentUpdateRequest.experience() == null ?
-                            talent.getExperience() :
-                            talentUpdateRequest.experience()
-            );
+            talent.setAvatar(validationField(
+                    talentUpdateRequest.avatar(),
+                    talent.getAvatar()));
+            talent.setEducation(validationField(
+                    talentUpdateRequest.education(),
+                    talent.getEducation()));
+            talent.setExperience(validationField(
+                    talentUpdateRequest.experience(),
+                    talent.getExperience()));
             talent.setPositions(validationPosition(
                     talent.getPositions(),
                     talentUpdateRequest.positions()));
             repository.save(talent);
             return mapper.toTalentFullInfo(talent);
         }).orElseThrow(() -> new TalentNotFoundException(id));
+    }
+
+    private String validationField(String newParam, String lastParam) {
+        return newParam == null ?
+                lastParam :
+                newParam;
     }
 
     private Set<PositionEntity> validationPosition(Set<PositionEntity> talentPositions,

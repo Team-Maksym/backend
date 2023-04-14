@@ -11,9 +11,15 @@ import java.util.Optional;
 
 @Repository
 public interface ProofRepository extends JpaRepository<ProofEntity, Long> {
+    Page<ProofEntity> findAllByUser_UserId(Long userId, Pageable pageable);
+
     boolean existsByProofId(Long proofId);
+
     Optional<ProofEntity> findByProofIdAndStatus(Long proofId, Status status);
+
     Page<ProofEntity> findByUser_UserIdAndStatus(Long userId, Status status, Pageable pageable);
-    Page<ProofEntity> findByStatus(Status status,Pageable pageable);
+
+    Page<ProofEntity> findByStatus(Status status, Pageable pageable);
+
     boolean existsByUser_UserIdAndProofId(Long userId, Long proofId);
 }
