@@ -22,6 +22,13 @@ public record TalentUpdateRequest(
         @Length(min = 10, max = 10)
         @Pattern(regexp = "^(?=.*[A-Z])(?=.*[a-z])(?=.*\\d)\\S+$", message = "The date must be in the format: yyyy-MM-dd")
         LocalDate birthday,
+
+        @Length(min = 8, max = 128)
+        @Pattern(
+                regexp = "^(?=.*[A-Z])(?=.*[a-z])(?=.*\\d)\\S+$",
+                message = "must be between 8 and 128 characters, must contain at least one letter and one number")
+        String password,
+
         @URL
         String avatar,
 
@@ -29,6 +36,7 @@ public record TalentUpdateRequest(
 
         String experience,
 
+        @NotBlank
         List<String> positions
 ) {
 }

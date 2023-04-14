@@ -268,7 +268,7 @@ public class ProofController {
                                                @RequestParam(defaultValue = "0") @Min(0) int page,
                                                @RequestParam(defaultValue = "5") @Positive int size,
                                                @RequestParam(defaultValue = "true") boolean sort,
-                                               @RequestParam(defaultValue = "PUBLISHED") Status status) {
+                                               @RequestParam(defaultValue = "ALL") String status) {
         log.info("@GetMapping(\"/talents/{talent-id}/proofs\")");
         return proofService.getTalentAllProofs(auth, talentId, page, size, sort, status);
     }
