@@ -25,6 +25,7 @@ import starlight.backend.user.repository.PositionRepository;
 import starlight.backend.user.repository.UserRepository;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -65,8 +66,12 @@ public class TalentServiceImpl implements TalentServiceInterface {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "you cannot change another talent");
         }
         return repository.findById(id).map(talent -> {
-            talent.setFullName(talentUpdateRequest.fullName());
-            talent.setBirthday(talentUpdateRequest.birthday());
+            talent.setFullName(validationField(
+                    talentUpdateRequest.fullName(),
+                    talent.getFullName()));
+            talent.setBirthday(talentUpdateRequest.avatar() == null ?
+                    talent.getBirthday() :
+                    talentUpdateRequest.birthday());
             talent.setPassword(
                     talentUpdateRequest.password() == null ?
                             talent.getPassword() :
@@ -97,20 +102,25 @@ public class TalentServiceImpl implements TalentServiceInterface {
 
     private Set<PositionEntity> validationPosition(Set<PositionEntity> talentPositions,
                                                    List<String> positions) {
-        if (!positions.isEmpty()) {
+        if (positions != null && !positions.isEmpty()) {
             return positions.stream()
                     .map(position -> {
-                        PositionEntity pos;
-                        if (positionRepository.existsByPositionIgnoreCase(position)) {
-                            pos = positionRepository.findByPosition(position);
-                        } else {
-                            pos = new PositionEntity(position);
+                        if (position != null && !position.isEmpty()) {
+                            PositionEntity pos;
+                            if (positionRepository.existsByPositionIgnoreCase(position)) {
+                                pos = positionRepository.findByPosition(position);
+                            } else {
+                                pos = new PositionEntity(position);
+                            }
+                            return pos;
                         }
-                        return pos;
+                        return null;
                     })
+                    .filter(Objects::nonNull)
                     .collect(Collectors.toSet());
         }
         return talentPositions;
+
     }
 
     @Override
