@@ -103,7 +103,7 @@ public class TalentServiceImpl implements TalentServiceInterface {
     private Set<PositionEntity> validationPosition(Set<PositionEntity> talentPositions,
                                                    List<String> positions) {
         if (positions != null && !positions.isEmpty()) {
-            return positions.stream()
+            Set<PositionEntity> newPosition = positions.stream()
                     .map(position -> {
                         if (position != null && !position.isEmpty()) {
                             PositionEntity pos;
@@ -118,6 +118,7 @@ public class TalentServiceImpl implements TalentServiceInterface {
                     })
                     .filter(Objects::nonNull)
                     .collect(Collectors.toSet());
+            return !newPosition.isEmpty() ? newPosition : talentPositions;
         }
         return talentPositions;
 
