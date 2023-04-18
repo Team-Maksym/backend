@@ -86,7 +86,7 @@ public class ProofServiceImpl implements ProofServiceInterface {
             throw new UserAccesDeniedToProofException();
         }
         if (!repository.existsByUser_UserIdAndProofId(talentId, id)) {
-            throw new UserAccesDeniedToProofException();
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "don`t have that talent");
         }
         var status = repository.findById(id)
                 .orElseThrow(() -> new ProofNotFoundException(id));
@@ -95,9 +95,15 @@ public class ProofServiceImpl implements ProofServiceInterface {
                 if (!proof.getStatus().equals(Status.DRAFT)) {
                     throw new UserCanNotEditProofNotInDraftException();
                 }
-                proof.setTitle(proofUpdateRequest.title());
-                proof.setDescription(proofUpdateRequest.description());
-                proof.setLink(proofUpdateRequest.link());
+                proof.setTitle(validationField(
+                        proofUpdateRequest.title(),
+                        proof.getTitle()));
+                proof.setDescription(validationField(
+                        proofUpdateRequest.description(),
+                        proof.getDescription()));
+                proof.setLink(validationField(
+                        proofUpdateRequest.link(),
+                        proof.getLink()));
                 proof.setStatus(proofUpdateRequest.status());
                 proof.setDateLastUpdated(Instant.now());
                 repository.save(proof);
@@ -115,6 +121,12 @@ public class ProofServiceImpl implements ProofServiceInterface {
         }).orElseThrow(() -> new ProofNotFoundException(id));
     }
 
+    private String validationField(String newParam, String lastParam) {
+        return newParam == null ?
+                lastParam :
+                newParam;
+    }
+
     @Override
     public void deleteProof(long talentId, long proofId, Authentication auth) {
         if (!securityService.checkingLoggedAndToken(talentId, auth)) {
@@ -127,23 +139,27 @@ public class ProofServiceImpl implements ProofServiceInterface {
 
     @Override
     public ProofPagePagination getTalentAllProofs(Authentication auth, long talentId,
-                                                  int page, int size, boolean sort, Status status) {
+                                                  int page, int size, boolean sort, String status) {
         if (securityService.checkingLoggedAndToken(talentId, auth)) {
             Page<ProofEntity> pageRequest;
-            if (status.equals(Status.DRAFT)) {
+            if (status.equals(Status.DRAFT.getStatus())) {
                 pageRequest = repository.findByUser_UserIdAndStatus(talentId,
                         Status.DRAFT,
                         PageRequest.of(page, size, Sort.by(DATA_CREATED)));
-            } else if (status.equals(Status.HIDDEN)) {
+            } else if (status.equals(Status.HIDDEN.getStatus())) {
                 pageRequest = repository.findByUser_UserIdAndStatus(talentId,
                         Status.HIDDEN,
                         PageRequest.of(page, size, Sort.by(DATA_CREATED)));
-            } else if (status.equals(Status.PUBLISHED)) {
+            } else if (status.equals(Status.PUBLISHED.getStatus())) {
                 pageRequest = repository.findByUser_UserIdAndStatus(talentId,
                         Status.PUBLISHED,
                         PageRequest.of(page, size, Sort.by(DATA_CREATED)));
+            } else if (status.equals(Status.ALL.getStatus())) {
+                pageRequest = repository.findAllByUser_UserId(
+                        talentId,
+                        PageRequest.of(page, size, Sort.by(DATA_CREATED)));
             } else {
-                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "♥ Bad status in page request. ♥ this page never used");
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "♥ Bad status in request. ♥");
             }
             if (page >= pageRequest.getTotalPages())
                 throw new PageNotFoundException(page);
@@ -158,7 +174,6 @@ public class ProofServiceImpl implements ProofServiceInterface {
     }
 
     @Override
-    // @Transactional(readOnly = true)
     public ProofFullInfo getProofFullInfo(Authentication auth, long proofId) {
         if (!repository.existsByProofId(proofId)) {
             throw new ProofNotFoundException(proofId);
@@ -175,7 +190,6 @@ public class ProofServiceImpl implements ProofServiceInterface {
         return mapper.toProofFullInfo(requestProof);
     }
 
-    // @Transactional(readOnly = true)
     public Sort doSort(boolean sort, String sortParam) {
         Sort dateSort;
         if (sort) {

@@ -20,7 +20,7 @@ public record NewUser(
 
         @NotBlank
         @Length(max = 254)
-        @Email(regexp = "^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$", message = "must be a valid email")
+        @Email(regexp = "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+.[a-zA-Z]{2,}$", message = "must be a valid email")
         String email,
 
         @NotBlank

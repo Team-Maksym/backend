@@ -17,6 +17,7 @@ public interface ProofMapper {
                 .dateCreated(proof.getDateCreated())
                 .description(proof.getDescription())
                 .title(proof.getTitle())
+                .status(proof.getStatus())
                 .build();
     }
 
