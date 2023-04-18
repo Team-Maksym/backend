@@ -57,6 +57,8 @@ class SecurityConfiguration {
                 .requestMatchers(antMatcher("/webjars/**")).permitAll()
                 /////////////////////////DevOps////////////////////////////////////////////////////
                 .requestMatchers("/error").permitAll()
+                /////////////////////////Actuator//////////////////////////////////////////////////
+                .requestMatchers(antMatcher("/actuator/**")).permitAll()
                 /////////////////////////Production////////////////////////////////////////////////
                 .requestMatchers("/api/v1/talents").permitAll()
                 .requestMatchers("/api/v1/proofs").permitAll()
