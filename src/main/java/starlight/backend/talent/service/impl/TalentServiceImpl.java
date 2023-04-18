@@ -75,10 +75,10 @@ public class TalentServiceImpl implements TalentServiceInterface {
     
     Set<PositionEntity> findOrAddPositions(TalentUpdateRequest talentUpdateRequest){
        return talentUpdateRequest.positions().stream()
-                .map(position ->
-                        positionRepository.findByPosition(position)
-                                .orElse(new PositionEntity(position)))
-                .collect(Collectors.toSet());
+               .map(position ->
+                       positionRepository.findByPosition(position)
+                               .orElse(new PositionEntity(position)))
+               .collect(Collectors.toSet());
     }
 
     @Override
@@ -91,3 +91,18 @@ public class TalentServiceImpl implements TalentServiceInterface {
         em.remove(user);
     }
 }
+
+//    Set<PositionEntity> findOrAddPositions(TalentUpdateRequest talentUpdateRequest){
+//        return talentUpdateRequest.positions().stream()
+//                .map(position -> {
+//                    PositionEntity p;
+//                    if(positionRepository.existsByPosition(position)) {
+//                        p = positionRepository.findByPosition(position);
+//                    }else {
+//                        p = new PositionEntity(position);
+//                    }
+//                    return p;
+//                })
+//                .collect(Collectors.toSet());
+//
+//    }

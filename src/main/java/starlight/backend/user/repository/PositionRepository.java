@@ -5,9 +5,13 @@ import org.springframework.stereotype.Repository;
 import starlight.backend.user.model.entity.PositionEntity;
 
 import java.util.Optional;
+import java.util.Set;
 
 @Repository
 public interface PositionRepository  extends JpaRepository<PositionEntity, Long> {
-   Optional<PositionEntity> findByPosition(String position);
+  Optional<PositionEntity> findByPosition(String position);
 
+//  PositionEntity findByPosition(String position);
+//
+//  boolean existsByPosition(String position);
 }
