@@ -88,9 +88,13 @@ public class ProofServiceImpl implements ProofServiceInterface {
         if (!repository.existsByUser_UserIdAndProofId(talentId, id)) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "don`t have that talent");
         }
-        var status = repository.findById(id)
+        var proofEntity = repository.findById(id)
                 .orElseThrow(() -> new ProofNotFoundException(id));
-        if (status.getStatus().equals(Status.DRAFT)) {
+        if (!proofEntity.getStatus().equals(Status.DRAFT)
+                && proofUpdateRequest.status().equals(Status.DRAFT)) {
+            throw new UserCanNotEditProofNotInDraftException();
+        }
+        if (proofEntity.getStatus().equals(Status.DRAFT)) {
             return repository.findById(id).map(proof -> {
                 if (!proof.getStatus().equals(Status.DRAFT)) {
                     throw new UserCanNotEditProofNotInDraftException();
