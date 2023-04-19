@@ -24,11 +24,11 @@ public interface MapperTalent {
                 .build();
     }
 
-    default TalentPagePagination toTalentPagePagination(Page<UserEntity> userEntities) {
+    default TalentPagePagination toTalentPagePagination(Page<UserEntity> user) {
         return TalentPagePagination.builder()
-                .data(userEntities.getContent().
+                .data(user.getContent().
                         stream().map(this::toTalentProfile).toList())
-                .totalTalents(userEntities.getTotalElements())
+                .total(user.getTotalElements())
                 .build();
     }
 

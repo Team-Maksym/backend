@@ -43,7 +43,6 @@ public class SecurityServiceImpl implements SecurityServiceInterface {
     }
 
     @Override
-    @Transactional(readOnly = true)
     public SessionInfo register(NewUser newUser) {
         var user = saveNewUser(newUser);
         var token = getJWTToken(mapperSecurity.toUserDetailsImpl(user));
@@ -73,7 +72,7 @@ public class SecurityServiceImpl implements SecurityServiceInterface {
         var claims = JwtClaimsSet.builder()
                 .issuer("self")
                 .issuedAt(now)
-                .expiresAt(now.plus(60, MINUTES))
+                .expiresAt(now.plus(180, MINUTES))
                 .subject(getUserIdByEmail(authentication.getUsername()))
                 .claim("scope", createScope(authentication))
                 .build();
