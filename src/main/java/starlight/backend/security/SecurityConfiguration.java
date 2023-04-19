@@ -34,6 +34,7 @@ import java.security.KeyPairGenerator;
 import java.security.NoSuchAlgorithmException;
 import java.security.interfaces.RSAPublicKey;
 
+import static org.springframework.http.HttpMethod.GET;
 import static org.springframework.http.HttpMethod.POST;
 import static org.springframework.security.config.http.SessionCreationPolicy.STATELESS;
 import static org.springframework.security.web.util.matcher.AntPathRequestMatcher.antMatcher;
@@ -63,6 +64,7 @@ class SecurityConfiguration {
                 .requestMatchers("/api/v1/talents").permitAll()
                 .requestMatchers("/api/v1/proofs").permitAll()
                 .requestMatchers(POST, "/api/v1/talents/login").permitAll()
+                .requestMatchers(antMatcher( "/api/v1/proofs/**")).permitAll()
                 /////////////////////////Another///////////////////////////////////////////////////
                 .anyRequest().authenticated()
         );

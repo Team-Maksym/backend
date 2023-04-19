@@ -15,13 +15,17 @@ public class AdviceController {
             PageNotFoundException.class,
             UserCanNotEditProofNotInDraftException.class,
             UserAccesDeniedToProofException.class,
+            UserCannotAddKudosToTheirAccount.class,
     })
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ErrorDTO badRequest(Exception exception) {
         return new ErrorDTO(exception.getMessage());
     }
 
-    @ExceptionHandler(TalentAlreadyOccupiedException.class)
+    @ExceptionHandler({
+            TalentAlreadyOccupiedException.class,
+            ProofAlreadyHaveKudosFromUser.class,
+    })
     @ResponseStatus(HttpStatus.CONFLICT)
     public ErrorDTO alreadyIs(Exception exception) {
         return new ErrorDTO(exception.getMessage());
