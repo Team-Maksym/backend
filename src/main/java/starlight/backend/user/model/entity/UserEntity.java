@@ -58,7 +58,6 @@ public class UserEntity {
     @OneToMany(mappedBy = "user")
     private Set<ProofEntity> proofs;
 
-    @OneToOne(mappedBy = "owner", cascade = CascadeType.ALL)
-    @PrimaryKeyJoinColumn
-    private KudosEntity kudos;
+    @OneToMany(mappedBy = "owner")
+    private Set<KudosEntity> kudos;
 }
