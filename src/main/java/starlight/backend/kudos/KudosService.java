@@ -60,6 +60,7 @@ public class KudosService {
         return proof.getKudos().size();
     }
 
+
     public void addKudosOnProof(long proofId, Authentication auth) {
         if (isItMyProof(proofId, auth)) {
             throw new UserCannotAddKudosToTheirAccount();
