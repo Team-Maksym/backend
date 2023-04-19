@@ -17,7 +17,6 @@ import static jakarta.persistence.GenerationType.IDENTITY;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Validated
 public class KudosEntity {
     @Id 
     @GeneratedValue(strategy = IDENTITY)
