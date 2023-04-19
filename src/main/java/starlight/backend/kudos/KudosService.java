@@ -20,7 +20,6 @@ public class KudosService {
         var talentId = em.find(ProofEntity.class, proofId).getUser().getUserId();
         return securityService.checkingLoggedAndToken(talentId, auth);
     }
-
     private boolean isProofAlreadyHaveKudosFromUser(long kudosId, Authentication auth) {
         var ownerId = em.find(KudosEntity.class, kudosId).getOwner().getUserId();
         return securityService.checkingLoggedAndToken(ownerId, auth);
