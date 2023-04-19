@@ -8,6 +8,7 @@ import lombok.*;
 import org.hibernate.validator.constraints.Length;
 import org.hibernate.validator.constraints.URL;
 import org.springframework.validation.annotation.Validated;
+import starlight.backend.kudos.model.entity.KudosEntity;
 import starlight.backend.proof.model.entity.ProofEntity;
 
 import java.time.LocalDate;
@@ -56,4 +57,7 @@ public class UserEntity {
 
     @OneToMany(mappedBy = "user")
     private Set<ProofEntity> proofs;
+
+    @OneToMany(mappedBy = "owner")
+    private Set<KudosEntity> kudos;
 }

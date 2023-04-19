@@ -33,3 +33,5 @@ build/
 .vscode/
 src/main/resources/application-local.properties
 logs/life-log.log
+/sampleDB.mv.db
+/sampleDB.trace.db

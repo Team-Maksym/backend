@@ -5,12 +5,13 @@ import jakarta.validation.constraints.NotBlank;
 import lombok.*;
 import org.hibernate.validator.constraints.Length;
 import org.hibernate.validator.constraints.URL;
-import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.validation.annotation.Validated;
+import starlight.backend.kudos.model.entity.KudosEntity;
 import starlight.backend.proof.model.enums.Status;
 import starlight.backend.user.model.entity.UserEntity;
 
 import java.time.Instant;
+import java.util.Set;
 
 import static jakarta.persistence.GenerationType.IDENTITY;
 
@@ -45,6 +46,9 @@ public class ProofEntity {
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
     private UserEntity user;
+
+    @OneToMany(mappedBy = "proof")
+    private Set<KudosEntity> kudos;
 
     public void setDateLastUpdated(Instant now) {
         this.dateLastUpdated = now;
