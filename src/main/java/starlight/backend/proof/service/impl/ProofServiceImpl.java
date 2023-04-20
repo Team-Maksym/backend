@@ -165,15 +165,11 @@ public class ProofServiceImpl implements ProofServiceInterface {
             } else {
                 throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "♥ Bad status in request. ♥");
             }
-            if (page >= pageRequest.getTotalPages())
-                throw new PageNotFoundException(page);
             return mapper.toProofPagePagination(pageRequest);
         }
         var pageRequest = repository.findByUser_UserIdAndStatus(talentId,
                 Status.PUBLISHED,
                 PageRequest.of(page, size, doSort(sort, DATA_CREATED)));
-        if (page >= pageRequest.getTotalPages())
-            throw new PageNotFoundException(page);
         return mapper.toProofPagePagination(pageRequest);
     }
 
