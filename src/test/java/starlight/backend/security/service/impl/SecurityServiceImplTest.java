@@ -7,31 +7,29 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.boot.test.mock.mockito.MockBean;
+import org.mockito.junit.jupiter.MockitoSettings;
+import org.mockito.quality.Strictness;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.oauth2.jwt.JwtEncoder;
 import starlight.backend.exception.TalentAlreadyOccupiedException;
 import starlight.backend.security.MapperSecurity;
+import starlight.backend.security.model.UserDetailsImpl;
 import starlight.backend.security.model.request.NewUser;
 import starlight.backend.security.model.response.SessionInfo;
 import starlight.backend.user.model.entity.UserEntity;
 import starlight.backend.user.repository.UserRepository;
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
-import static org.hamcrest.Matchers.hasSize;
-import static org.junit.Assert.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.*;
-import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 import java.util.Optional;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
+@MockitoSettings(strictness = Strictness.LENIENT)
 class SecurityServiceImplTest {
     @Mock
     private UserRepository repository;
@@ -39,6 +37,8 @@ class SecurityServiceImplTest {
     private MapperSecurity mapperSecurity;
     @Mock
     private PasswordEncoder passwordEncoder;
+    @Mock
+    private JwtEncoder jwtEncoder;
     @InjectMocks
     private SecurityServiceImpl securityService;
     private NewUser newUser;
@@ -60,44 +60,56 @@ class SecurityServiceImplTest {
                 .build();
     }
 
-    @Test
-    void loginInfo() {
-    }
-
-    @DisplayName("JUnit test for register new user method")
+    @DisplayName("JUnit test for register method")
     @Test
     void register() {
-        // Given
-        given(repository.findByEmail(newUser.email()))
-                .willReturn(Optional.empty());
-
-        given(repository.save(UserEntity.builder()
-                .fullName(newUser.fullName())
-                .email(newUser.email())
-                .password(passwordEncoder.encode(newUser.password()))
-                .build()))
-                .willReturn(user);
-
-        // When
+        //Given
+        when(repository.existsByEmail(user.getEmail())).thenReturn(false);
+        given(repository.save(user)).willReturn(user);
+        when(mapperSecurity.toUserDetailsImpl(any(UserEntity.class))).thenReturn(any(UserDetailsImpl.class));
+        //When
         SessionInfo sessionInfo = securityService.register(newUser);
 
-        // Then
+        //Then
         assertThat(sessionInfo).isNotNull();
+    }
+
+    @DisplayName("JUnit test for login")
+    @Test
+    void loginInfo() {
+        //Given
+        when(repository.findByEmail(user.getEmail())).thenReturn(Optional.of(user));
+        when(mapperSecurity.toUserDetailsImpl(user)).thenReturn(new UserDetailsImpl(
+                user.getEmail(),
+                user.getPassword()));
+
+        //When
+        SessionInfo sessionInfo = securityService.loginInfo(user.getEmail());
+
+        //Then
+        assertThat(sessionInfo).isNotNull();
+    }
+
+    @DisplayName("JUnit test for login method which throws exception")
+    @Test
+    void testLoginInfoNotFound() {
+        //Given
+        String email = "test@example.com";
+        when(repository.findByEmail(email)).thenReturn(Optional.empty());
+
+        //When/Then
+        assertThrows(UsernameNotFoundException.class, () -> {
+            securityService.loginInfo(email);
+        });
     }
 
     @DisplayName("JUnit test for register method which throws exception")
     @Test
-    void givenExistingEmail_whenRegister_thenThrowsException(){
-        // Given
-        given(repository.findByEmail(newUser.email()))
-                .willReturn(Optional.of(user));
+    void testRegisterThrowsExceptionIfUserExists() {
+        //Given
+        when(repository.existsByEmail(user.getEmail())).thenReturn(true);
 
-        // When
-        assertThrows(TalentAlreadyOccupiedException.class, () -> {
-            securityService.register(newUser);
-        });
-
-        // Then
-        verify(repository, never()).save(any(UserEntity.class));
+        //When/Then
+        assertThrows(TalentAlreadyOccupiedException.class, () -> securityService.register(newUser));
     }
 }

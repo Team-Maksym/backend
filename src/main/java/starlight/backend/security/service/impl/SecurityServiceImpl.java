@@ -38,14 +38,14 @@ public class SecurityServiceImpl implements SecurityServiceInterface {
     public SessionInfo loginInfo(String userName) {
         var user = repository.findByEmail(userName)
                 .orElseThrow(() -> new UsernameNotFoundException(userName + " not found user by email"));
-        var token = getJWTToken(mapperSecurity.toUserDetailsImpl(user));
+        var token = getJWTToken(mapperSecurity.toUserDetailsImpl(user),user.getUserId());
         return mapperSecurity.toSessionInfo(token);
     }
 
     @Override
     public SessionInfo register(NewUser newUser) {
         var user = saveNewUser(newUser);
-        var token = getJWTToken(mapperSecurity.toUserDetailsImpl(user));
+        var token = getJWTToken(mapperSecurity.toUserDetailsImpl(user),user.getUserId());
         return mapperSecurity.toSessionInfo(token);
     }
 
@@ -53,27 +53,21 @@ public class SecurityServiceImpl implements SecurityServiceInterface {
         if (repository.existsByEmail(newUser.email())) {
             throw new TalentAlreadyOccupiedException(newUser.email());
         }
-        return repository.save(UserEntity.builder()
+       return repository.save(UserEntity.builder()
                 .fullName(newUser.fullName())
                 .email(newUser.email())
                 .password(passwordEncoder.encode(newUser.password()))
                 .build());
     }
 
-    private String getUserIdByEmail(String email){
-       var user = repository.findByEmail(email)
-                .orElseThrow(() -> new UsernameNotFoundException(email + " not found user by email"));
-       return user.getUserId().toString();
-    }
-
     @Transactional(readOnly = true)
-    String getJWTToken(UserDetailsImpl authentication) {
+    String getJWTToken(UserDetailsImpl authentication, long id) {
         var now = Instant.now();
         var claims = JwtClaimsSet.builder()
                 .issuer("self")
                 .issuedAt(now)
                 .expiresAt(now.plus(180, MINUTES))
-                .subject(getUserIdByEmail(authentication.getUsername()))
+                .subject(String.valueOf(id))
                 .claim("scope", createScope(authentication))
                 .build();
         return jwtEncoder.encode(JwtEncoderParameters.from(claims)).getTokenValue();
