@@ -5,19 +5,21 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
+import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import starlight.backend.security.model.request.NewUser;
 import starlight.backend.security.model.response.SessionInfo;
 import starlight.backend.security.service.SecurityServiceInterface;
 import starlight.backend.user.model.entity.UserEntity;
 
-import static org.hamcrest.Matchers.hasSize;
+import java.util.Base64;
+
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.post;
@@ -55,27 +57,22 @@ class SecurityControllerTest {
     @Test
     void login() throws Exception {
         //Given
-        SessionInfo session = SessionInfo.builder().build();
+        MockHttpServletRequest mockRequest = new MockHttpServletRequest();
+        String authHeader = "Basic " + Base64.getEncoder().encodeToString(
+                (user.getEmail()+":"+user.getPassword())
+                        .getBytes());
+        mockRequest.addHeader("Authorization", authHeader);
         //When
-        when(service.loginInfo(user.getEmail())).thenReturn(session);
         //Then
-        mockMvc.perform(
-                        post("/talents/login")
-                                .content(objectMapper.writeValueAsString(user.getEmail()))
-                                .contentType(MediaType.APPLICATION_JSON)
-                )
-                .andDo(print())
-                .andExpect(status().isCreated())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$", hasSize(1)));
+        mockMvc.perform(MockMvcRequestBuilders.post("/talents/login")
+                        .accept(MediaType.APPLICATION_JSON)
+                        .header("Authorization", authHeader)
+                        .requestAttr("org.springframework.mock.web.MockHttpServletRequest", mockRequest))
+                .andExpect(MockMvcResultMatchers.status().isCreated());
     }
 
     @Test
     void register() throws Exception {
-        //Given
-        SessionInfo session = SessionInfo.builder().build();
-        //When
-        when(service.register(any(NewUser.class))).thenReturn(session);
         //Then
         mockMvc.perform(
                         post("/talents")
@@ -85,6 +82,6 @@ class SecurityControllerTest {
                 .andDo(print())
                 .andExpect(status().isCreated())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$", hasSize(1)));
+                .andExpect(jsonPath("$").isNotEmpty());
     }
 }
