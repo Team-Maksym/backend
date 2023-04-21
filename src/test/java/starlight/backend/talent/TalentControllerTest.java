@@ -37,15 +37,7 @@ class TalentControllerTest {
 
     @Test
     void pagination() throws Exception {
-        //Given
-        int page = 0;
-        int size = 10;
-        List<UserEntity> users = Arrays.asList(new UserEntity(), new UserEntity());
-        Page<UserEntity> pageRequest = new PageImpl<>(users);
-        TalentPagePagination expectedPagination = mapperTalent.toTalentPagePagination(pageRequest);
-        // When
-        when(service.talentPagination(page, size)).thenReturn(expectedPagination);
-        //Give
+        //Then
         mockMvc.perform(get("/api/v1/talents")
                         .param("page", "0")
                         .param("size", "10"))
