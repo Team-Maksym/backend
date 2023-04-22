@@ -13,6 +13,9 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 import starlight.backend.exception.PageNotFoundException;
 import starlight.backend.exception.TalentNotFoundException;
+import starlight.backend.kudos.model.entity.KudosEntity;
+import starlight.backend.kudos.repository.KudosRepository;
+import starlight.backend.proof.ProofRepository;
 import starlight.backend.proof.model.entity.ProofEntity;
 import starlight.backend.security.service.SecurityServiceInterface;
 import starlight.backend.talent.MapperTalent;
@@ -27,7 +30,6 @@ import starlight.backend.user.repository.UserRepository;
 
 import java.util.List;
 import java.util.Objects;
-import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -39,6 +41,8 @@ public class TalentServiceImpl implements TalentServiceInterface {
     private UserRepository repository;
     private PositionRepository positionRepository;
     private SecurityServiceInterface securityService;
+    private ProofRepository proofRepository;
+    private KudosRepository kudosRepository;
     private PasswordEncoder passwordEncoder;
     @PersistenceContext
     private EntityManager em;
@@ -129,10 +133,21 @@ public class TalentServiceImpl implements TalentServiceInterface {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "you cannot delete another talent");
         }
         UserEntity user = em.find(UserEntity.class, talentId);
-        user.getProofs().clear();
-        user.setProofs(null);
         user.setPositions(null);
-        user.setKudos(null);
+        user.getAuthorities().clear();
+        if (!user.getKudos().isEmpty()) {
+            for (KudosEntity kudos : kudosRepository.findByOwner_UserId(talentId)) {
+                kudos.setProof(null);
+                kudos.setOwner(null);
+                em.remove(kudos);
+            }
+        }
+        for (ProofEntity proof : user.getProofs()) {
+            proof.setKudos(null);
+            proof.setUser(null);
+            em.remove(proof);
+        }
+        user.getProofs().clear();
         em.remove(user);
     }
 }

@@ -14,6 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import starlight.backend.exception.*;
+import starlight.backend.kudos.model.entity.KudosEntity;
 import starlight.backend.proof.ProofMapper;
 import starlight.backend.proof.ProofRepository;
 import starlight.backend.proof.model.entity.ProofEntity;
@@ -136,9 +137,16 @@ public class ProofServiceImpl implements ProofServiceInterface {
         if (!securityService.checkingLoggedAndToken(talentId, auth)) {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "you cannot delete proof another talent");
         }
+        delete(proofId);
+    }
+
+    public void delete(long proofId) {
         ProofEntity proof = em.find(ProofEntity.class, proofId);
-        proof.getKudos().clear();
         proof.setUser(null);
+        for (KudosEntity kudos : proof.getKudos()) {
+            em.remove(kudos);
+        }
+        proof.getKudos().clear();
         em.remove(proof);
     }
 
@@ -160,8 +168,8 @@ public class ProofServiceImpl implements ProofServiceInterface {
                         Status.PUBLISHED,
                         PageRequest.of(page, size, doSort(sort, DATA_CREATED)));
             } else if (status.equals(Status.ALL.getStatus())) {
-                pageRequest = repository.findAllByUser_UserId(
-                        talentId,
+                pageRequest = repository.findByUser_UserIdAndStatus(talentId,
+                        Status.ALL,
                         PageRequest.of(page, size, doSort(sort, DATA_CREATED)));
             } else {
                 throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "♥ Bad status in request. ♥");

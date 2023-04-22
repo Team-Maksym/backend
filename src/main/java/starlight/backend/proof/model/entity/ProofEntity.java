@@ -43,11 +43,11 @@ public class ProofEntity {
     @Enumerated(EnumType.STRING)
     private Status status;
 
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
     private UserEntity user;
 
-    @OneToMany(mappedBy = "proof",fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "proof")
     private Set<KudosEntity> kudos;
 
     public void setDateLastUpdated(Instant now) {

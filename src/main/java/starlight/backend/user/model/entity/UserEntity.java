@@ -55,9 +55,9 @@ public class UserEntity {
     @ElementCollection(fetch = FetchType.EAGER)
     private Collection<String> authorities;
 
-    @OneToMany(mappedBy = "user",fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "user")
     private Set<ProofEntity> proofs;
 
-    @OneToMany(mappedBy = "owner",fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "owner")
     private Set<KudosEntity> kudos;
 }

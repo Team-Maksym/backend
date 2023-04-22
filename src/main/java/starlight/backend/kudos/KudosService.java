@@ -71,10 +71,10 @@ public class KudosService {
 
         var proof = proofRepository.findById(proofId)
                 .orElseThrow(() -> new ProofNotFoundException(proofId));
-        var owner = userRepository.findById(Long.valueOf(auth.getName()))
+        var follower= userRepository.findById(Long.valueOf(auth.getName()))
                 .orElseThrow(() -> new UserNotFoundException(auth.getName()));
-        var follower = userRepository.findById(proof.getUser().getUserId())
-                .orElseThrow(() -> new UserNotFoundException(auth.getName()));
+        var owner = userRepository.findById(proof.getUser().getUserId())
+                .orElseThrow(() -> new UserNotFoundException(proof.getUser().getUserId()));
 
         var kudos = KudosEntity.builder()
                 .followerId(follower.getUserId())

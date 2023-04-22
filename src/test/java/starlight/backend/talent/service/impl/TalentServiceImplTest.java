@@ -4,7 +4,9 @@ import jakarta.persistence.EntityManager;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.runner.RunWith;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -17,6 +19,8 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.web.server.ResponseStatusException;
 import starlight.backend.exception.PageNotFoundException;
 import starlight.backend.exception.TalentNotFoundException;
+import starlight.backend.kudos.model.entity.KudosEntity;
+import starlight.backend.kudos.repository.KudosRepository;
 import starlight.backend.proof.model.entity.ProofEntity;
 import starlight.backend.security.service.SecurityServiceInterface;
 import starlight.backend.talent.MapperTalent;
@@ -39,9 +43,9 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
-import static org.mockito.BDDMockito.willDoNothing;
 import static org.mockito.Mockito.*;
 
+@ExtendWith(MockitoExtension.class)
 @RunWith(SpringRunner.class)
 @SpringBootTest
 class TalentServiceImplTest {
@@ -51,6 +55,8 @@ class TalentServiceImplTest {
     private UserRepository repository;
     @MockBean
     private PositionRepository positionRepository;
+    @MockBean
+    private KudosRepository kudosRepository;
     @MockBean
     private SecurityServiceInterface securityService;
     @MockBean
@@ -62,6 +68,14 @@ class TalentServiceImplTest {
     @Autowired
     private TalentServiceImpl talentService;
     private UserEntity user;
+
+    public UserEntity getUser() {
+        return user;
+    }
+
+    public void setUser(UserEntity user) {
+        this.user = user;
+    }
 
     @BeforeEach
     public void setup() {
@@ -126,13 +140,12 @@ class TalentServiceImplTest {
     @Test
     void talentFullInfo_WithInvalidId_ShouldThrowTalentNotFoundException() {
         // Given
-        long id = 1L;
-        given(repository.findById(id)).willReturn(Optional.empty());
+        given(repository.findById(user.getUserId())).willReturn(Optional.empty());
 
         // When // Then
-        assertThatThrownBy(() -> talentService.talentFullInfo(id))
+        assertThatThrownBy(() -> talentService.talentFullInfo(user.getUserId()))
                 .isInstanceOf(TalentNotFoundException.class)
-                .hasMessage("Talent not found by id " + id);
+                .hasMessage("Talent not found by id " + user.getUserId());
     }
 
     @DisplayName("JUnit test for update info about talent method")
@@ -179,7 +192,7 @@ class TalentServiceImplTest {
         verify(repository, times(1)).findById(user.getUserId());
     }
 
-    @DisplayName("JUnit test for update info about talent method which throw exception")
+    @DisplayName("JUnit test for update info about talent method which throw exception Unauthorized")
     @Test
     void updateTalentProfile_WithInvalidId_ShouldThrowUnauthorizedException() {
         // Given
@@ -202,28 +215,24 @@ class TalentServiceImplTest {
                 .hasMessage("401 UNAUTHORIZED \"you cannot change another talent\"");
     }
 
-    @DisplayName("JUnit test for delete talent method")
+    @DisplayName("Delete talent profile successfully")
     @Test
     void deleteTalentProfile() {
-        // Given
-        Set<ProofEntity> proofs = new HashSet<>();
-        proofs.add(new ProofEntity());
-        user.setProofs(proofs);
-        when(securityService.checkingLoggedAndToken(user.getUserId(), auth)).thenReturn(true);
+       // Given
         when(em.find(UserEntity.class, user.getUserId())).thenReturn(user);
-        willDoNothing().given(em).remove(user.getUserId());
+        when(securityService.checkingLoggedAndToken(user.getUserId(), auth)).thenReturn(true);
         // When
         talentService.deleteTalentProfile(user.getUserId(), auth);
 
         // Then
-        verify(em, times(1)).remove(user.getProofs());
-        verify(em, times(1)).remove(user.getUserId());
-        assertNull(user.getPositions());
-        assertNull(user.getKudos());
-        assertTrue(user.getProofs().isEmpty());
+        verify(em).remove(user);
+        UserEntity deletedUser = em.find(UserEntity.class, user.getUserId());
+        assertNull(deletedUser.getPositions());
+        assertNull(deletedUser.getKudos());
+        assertTrue(deletedUser.getProofs().isEmpty());
     }
 
-    @DisplayName("JUnit test for delete talent method which throw exception")
+    @DisplayName("JUnit test for delete talent method which throw exception Unauthorized")
     @Test
     void deleteTalentProfile_WithInvalidId_ShouldThrowUnauthorizedException() {
         // Given
