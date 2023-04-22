@@ -31,6 +31,15 @@ public interface ProofMapper {
                 .build();
     }
 
+    default ProofPagePagination toProofPagePaginationWithProofFullInfo(Page<ProofEntity> proofs) {
+        return ProofPagePagination.builder()
+                .total(proofs.getTotalElements())
+                .data(proofs.getContent()
+                        .stream()
+                        .map(this::toProofFullInfo)
+                        .toList())
+                .build();
+    }
     default ProofFullInfo toProofFullInfo(ProofEntity proof) {
         return ProofFullInfo.builder()
                 .title(proof.getTitle())

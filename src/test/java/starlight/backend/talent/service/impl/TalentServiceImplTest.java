@@ -5,20 +5,18 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.web.server.ResponseStatusException;
 import starlight.backend.exception.PageNotFoundException;
 import starlight.backend.exception.TalentNotFoundException;
-import starlight.backend.security.model.request.NewUser;
 import starlight.backend.security.service.SecurityServiceInterface;
 import starlight.backend.talent.MapperTalent;
 import starlight.backend.talent.model.request.TalentUpdateRequest;
@@ -35,6 +33,7 @@ import java.util.stream.Collectors;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
 import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.*;
@@ -44,25 +43,20 @@ import static org.mockito.Mockito.*;
 class TalentServiceImplTest {
     @MockBean
     private MapperTalent mapper;
-
     @MockBean
     private UserRepository repository;
-
     @MockBean
     private PositionRepository positionRepository;
-
     @MockBean
     private SecurityServiceInterface securityService;
-
     @MockBean
     private PasswordEncoder passwordEncoder;
-
+    @MockBean
+    private Authentication auth;
     @MockBean
     private EntityManager em;
-
     @Autowired
     private TalentServiceImpl talentService;
-
     private UserEntity user;
 
     @BeforeEach
@@ -142,10 +136,10 @@ class TalentServiceImplTest {
     void updateTalentProfile() {
         // Given
         TalentUpdateRequest updateRequest = TalentUpdateRequest.builder()
-                .fullName("Jane Doe")
+                .fullName("Joly Moth")
+                .password("Secret123")
                 .avatar("https://example.com/new-avatar.jpg")
                 .education("New University")
-                .password("newpassword")
                 .experience("New Experience")
                 .positions(Collections.singletonList("Manager"))
                 .build();
@@ -153,31 +147,49 @@ class TalentServiceImplTest {
         List<String> updatedPositions = new ArrayList<>();
         updatedPositions.add("Manager");
 
-        TalentFullInfo updatedTalentInfo = TalentFullInfo.builder()
-                .fullName(updateRequest.fullName())
-                .avatar(updateRequest.avatar())
-                .education(updateRequest.education())
-                .experience(updateRequest.experience())
-                .positions(updatedPositions)
-                .build();
+        TalentFullInfo updatedTalentInfo = TalentFullInfo.builder().build();
         when(repository.findById(user.getUserId())).thenReturn(Optional.of(user));
-        //when(securityService.checkingLoggedAndToken(user.getUserId(), null)).thenReturn(false);
-        when(passwordEncoder.encode(updateRequest.password())).thenReturn("hashedpassword");
+        when(securityService.checkingLoggedAndToken(user.getUserId(), auth)).thenReturn(true);
+        when(passwordEncoder.encode(updateRequest.password())).thenReturn(user.getPassword());
         when(mapper.toTalentFullInfo(any())).thenReturn(updatedTalentInfo);
 
         // When
-        //TalentFullInfo result = talentService.updateTalentProfile(user.getUserId(), updateRequest, null);
+        TalentFullInfo result = talentService.updateTalentProfile(user.getUserId(), updateRequest, auth);
 
         // Then
-       // assertEquals(updatedTalentInfo, result);
-        assertEquals(updateRequest.fullName(), user.getFullName());
-        assertEquals("hashedpassword", user.getPassword());
-        assertEquals(updateRequest.avatar(),user.getAvatar());
-        assertEquals(updateRequest.education(),user.getEducation());
-        assertEquals(updateRequest.experience(), user.getExperience());
-        assertEquals(updatedPositions, user.getPositions().stream()
+        assertEquals(updatedTalentInfo, result);
+        assertEquals(updateRequest.password(), user.getPassword());
+        assertNotEquals(updateRequest.fullName(), user.getFullName());
+        assertNotEquals(updateRequest.avatar(), user.getAvatar());
+        assertNotEquals(updateRequest.education(), user.getEducation());
+        assertNotEquals(updateRequest.experience(), user.getExperience());
+        assertNotEquals(updatedPositions, user.getPositions().stream()
                 .map(PositionEntity::getPosition).collect(Collectors.toSet()));
+
         verify(repository, times(1)).findById(user.getUserId());
+    }
+
+    @DisplayName("JUnit test for update info about talent method which throw exception")
+    @Test
+    void updateTalentProfile_WithInvalidId_ShouldThrowUnauthorizedException() {
+        // Given
+        TalentUpdateRequest updateRequest = TalentUpdateRequest.builder()
+                .fullName("Jon Snow")
+                .password("Secret123")
+                .avatar("https://example.com/new-avatar.jpg")
+                .education("New University")
+                .experience("New Experience")
+                .positions(Collections.singletonList("Manager"))
+                .build();
+
+        when(repository.findById(user.getUserId())).thenReturn(Optional.of(user));
+        when(passwordEncoder.encode(updateRequest.password())).thenReturn(user.getPassword());
+        when(securityService.checkingLoggedAndToken(user.getUserId(), null)).thenReturn(false);
+
+        // When // Then
+        assertThatThrownBy(() -> talentService.updateTalentProfile(user.getUserId(), updateRequest, null))
+                .isInstanceOf(ResponseStatusException.class)
+                .hasMessage("401 UNAUTHORIZED \"you cannot change another talent\"");
     }
 
     @DisplayName("JUnit test for delete talent method")
@@ -185,12 +197,25 @@ class TalentServiceImplTest {
     void deleteTalentProfile() {
         // Given
         when(em.find(UserEntity.class, user.getUserId())).thenReturn(user);
-       // when(securityService.checkingLoggedAndToken(user.getUserId(), null)).thenReturn(true);
+        when(securityService.checkingLoggedAndToken(user.getUserId(), auth)).thenReturn(true);
 
         // When
-        //talentService.deleteTalentProfile(user.getUserId(), null);
+        talentService.deleteTalentProfile(user.getUserId(), auth);
 
         // Then
-        verify(em, times(1)).remove(user);
+         verify(em, times(1)).remove(user);
+    }
+
+    @DisplayName("JUnit test for delete talent method which throw exception")
+    @Test
+    void deleteTalentProfile_WithInvalidId_ShouldThrowUnauthorizedException() {
+        // Given
+        when(em.find(UserEntity.class, user.getUserId())).thenReturn(user);
+        when(securityService.checkingLoggedAndToken(user.getUserId(), null)).thenReturn(false);
+
+        // When // Then
+        assertThatThrownBy(() -> talentService.deleteTalentProfile(user.getUserId(), null))
+                .isInstanceOf(ResponseStatusException.class)
+                .hasMessage("401 UNAUTHORIZED \"you cannot delete another talent\"");
     }
 }

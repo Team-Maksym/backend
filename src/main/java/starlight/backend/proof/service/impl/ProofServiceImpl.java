@@ -167,7 +167,7 @@ public class ProofServiceImpl implements ProofServiceInterface {
             }
             if (page >= pageRequest.getTotalPages())
                 throw new PageNotFoundException(page);
-            return mapper.toProofPagePagination(pageRequest);
+            return mapper.toProofPagePaginationWithProofFullInfo(pageRequest);
         }
         var pageRequest = repository.findByUser_UserIdAndStatus(talentId,
                 Status.PUBLISHED,
