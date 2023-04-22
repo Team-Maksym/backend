@@ -17,6 +17,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.web.server.ResponseStatusException;
 import starlight.backend.exception.PageNotFoundException;
 import starlight.backend.exception.TalentNotFoundException;
+import starlight.backend.proof.model.entity.ProofEntity;
 import starlight.backend.security.service.SecurityServiceInterface;
 import starlight.backend.talent.MapperTalent;
 import starlight.backend.talent.model.request.TalentUpdateRequest;
@@ -34,9 +35,11 @@ import java.util.stream.Collectors;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
 import static org.junit.Assert.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.BDDMockito.willDoNothing;
 import static org.mockito.Mockito.*;
 
 @RunWith(SpringRunner.class)
@@ -143,7 +146,7 @@ class TalentServiceImplTest {
                 .avatar("https://example.com/new-avatar.jpg")
                 .education("Master's Degree")
                 .experience("5 years")
-                .positions(Arrays.asList("Senior Software Engineer", "Team Lead"))
+                .positions(List.of("Senior Software Engineer"))
                 .build();
 
         TalentFullInfo updatedTalentInfo = TalentFullInfo.builder().build();
@@ -166,12 +169,12 @@ class TalentServiceImplTest {
             assertEquals(updateRequest.positions(), user.getPositions().stream()
                     .map(PositionEntity::getPosition).collect(Collectors.toList()));
         } else {
-            assertEquals(Arrays.asList("Senior Software Engineer", "Team Lead"), user.getPositions().stream()
+            assertEquals(List.of("Senior Software Engineer"), user.getPositions().stream()
                     .map(PositionEntity::getPosition).collect(Collectors.toList()));
         }
-        assertNotEquals(updateRequest.avatar(), user.getAvatar());
-        assertNotEquals(updateRequest.education(), user.getEducation());
-        assertNotEquals(updateRequest.experience(), user.getExperience());
+        assertEquals(updateRequest.avatar(), user.getAvatar());
+        assertEquals(updateRequest.education(), user.getEducation());
+        assertEquals(updateRequest.experience(), user.getExperience());
 
         verify(repository, times(1)).findById(user.getUserId());
     }
@@ -203,14 +206,21 @@ class TalentServiceImplTest {
     @Test
     void deleteTalentProfile() {
         // Given
-        when(em.find(UserEntity.class, user.getUserId())).thenReturn(user);
+        Set<ProofEntity> proofs = new HashSet<>();
+        proofs.add(new ProofEntity());
+        user.setProofs(proofs);
         when(securityService.checkingLoggedAndToken(user.getUserId(), auth)).thenReturn(true);
-
+        when(em.find(UserEntity.class, user.getUserId())).thenReturn(user);
+        willDoNothing().given(em).remove(user.getUserId());
         // When
         talentService.deleteTalentProfile(user.getUserId(), auth);
 
         // Then
-         verify(em, times(1)).remove(user);
+        verify(em, times(1)).remove(user.getProofs());
+        verify(em, times(1)).remove(user.getUserId());
+        assertNull(user.getPositions());
+        assertNull(user.getKudos());
+        assertTrue(user.getProofs().isEmpty());
     }
 
     @DisplayName("JUnit test for delete talent method which throw exception")

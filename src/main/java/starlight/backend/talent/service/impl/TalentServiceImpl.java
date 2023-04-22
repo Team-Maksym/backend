@@ -13,6 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 import starlight.backend.exception.PageNotFoundException;
 import starlight.backend.exception.TalentNotFoundException;
+import starlight.backend.proof.model.entity.ProofEntity;
 import starlight.backend.security.service.SecurityServiceInterface;
 import starlight.backend.talent.MapperTalent;
 import starlight.backend.talent.model.request.TalentUpdateRequest;
@@ -128,7 +129,10 @@ public class TalentServiceImpl implements TalentServiceInterface {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "you cannot delete another talent");
         }
         UserEntity user = em.find(UserEntity.class, talentId);
+        user.getProofs().clear();
+        user.setProofs(null);
         user.setPositions(null);
+        user.setKudos(null);
         em.remove(user);
     }
 }

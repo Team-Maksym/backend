@@ -22,7 +22,7 @@ public class PositionEntity {
 
     private String position;
 
-    @ManyToMany(mappedBy = "positions")
+    @ManyToMany(mappedBy = "positions",fetch = FetchType.EAGER)
     @JsonBackReference
     private Set<UserEntity> users;
 

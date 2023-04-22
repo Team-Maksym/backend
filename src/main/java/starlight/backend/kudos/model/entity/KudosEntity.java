@@ -24,11 +24,11 @@ public class KudosEntity {
     private Long followerId;
     private Instant createData;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "user_id", nullable = false)
     private UserEntity owner;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "proof_id", nullable = false)
     private ProofEntity proof;
 }

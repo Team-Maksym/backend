@@ -137,6 +137,7 @@ public class ProofServiceImpl implements ProofServiceInterface {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "you cannot delete proof another talent");
         }
         ProofEntity proof = em.find(ProofEntity.class, proofId);
+        proof.getKudos().clear();
         proof.setUser(null);
         em.remove(proof);
     }
