@@ -62,3 +62,16 @@ INSERT INTO user_entity (full_name,email,password,birthday,avatar,education,expe
 VALUES ('Tyler Khudoliy','gridippeiwa72@gmail.com','$2a$10$A40TjVC8xC1tC7uChck0BOWVxgMKY..7sfG2.YHrjkrG2GLSy4YLW','2001-02-14',null,'education','experience');
 INSERT INTO user_entity (full_name,email,password,birthday,avatar,education,experience)
 VALUES ('William Khudoliy','hounoimottauq3830@gmail.com','$2a$10$A40TjVC8xC1tC7uChck0BOWVxgMKY..7sfG2.YHrjkrG2GLSy4YLW','1989-01-18','https://drive.google.com/file/d/19zB-HGRRAJIjsKaxLZxD6ZNmEZtn2mjc/view?usp=share_link','education','experience');
+
+-- changeset kate:4
+INSERT INTO user_entity (full_name,email,password)
+VALUES ('Anna Sukharieva','Anna.Sukharieva@infiz.khpi.edu.ua','$2a$10$w2h6VTaTrWcqh3pdGGj5zer5Gks1xvtYArKUFpIq00FcMimKbNNiu');
+INSERT INTO user_entity (full_name,email,password,birthday,education)
+VALUES ('Kateryna Podus','katerinapodus@gmail.com','$2a$10$RLM2UzPbN.J0cvI2t0TjKOiruiwSOQrBxIk22XBR/G/KERMpNDXmS','2002-02-01','Sumdu');
+INSERT INTO user_entity (full_name,email,password)
+VALUES ('ABoba','ref07lynad@gmail.com','$2a$10$8dDgfyCcwAJPSMpAQAjbVuMnAhS4vfZc2RuGuqn8/Wm8q.B9u2iDS');
+INSERT INTO user_entity (full_name,email,password)
+VALUES ('Test','email@email.com','$2a$10$/1f8thpvBU9P58gsHCbTiukL3u5pPpxscChs8K0L.F2x2xusuI.7y');
+
+-- changeset kate:5
+UPDATE user_entity SET password = '$2a$10$9r3TT5nLsWsS0munlifud.sTclCts6cDh1h31IqZLMZVxfAlWDIKK' WHERE user_id = 32;

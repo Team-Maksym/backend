@@ -150,31 +150,27 @@ public class ProofServiceImpl implements ProofServiceInterface {
             if (status.equals(Status.DRAFT.getStatus())) {
                 pageRequest = repository.findByUser_UserIdAndStatus(talentId,
                         Status.DRAFT,
-                        PageRequest.of(page, size, Sort.by(DATA_CREATED)));
+                        PageRequest.of(page, size, doSort(sort, DATA_CREATED)));
             } else if (status.equals(Status.HIDDEN.getStatus())) {
                 pageRequest = repository.findByUser_UserIdAndStatus(talentId,
                         Status.HIDDEN,
-                        PageRequest.of(page, size, Sort.by(DATA_CREATED)));
+                        PageRequest.of(page, size, doSort(sort, DATA_CREATED)));
             } else if (status.equals(Status.PUBLISHED.getStatus())) {
                 pageRequest = repository.findByUser_UserIdAndStatus(talentId,
                         Status.PUBLISHED,
-                        PageRequest.of(page, size, Sort.by(DATA_CREATED)));
+                        PageRequest.of(page, size, doSort(sort, DATA_CREATED)));
             } else if (status.equals(Status.ALL.getStatus())) {
                 pageRequest = repository.findAllByUser_UserId(
                         talentId,
-                        PageRequest.of(page, size, Sort.by(DATA_CREATED)));
+                        PageRequest.of(page, size, doSort(sort, DATA_CREATED)));
             } else {
                 throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "♥ Bad status in request. ♥");
             }
-            if (page >= pageRequest.getTotalPages())
-                throw new PageNotFoundException(page);
             return mapper.toProofPagePaginationWithProofFullInfo(pageRequest);
         }
         var pageRequest = repository.findByUser_UserIdAndStatus(talentId,
                 Status.PUBLISHED,
                 PageRequest.of(page, size, doSort(sort, DATA_CREATED)));
-        if (page >= pageRequest.getTotalPages())
-            throw new PageNotFoundException(page);
         return mapper.toProofPagePagination(pageRequest);
     }
 

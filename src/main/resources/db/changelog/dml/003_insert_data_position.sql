@@ -95,3 +95,11 @@ VALUES (2,30);
 INSERT INTO user_position ( position_id,user_id)
 VALUES (3,30);
 ---
+-- changeset kate:4
+INSERT INTO position_entity (position)
+VALUES ('Frontend developer');
+
+INSERT INTO user_position ( position_id,user_id)
+VALUES (9,32);
+INSERT INTO user_position ( position_id,user_id)
+VALUES (4,32);
