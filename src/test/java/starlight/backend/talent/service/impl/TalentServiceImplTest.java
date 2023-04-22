@@ -27,6 +27,7 @@ import starlight.backend.user.model.entity.UserEntity;
 import starlight.backend.user.repository.PositionRepository;
 import starlight.backend.user.repository.UserRepository;
 
+import java.time.LocalDate;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -138,33 +139,39 @@ class TalentServiceImplTest {
         TalentUpdateRequest updateRequest = TalentUpdateRequest.builder()
                 .fullName("Joly Moth")
                 .password("Secret123")
+                .birthday(LocalDate.of(1995, 1, 1))
                 .avatar("https://example.com/new-avatar.jpg")
-                .education("New University")
-                .experience("New Experience")
-                .positions(Collections.singletonList("Manager"))
+                .education("Master's Degree")
+                .experience("5 years")
+                .positions(Arrays.asList("Senior Software Engineer", "Team Lead"))
                 .build();
-
-        List<String> updatedPositions = new ArrayList<>();
-        updatedPositions.add("Manager");
 
         TalentFullInfo updatedTalentInfo = TalentFullInfo.builder().build();
         when(repository.findById(user.getUserId())).thenReturn(Optional.of(user));
         when(securityService.checkingLoggedAndToken(user.getUserId(), auth)).thenReturn(true);
         when(passwordEncoder.encode(updateRequest.password())).thenReturn(user.getPassword());
         when(mapper.toTalentFullInfo(any())).thenReturn(updatedTalentInfo);
-
         // When
         TalentFullInfo result = talentService.updateTalentProfile(user.getUserId(), updateRequest, auth);
 
         // Then
         assertEquals(updatedTalentInfo, result);
         assertEquals(updateRequest.password(), user.getPassword());
-        assertNotEquals(updateRequest.fullName(), user.getFullName());
+        if (updateRequest.fullName() != null) {
+            assertEquals(updateRequest.fullName(), user.getFullName());
+        } else {
+            assertEquals("Jon Snow", user.getFullName());
+        }
+        if (updateRequest.positions() != null && !updateRequest.positions().isEmpty()) {
+            assertEquals(updateRequest.positions(), user.getPositions().stream()
+                    .map(PositionEntity::getPosition).collect(Collectors.toList()));
+        } else {
+            assertEquals(Arrays.asList("Senior Software Engineer", "Team Lead"), user.getPositions().stream()
+                    .map(PositionEntity::getPosition).collect(Collectors.toList()));
+        }
         assertNotEquals(updateRequest.avatar(), user.getAvatar());
         assertNotEquals(updateRequest.education(), user.getEducation());
         assertNotEquals(updateRequest.experience(), user.getExperience());
-        assertNotEquals(updatedPositions, user.getPositions().stream()
-                .map(PositionEntity::getPosition).collect(Collectors.toSet()));
 
         verify(repository, times(1)).findById(user.getUserId());
     }

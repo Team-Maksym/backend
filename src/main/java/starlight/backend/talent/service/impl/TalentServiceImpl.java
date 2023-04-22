@@ -120,7 +120,6 @@ public class TalentServiceImpl implements TalentServiceInterface {
             return !newPosition.isEmpty() ? newPosition : talentPositions;
         }
         return talentPositions;
-
     }
 
     @Override
