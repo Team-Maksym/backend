@@ -53,12 +53,11 @@ public class TalentServiceImpl implements TalentServiceInterface {
     }
 
     @Override
-    public Optional<TalentFullInfo> talentFullInfo(long id) {
-        return Optional.of(repository.findById(id)
+    public TalentFullInfo talentFullInfo(long id) {
+        return repository.findById(id)
                 .map(mapper::toTalentFullInfo)
-                .orElseThrow(() -> new TalentNotFoundException(id)));
+                .orElseThrow(() -> new TalentNotFoundException(id));
     }
-
 
     @Override
     public TalentFullInfo updateTalentProfile(long id, TalentUpdateRequest talentUpdateRequest, Authentication auth) {

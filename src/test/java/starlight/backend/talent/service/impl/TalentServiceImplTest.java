@@ -1,6 +1,8 @@
 package starlight.backend.talent.service.impl;
 
 import jakarta.persistence.EntityManager;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
@@ -16,6 +18,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.context.junit4.SpringRunner;
 import starlight.backend.exception.PageNotFoundException;
 import starlight.backend.exception.TalentNotFoundException;
+import starlight.backend.security.model.request.NewUser;
 import starlight.backend.security.service.SecurityServiceInterface;
 import starlight.backend.talent.MapperTalent;
 import starlight.backend.talent.model.request.TalentUpdateRequest;
@@ -60,13 +63,25 @@ class TalentServiceImplTest {
     @Autowired
     private TalentServiceImpl talentService;
 
+    private UserEntity user;
 
+    @BeforeEach
+    public void setup() {
+        user = UserEntity.builder()
+                .userId(1L)
+                .fullName("Jon Snow")
+                .email("myemail@gmail.com")
+                .password("Secret123")
+                .build();
+    }
+
+    @DisplayName("JUnit test for pagination (talents) method")
     @Test
     void talentPagination_WithValidPageNumber_ShouldGetPage() {
         // Given
         int page = 0;
         int size = 10;
-        List<UserEntity> users = Arrays.asList(new UserEntity(), new UserEntity());
+        List<UserEntity> users = Arrays.asList(user, user);
         Page<UserEntity> pageRequest = new PageImpl<>(users);
         TalentPagePagination expectedPagination = TalentPagePagination.builder().build();
         given(repository.findAll(any(Pageable.class))).willReturn(pageRequest);
@@ -79,6 +94,7 @@ class TalentServiceImplTest {
         assertThat(resultPagination).isEqualTo(expectedPagination);
     }
 
+    @DisplayName("JUnit test for pagination (talents) method which throw exception")
     @Test
     void talentPagination_WithInvalidPageNumber_ShouldThrowPageNotFoundException() {
         // Given
@@ -87,51 +103,44 @@ class TalentServiceImplTest {
         Page<UserEntity> pageRequest = new PageImpl<>(Collections.emptyList());
         given(repository.findAll(any(Pageable.class))).willReturn(pageRequest);
 
-        // Then
+        // When // Then
         assertThatThrownBy(() -> talentService.talentPagination(page, size))
                 .isInstanceOf(PageNotFoundException.class)
                 .hasMessage("No such page " + page);
     }
 
+    @DisplayName("JUnit test for get full info about talent method")
     @Test
     void talentFullInfo() {
         // Given
-        UserEntity user = new UserEntity();
         TalentFullInfo expectedFullInfo = TalentFullInfo.builder().build();
         given(repository.findById(user.getUserId())).willReturn(Optional.of(user));
         given(mapper.toTalentFullInfo(user)).willReturn(expectedFullInfo);
 
         // When
-        Optional<TalentFullInfo> resultFullInfo = talentService.talentFullInfo(user.getUserId());
+        TalentFullInfo resultFullInfo = talentService.talentFullInfo(user.getUserId());
 
         // Then
-        assertThat(resultFullInfo).isPresent().contains(expectedFullInfo);
+        assertThat(resultFullInfo).isEqualTo(expectedFullInfo);
     }
 
+    @DisplayName("JUnit test for get full info about talent method which throw exception")
     @Test
     void talentFullInfo_WithInvalidId_ShouldThrowTalentNotFoundException() {
         // Given
         long id = 1L;
         given(repository.findById(id)).willReturn(Optional.empty());
 
-        // Then
+        // When // Then
         assertThatThrownBy(() -> talentService.talentFullInfo(id))
                 .isInstanceOf(TalentNotFoundException.class)
                 .hasMessage("Talent not found by id " + id);
     }
 
+    @DisplayName("JUnit test for update info about talent method")
     @Test
     void updateTalentProfile() {
         // Given
-        UserEntity user = new UserEntity();
-        user.setFullName("John Doe");
-        user.setPassword("password");
-        user.setAvatar("https://example.com/avatar.jpg");
-        user.setEducation("Some University");
-        user.setExperience("Some Experience");
-        Set<PositionEntity> positions = new HashSet<>();
-        positions.add(new PositionEntity("Developer"));
-        user.setPositions(positions);
         TalentUpdateRequest updateRequest = TalentUpdateRequest.builder()
                 .fullName("Jane Doe")
                 .avatar("https://example.com/new-avatar.jpg")
@@ -171,13 +180,10 @@ class TalentServiceImplTest {
         verify(repository, times(1)).findById(user.getUserId());
     }
 
+    @DisplayName("JUnit test for delete talent method")
     @Test
     void deleteTalentProfile() {
         // Given
-        UserEntity user = new UserEntity();
-        user.setFullName("testuser");
-        user.setEmail("zaxaqueiboigreu-5997@gmail.com");
-        user.setPassword("password");
         when(em.find(UserEntity.class, user.getUserId())).thenReturn(user);
        // when(securityService.checkingLoggedAndToken(user.getUserId(), null)).thenReturn(true);
 
