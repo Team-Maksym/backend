@@ -42,6 +42,7 @@ public interface ProofMapper {
 
     default ProofFullInfo toProofFullInfo(ProofEntity proof) {
         return ProofFullInfo.builder()
+                .id(proof.getProofId())
                 .title(proof.getTitle())
                 .link(proof.getLink())
                 .status(proof.getStatus())
