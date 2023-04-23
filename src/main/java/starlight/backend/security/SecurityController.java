@@ -53,9 +53,9 @@ public class SecurityController {
     )
     @PostMapping("/talents/login")
     @ResponseStatus(HttpStatus.OK)
-    public SessionInfo login(Authentication authentication) {
+    public SessionInfo login(Authentication auth) {
         log.info("@PostMapping(\"/talents/login\")");
-        return service.loginInfo(authentication.getName());
+        return service.loginInfo(auth);
     }
 
     @Operation(

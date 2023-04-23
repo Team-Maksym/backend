@@ -2,6 +2,7 @@ package starlight.backend.security;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,18 +10,17 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
-import org.springframework.mock.web.MockHttpServletRequest;
+import org.springframework.security.core.Authentication;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import starlight.backend.security.model.request.NewUser;
+import starlight.backend.security.model.response.SessionInfo;
 import starlight.backend.security.service.SecurityServiceInterface;
-import starlight.backend.talent.TalentController;
 import starlight.backend.user.model.entity.UserEntity;
 
-import java.util.Base64;
-
+import static org.mockito.Mockito.when;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -30,10 +30,13 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @AutoConfigureMockMvc(addFilters = false)
 class SecurityControllerTest {
     @MockBean
-    SecurityServiceInterface service;
+    private SecurityServiceInterface service;
     @Autowired
-    MockMvc mockMvc;
-    private final ObjectMapper objectMapper = new ObjectMapper();
+    private MockMvc mockMvc;
+    @Autowired
+    private ObjectMapper objectMapper;
+    @MockBean
+    private Authentication auth;
 
     private NewUser newUser;
 
@@ -54,34 +57,35 @@ class SecurityControllerTest {
                 .build();
     }
 
+    @DisplayName("JUnit test for login")
     @Test
     void login() throws Exception {
         //Given
-        MockHttpServletRequest mockRequest = new MockHttpServletRequest();
-        String authHeader = "Basic " + Base64.getEncoder().encodeToString(
-                (user.getEmail() + ":" + user.getPassword())
-                        .getBytes());
-        mockRequest.addHeader("Authorization", authHeader);
-        //When
-        //Then
+        SessionInfo sessionInfo = SessionInfo.builder().build();
+        when(service.loginInfo(auth)).thenReturn(sessionInfo);
+
+        //When //Then
         mockMvc.perform(MockMvcRequestBuilders.post("/api/v1/talents/login")
-                        .accept(MediaType.APPLICATION_JSON)
-                        .header("Authorization", authHeader)
-                        .requestAttr("org.springframework.mock.web.MockHttpServletRequest", mockRequest))
-                .andExpect(MockMvcResultMatchers.status().isCreated());
+                        .accept(MediaType.APPLICATION_JSON))
+                .andExpect(MockMvcResultMatchers.status().isOk());
     }
 
+    @DisplayName("JUnit test for register method")
     @Test
     void register() throws Exception {
-        //Then
+        //Given
+        SessionInfo sessionInfo = SessionInfo.builder().build();
+        when(service.register(newUser)).thenReturn(sessionInfo);
+
+        //When //Then
         mockMvc.perform(
                         post("/api/v1/talents")
                                 .content(objectMapper.writeValueAsString(newUser))
-                                .contentType(MediaType.APPLICATION_JSON)
-                )
+                                .contentType(MediaType.APPLICATION_JSON))
                 .andDo(print())
                 .andExpect(status().isCreated())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$").isNotEmpty());
+                .andExpect(jsonPath("$").isNotEmpty())
+                .andExpect(jsonPath("$.token").value(sessionInfo.token()));
     }
 }

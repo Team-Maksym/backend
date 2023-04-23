@@ -3,46 +3,39 @@ package starlight.backend.security.service.impl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
-import org.mockito.junit.jupiter.MockitoExtension;
-import org.mockito.junit.jupiter.MockitoSettings;
-import org.mockito.quality.Strictness;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.oauth2.jwt.JwtClaimsSet;
 import org.springframework.security.oauth2.jwt.JwtEncoder;
+import org.springframework.security.oauth2.jwt.JwtEncoderParameters;
 import org.springframework.test.context.junit4.SpringRunner;
 import starlight.backend.exception.TalentAlreadyOccupiedException;
-import starlight.backend.kudos.repository.KudosRepository;
-import starlight.backend.proof.ProofRepository;
 import starlight.backend.security.MapperSecurity;
 import starlight.backend.security.model.UserDetailsImpl;
 import starlight.backend.security.model.request.NewUser;
 import starlight.backend.security.model.response.SessionInfo;
-import starlight.backend.security.service.SecurityServiceInterface;
-import starlight.backend.talent.MapperTalent;
-import starlight.backend.talent.service.impl.TalentServiceImpl;
 import starlight.backend.user.model.entity.UserEntity;
-import starlight.backend.user.repository.PositionRepository;
 import starlight.backend.user.repository.UserRepository;
 
+import java.time.Instant;
 import java.util.Optional;
 
+import static java.time.temporal.ChronoUnit.MINUTES;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.when;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
 class SecurityServiceImplTest {
+    @MockBean
+    private Authentication auth;
     @MockBean
     private UserRepository repository;
     @MockBean
@@ -76,15 +69,23 @@ class SecurityServiceImplTest {
     @Test
     void register() {
         //Given
+        SessionInfo sessionInfo = SessionInfo.builder().build();
         when(repository.existsByEmail(user.getEmail())).thenReturn(false);
         when(repository.save(user)).thenReturn(user);
         when(mapperSecurity.toUserDetailsImpl(any(UserEntity.class))).thenReturn(any(UserDetailsImpl.class));
-
+        var now = Instant.now();
+        var claims = JwtClaimsSet.builder()
+                .issuer("self")
+                .issuedAt(now)
+                .expiresAt(now.plus(180, MINUTES))
+                .subject(String.valueOf(user.getUserId()))
+                .build();
+        when(jwtEncoder.encode(JwtEncoderParameters.from(claims)).getTokenValue()).thenReturn(sessionInfo.token());
         //When
-        SessionInfo sessionInfo = securityService.register(newUser);
+        SessionInfo session = securityService.register(newUser);
 
         //Then
-        assertThat(sessionInfo).isNotNull();
+        assertEquals(session,sessionInfo);
     }
 
     @DisplayName("JUnit test for login")
@@ -98,7 +99,7 @@ class SecurityServiceImplTest {
 
 
         //When
-        SessionInfo sessionInfo = securityService.loginInfo(user.getEmail());
+        SessionInfo sessionInfo = securityService.loginInfo(auth);
 
         //Then
         assertNotNull(sessionInfo);
@@ -108,14 +109,14 @@ class SecurityServiceImplTest {
 
     @DisplayName("JUnit test for login method which throws exception")
     @Test
-    void testLoginInfoNotFound() {
+    void loginInfoNotFound() {
         //Given
         String email = "test@example.com";
         when(repository.findByEmail(email)).thenReturn(Optional.empty());
 
         //When/Then
         assertThrows(UsernameNotFoundException.class, () -> {
-            securityService.loginInfo(email);
+            securityService.loginInfo(null);
         });
     }
 

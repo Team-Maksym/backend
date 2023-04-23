@@ -2,6 +2,7 @@ package starlight.backend.security.service.impl;
 
 
 import lombok.AllArgsConstructor;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -35,9 +36,9 @@ public class SecurityServiceImpl implements SecurityServiceInterface {
     private PasswordEncoder passwordEncoder;
 
     @Override
-    public SessionInfo loginInfo(String userName) {
-        var user = repository.findByEmail(userName)
-                .orElseThrow(() -> new UsernameNotFoundException(userName + " not found user by email"));
+    public SessionInfo loginInfo(Authentication auth) {
+        var user = repository.findByEmail(auth.getName())
+                .orElseThrow(() -> new UsernameNotFoundException(auth.getName() + " not found user by email"));
         var token = getJWTToken(mapperSecurity.toUserDetailsImpl(user),user.getUserId());
         return mapperSecurity.toSessionInfo(token);
     }
