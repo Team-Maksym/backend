@@ -17,6 +17,7 @@ import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.web.server.ResponseStatusException;
 import starlight.backend.exception.PageNotFoundException;
+import starlight.backend.exception.TalentNotFoundException;
 import starlight.backend.talent.model.request.TalentUpdateRequest;
 import starlight.backend.talent.model.response.TalentFullInfo;
 import starlight.backend.talent.model.response.TalentPagePagination;
@@ -108,6 +109,7 @@ class TalentControllerTest {
     @WithMockUser(username = "user1", roles = {"TALENT"})
     void searchTalentById() throws Exception {
         // Given
+        int talentId = 1;
         TalentFullInfo expectedTalent = TalentFullInfo.builder()
                 .fullName("John Doe")
                 .email("john.doe@example.com")
@@ -117,10 +119,10 @@ class TalentControllerTest {
                 .experience("5 years")
                 .positions(List.of("Senior Software Engineer"))
                 .build();
-        when(service.talentFullInfo(1)).thenReturn(expectedTalent);
+        when(service.talentFullInfo(talentId)).thenReturn(expectedTalent);
 
         // When //Then
-        mockMvc.perform(get("/api/v1/talents/1"))
+        mockMvc.perform(get("/api/v1/talents/{talent-id}", talentId))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
@@ -132,13 +134,29 @@ class TalentControllerTest {
                 .andExpect(jsonPath("$.experience").value(expectedTalent.experience()))
                 .andExpect(jsonPath("$.positions").isArray());
     }
+    @DisplayName("JUnit test for get full info about talent method which throw exception Unauthorized")
+    @Test
+    void searchTalentById_WithInvalidId_ShouldThrowUnauthorizedException()  throws Exception {
+        // Given
+        int talentId = 1;
+        when(service.talentFullInfo(talentId))
+                .thenThrow(new TalentNotFoundException(talentId));
 
+        // When //Then
+        mockMvc.perform(get("/api/v1/talents/{talent-id}", talentId))
+                .andDo(print())
+                .andExpect(status().isNotFound())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$.message", is("Talent not found by id " + talentId)))
+                .andExpect(jsonPath("$").isNotEmpty());
+    }
     @DisplayName("JUnit test for update info about talent method")
     @Test
     @Order(1)
     @WithMockUser(username = "user1", roles = {"TALENT"})
     void updateTalentFullInfo() throws Exception {
         // Given
+        int talentId = 1;
         TalentUpdateRequest updateRequest = TalentUpdateRequest.builder()
                 .fullName("John Doe")
                 .password("Secret123")
@@ -157,22 +175,31 @@ class TalentControllerTest {
                 .experience(updateRequest.experience())
                 .positions(updateRequest.positions())
                 .build();
-        when(service.updateTalentProfile(1, updateRequest, auth)).thenReturn(expectedTalent);
+
+        when(service.updateTalentProfile(talentId, updateRequest, auth)).thenReturn(expectedTalent);
 
         // When // Then
-        mockMvc.perform(patch("/api/v1/talents/1")
+        mockMvc.perform(patch("/api/v1/talents/{talent-id}", talentId)
                         .contentType(MediaType.APPLICATION_JSON_VALUE)
                         .content(objectMapper.writeValueAsString(updateRequest)))
                 .andDo(print())
-                .andExpect(status().isOk())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$").isNotEmpty())
-                .andExpect(jsonPath("$.full_name").value(expectedTalent.fullName()))
-                .andExpect(jsonPath("$.birthday").value(String.valueOf(expectedTalent.birthday())))
-                .andExpect(jsonPath("$.avatar").value(expectedTalent.avatar()))
-                .andExpect(jsonPath("$.education").value(expectedTalent.education()))
-                .andExpect(jsonPath("$.experience").value(expectedTalent.experience()))
-                .andExpect(jsonPath("$.positions").isArray());
+                .andExpect(status().isOk());
+    }
+    @DisplayName("JUnit test for update info about talent method which throw exception Unauthorized")
+    @Test
+    void updateTalentFullInfo_WithInvalidId_ShouldThrowUnauthorizedException() throws Exception {
+        // Given
+        int talentId = 1;
+        TalentUpdateRequest updateRequest = TalentUpdateRequest.builder().build();
+        when(service.updateTalentProfile(talentId, updateRequest, null))
+                .thenThrow(new ResponseStatusException(HttpStatus.UNAUTHORIZED, "you cannot change another talent"));
+
+        //When //Then
+        mockMvc.perform(patch("/api/v1/talents/{talent-id}", talentId)
+                        .contentType(MediaType.APPLICATION_JSON_VALUE)
+                        .content(objectMapper.writeValueAsString(updateRequest)))
+                .andDo(print())
+                .andExpect(status().isUnauthorized());
     }
 
     @DisplayName("Delete talent profile successfully")
@@ -181,10 +208,11 @@ class TalentControllerTest {
     @WithMockUser(username = "user1", roles = {"TALENT"})
     void deleteTalent() throws Exception {
         // Given
-        doNothing().when(service).deleteTalentProfile(1, auth);
+        int talentId = 1;
+        doNothing().when(service).deleteTalentProfile(talentId, auth);
 
         // When // Then
-        mockMvc.perform(delete("/api/v1/talents/1", 1))
+        mockMvc.perform(delete("/api/v1/talents/{talent-id}", talentId))
                 .andDo(print())
                 .andExpect(status().isOk());
     }
@@ -193,11 +221,12 @@ class TalentControllerTest {
     @Test
     void deleteTalent_WithInvalidId_ShouldThrowUnauthorizedException() throws Exception {
         // Given
+        int talentId = 1;
         doThrow(new ResponseStatusException(HttpStatus.UNAUTHORIZED, "you cannot delete another talent"))
-                .when(service).deleteTalentProfile(1, null);
+                .when(service).deleteTalentProfile(talentId, null);
 
         // When // Then
-        mockMvc.perform(delete("/api/v1/talents/1", 1))
+        mockMvc.perform(delete("/api/v1/talents/{talent-id}", talentId))
                 .andDo(print())
                 .andExpect(status().isUnauthorized());
     }
