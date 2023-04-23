@@ -1,5 +1,6 @@
 package starlight.backend.proof.model.entity;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import lombok.*;
@@ -48,6 +49,7 @@ public class ProofEntity {
     private UserEntity user;
 
     @OneToMany(mappedBy = "proof")
+    @JsonManagedReference
     private Set<KudosEntity> kudos;
 
     public void setDateLastUpdated(Instant now) {

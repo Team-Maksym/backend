@@ -1,7 +1,5 @@
 package starlight.backend.talent.service.impl;
 
-import jakarta.persistence.EntityManager;
-import jakarta.persistence.PersistenceContext;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
@@ -13,6 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 import starlight.backend.exception.PageNotFoundException;
 import starlight.backend.exception.TalentNotFoundException;
+import starlight.backend.exception.UserNotFoundException;
 import starlight.backend.kudos.model.entity.KudosEntity;
 import starlight.backend.kudos.repository.KudosRepository;
 import starlight.backend.proof.ProofRepository;
@@ -44,8 +43,6 @@ public class TalentServiceImpl implements TalentServiceInterface {
     private ProofRepository proofRepository;
     private KudosRepository kudosRepository;
     private PasswordEncoder passwordEncoder;
-    @PersistenceContext
-    private EntityManager em;
 
     @Override
     public TalentPagePagination talentPagination(int page, int size) {
@@ -132,22 +129,23 @@ public class TalentServiceImpl implements TalentServiceInterface {
         if (!securityService.checkingLoggedAndToken(talentId, auth)) {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "you cannot delete another talent");
         }
-        UserEntity user = em.find(UserEntity.class, talentId);
+        UserEntity user = repository.findById(talentId)
+                .orElseThrow(() -> new UserNotFoundException(talentId));
         user.setPositions(null);
         user.getAuthorities().clear();
         if (!user.getKudos().isEmpty()) {
             for (KudosEntity kudos : kudosRepository.findByOwner_UserId(talentId)) {
                 kudos.setProof(null);
                 kudos.setOwner(null);
-                em.remove(kudos);
+                kudosRepository.deleteById(kudos.getKudosId());
             }
         }
-        for (ProofEntity proof : user.getProofs()) {
+        for (ProofEntity proof : proofRepository.findByUser_UserId(talentId)) {
             proof.setKudos(null);
             proof.setUser(null);
-            em.remove(proof);
+            proofRepository.deleteById(proof.getProofId());
         }
         user.getProofs().clear();
-        em.remove(user);
+        repository.deleteById(user.getUserId());
     }
 }

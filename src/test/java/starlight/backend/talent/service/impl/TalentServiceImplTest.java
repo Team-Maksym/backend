@@ -1,12 +1,9 @@
 package starlight.backend.talent.service.impl;
 
-import jakarta.persistence.EntityManager;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.runner.RunWith;
-import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -21,6 +18,7 @@ import starlight.backend.exception.PageNotFoundException;
 import starlight.backend.exception.TalentNotFoundException;
 import starlight.backend.kudos.model.entity.KudosEntity;
 import starlight.backend.kudos.repository.KudosRepository;
+import starlight.backend.proof.ProofRepository;
 import starlight.backend.proof.model.entity.ProofEntity;
 import starlight.backend.security.service.SecurityServiceInterface;
 import starlight.backend.talent.MapperTalent;
@@ -39,13 +37,11 @@ import java.util.stream.Collectors;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
 import static org.junit.Assert.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.*;
 
-@ExtendWith(MockitoExtension.class)
 @RunWith(SpringRunner.class)
 @SpringBootTest
 class TalentServiceImplTest {
@@ -58,24 +54,16 @@ class TalentServiceImplTest {
     @MockBean
     private KudosRepository kudosRepository;
     @MockBean
+    private ProofRepository proofRepository;
+    @MockBean
     private SecurityServiceInterface securityService;
     @MockBean
     private PasswordEncoder passwordEncoder;
     @MockBean
     private Authentication auth;
-    @MockBean
-    private EntityManager em;
     @Autowired
     private TalentServiceImpl talentService;
     private UserEntity user;
-
-    public UserEntity getUser() {
-        return user;
-    }
-
-    public void setUser(UserEntity user) {
-        this.user = user;
-    }
 
     @BeforeEach
     public void setup() {
@@ -218,25 +206,45 @@ class TalentServiceImplTest {
     @DisplayName("Delete talent profile successfully")
     @Test
     void deleteTalentProfile() {
-       // Given
-        when(em.find(UserEntity.class, user.getUserId())).thenReturn(user);
+        // Given
+        given(repository.findById(user.getUserId())).willReturn(Optional.of(user));
         when(securityService.checkingLoggedAndToken(user.getUserId(), auth)).thenReturn(true);
+        Set<KudosEntity> kudosList = new HashSet<>();
+        KudosEntity kudos = new KudosEntity();
+        kudos.setKudosId(1L);
+        kudos.setOwner(user);
+        kudos.setProof(new ProofEntity());
+        kudosList.add(kudos);
+        user.setKudos(kudosList);
+        Set<ProofEntity> proofList = new HashSet<>();
+        ProofEntity proof = new ProofEntity();
+        proof.setProofId(1L);
+        proof.setUser(user);
+        proof.setKudos(new HashSet<>());
+        proofList.add(proof);
+        user.setProofs(proofList);
+        user.setAuthorities(new HashSet<>(Arrays.asList("TALENT_ROLE")));
+        when(kudosRepository.findByOwner_UserId(user.getUserId())).thenReturn(Collections.emptyList());
+        when(proofRepository.findByUser_UserId(user.getUserId())).thenReturn(Collections.emptyList());
+        doNothing().when(repository).deleteById(user.getUserId());
+        doNothing().when(kudosRepository).deleteById(kudos.getKudosId());
+        doNothing().when(proofRepository).deleteById(proof.getProofId());
+
         // When
         talentService.deleteTalentProfile(user.getUserId(), auth);
 
         // Then
-        verify(em).remove(user);
-        UserEntity deletedUser = em.find(UserEntity.class, user.getUserId());
-        assertNull(deletedUser.getPositions());
-        assertNull(deletedUser.getKudos());
-        assertTrue(deletedUser.getProofs().isEmpty());
+        verify(securityService).checkingLoggedAndToken(user.getUserId(), auth);
+        verify(repository, times(1)).findById(user.getUserId());
+        verify(kudosRepository, times(1)).findByOwner_UserId(user.getUserId());
+        verify(proofRepository, times(1)).findByUser_UserId(user.getUserId());
+        assertTrue(user.getProofs().isEmpty());
     }
 
     @DisplayName("JUnit test for delete talent method which throw exception Unauthorized")
     @Test
     void deleteTalentProfile_WithInvalidId_ShouldThrowUnauthorizedException() {
         // Given
-        when(em.find(UserEntity.class, user.getUserId())).thenReturn(user);
         when(securityService.checkingLoggedAndToken(user.getUserId(), null)).thenReturn(false);
 
         // When // Then

@@ -1,5 +1,6 @@
 package starlight.backend.kudos.model.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.*;
 import starlight.backend.proof.model.entity.ProofEntity;
@@ -10,7 +11,6 @@ import java.time.Instant;
 import static jakarta.persistence.GenerationType.IDENTITY;
 
 @Builder
-@ToString
 @Getter
 @Setter
 @AllArgsConstructor
@@ -24,10 +24,12 @@ public class KudosEntity {
     private Instant createData;
 
     @ManyToOne
+    @JsonBackReference
     @JoinColumn(name = "user_id", nullable = false)
     private UserEntity owner;
 
     @ManyToOne
+    @JsonBackReference
     @JoinColumn(name = "proof_id", nullable = false)
     private ProofEntity proof;
 }
