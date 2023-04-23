@@ -7,16 +7,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
 import org.springframework.http.MediaType;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import starlight.backend.talent.model.response.TalentPagePagination;
+import starlight.backend.talent.model.response.TalentProfile;
 import starlight.backend.talent.service.impl.TalentServiceImpl;
-import starlight.backend.user.model.entity.UserEntity;
 
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.List;
 
 import static org.hamcrest.Matchers.hasSize;
@@ -40,14 +37,27 @@ class TalentControllerTest {
 
     @Test
     void pagination() throws Exception {
-        //Then
+        //Given
+        int page = 0;
+        int size = 10;
+        TalentProfile talentProfile = TalentProfile.builder().build();
+        List<TalentProfile> talentProfiles =new ArrayList<>();
+        for (int i = 0; i < 10; i++) {
+            talentProfiles.add(talentProfile);
+        }
+        TalentPagePagination talentPagePagination = TalentPagePagination.builder()
+                .data(talentProfiles)
+                .total(10)
+                .build();
+        when(service.talentPagination(page, size)).thenReturn(talentPagePagination);
+        //When //Then
         mockMvc.perform(get("/api/v1/talents")
                         .param("page", "0")
                         .param("size", "10"))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$.data", hasSize(1)))
+                .andExpect(jsonPath("$.data", hasSize(10)))
                 .andExpect(jsonPath("$.data").isArray())
                 .andExpect(jsonPath("$").isNotEmpty());
     }

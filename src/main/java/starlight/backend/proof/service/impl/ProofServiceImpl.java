@@ -15,6 +15,7 @@ import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import starlight.backend.exception.*;
 import starlight.backend.kudos.model.entity.KudosEntity;
+import starlight.backend.kudos.repository.KudosRepository;
 import starlight.backend.proof.ProofMapper;
 import starlight.backend.proof.ProofRepository;
 import starlight.backend.proof.model.entity.ProofEntity;
@@ -38,6 +39,7 @@ public class ProofServiceImpl implements ProofServiceInterface {
     private ProofRepository repository;
     private UserRepository userRepository;
     private ProofMapper mapper;
+    private KudosRepository kudosRepository;
     private SecurityServiceInterface securityService;
     @PersistenceContext
     private EntityManager em;
@@ -141,13 +143,14 @@ public class ProofServiceImpl implements ProofServiceInterface {
     }
 
     public void delete(long proofId) {
-        ProofEntity proof = em.find(ProofEntity.class, proofId);
+        ProofEntity proof = repository.findById(proofId)
+                .orElseThrow(() -> new ProofNotFoundException(proofId));
         proof.setUser(null);
-        for (KudosEntity kudos : proof.getKudos()) {
-            em.remove(kudos);
+        for (KudosEntity kudos : kudosRepository.findByProof_ProofId(proofId)) {
+            kudosRepository.deleteById(kudos.getKudosId());
         }
         proof.getKudos().clear();
-        em.remove(proof);
+        repository.deleteById(proofId);
     }
 
     @Override

@@ -9,23 +9,32 @@ import org.mockito.InjectMocks;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.mockito.junit.jupiter.MockitoSettings;
 import org.mockito.quality.Strictness;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.jwt.JwtEncoder;
 import org.springframework.test.context.junit4.SpringRunner;
 import starlight.backend.exception.TalentAlreadyOccupiedException;
+import starlight.backend.kudos.repository.KudosRepository;
+import starlight.backend.proof.ProofRepository;
 import starlight.backend.security.MapperSecurity;
 import starlight.backend.security.model.UserDetailsImpl;
 import starlight.backend.security.model.request.NewUser;
 import starlight.backend.security.model.response.SessionInfo;
+import starlight.backend.security.service.SecurityServiceInterface;
+import starlight.backend.talent.MapperTalent;
+import starlight.backend.talent.service.impl.TalentServiceImpl;
 import starlight.backend.user.model.entity.UserEntity;
+import starlight.backend.user.repository.PositionRepository;
 import starlight.backend.user.repository.UserRepository;
 
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
@@ -37,15 +46,15 @@ class SecurityServiceImplTest {
     @MockBean
     private UserRepository repository;
     @MockBean
-    private MapperSecurity mapperSecurity;
-    @MockBean
     private PasswordEncoder passwordEncoder;
+    @MockBean
+    private MapperSecurity mapperSecurity;
+
     @MockBean
     private JwtEncoder jwtEncoder;
     @InjectMocks
     private SecurityServiceImpl securityService;
     private NewUser newUser;
-    @MockBean
     private UserEntity user;
 
     @BeforeEach
@@ -68,7 +77,7 @@ class SecurityServiceImplTest {
     void register() {
         //Given
         when(repository.existsByEmail(user.getEmail())).thenReturn(false);
-        given(repository.save(user)).willReturn(user);
+        when(repository.save(user)).thenReturn(user);
         when(mapperSecurity.toUserDetailsImpl(any(UserEntity.class))).thenReturn(any(UserDetailsImpl.class));
 
         //When
@@ -87,10 +96,13 @@ class SecurityServiceImplTest {
                 user.getEmail(),
                 user.getPassword()));
 
+
         //When
         SessionInfo sessionInfo = securityService.loginInfo(user.getEmail());
 
         //Then
+        assertNotNull(sessionInfo);
+        assertNotNull(sessionInfo.token());
         assertThat(sessionInfo).isNotNull();
     }
 

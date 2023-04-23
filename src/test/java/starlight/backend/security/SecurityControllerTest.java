@@ -5,6 +5,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
@@ -14,20 +15,19 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import starlight.backend.security.model.request.NewUser;
-import starlight.backend.security.model.response.SessionInfo;
 import starlight.backend.security.service.SecurityServiceInterface;
+import starlight.backend.talent.TalentController;
 import starlight.backend.user.model.entity.UserEntity;
 
 import java.util.Base64;
 
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.when;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @ExtendWith(SpringExtension.class)
-@WebMvcTest(SecurityController.class)
+@WebMvcTest(controllers = SecurityController.class)
+@AutoConfigureMockMvc(addFilters = false)
 class SecurityControllerTest {
     @MockBean
     SecurityServiceInterface service;
@@ -59,12 +59,12 @@ class SecurityControllerTest {
         //Given
         MockHttpServletRequest mockRequest = new MockHttpServletRequest();
         String authHeader = "Basic " + Base64.getEncoder().encodeToString(
-                (user.getEmail()+":"+user.getPassword())
+                (user.getEmail() + ":" + user.getPassword())
                         .getBytes());
         mockRequest.addHeader("Authorization", authHeader);
         //When
         //Then
-        mockMvc.perform(MockMvcRequestBuilders.post("/talents/login")
+        mockMvc.perform(MockMvcRequestBuilders.post("/api/v1/talents/login")
                         .accept(MediaType.APPLICATION_JSON)
                         .header("Authorization", authHeader)
                         .requestAttr("org.springframework.mock.web.MockHttpServletRequest", mockRequest))
@@ -75,7 +75,7 @@ class SecurityControllerTest {
     void register() throws Exception {
         //Then
         mockMvc.perform(
-                        post("/talents")
+                        post("/api/v1/talents")
                                 .content(objectMapper.writeValueAsString(newUser))
                                 .contentType(MediaType.APPLICATION_JSON)
                 )
