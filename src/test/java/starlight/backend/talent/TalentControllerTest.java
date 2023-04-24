@@ -134,9 +134,10 @@ class TalentControllerTest {
                 .andExpect(jsonPath("$.experience").value(expectedTalent.experience()))
                 .andExpect(jsonPath("$.positions").isArray());
     }
+
     @DisplayName("JUnit test for get full info about talent method which throw exception Unauthorized")
     @Test
-    void searchTalentById_WithInvalidId_ShouldThrowUnauthorizedException()  throws Exception {
+    void searchTalentById_WithInvalidId_ShouldThrowUnauthorizedException() throws Exception {
         // Given
         int talentId = 1;
         when(service.talentFullInfo(talentId))
@@ -150,6 +151,7 @@ class TalentControllerTest {
                 .andExpect(jsonPath("$.message", is("Talent not found by id " + talentId)))
                 .andExpect(jsonPath("$").isNotEmpty());
     }
+
     @DisplayName("JUnit test for update info about talent method")
     @Test
     @Order(1)
@@ -185,6 +187,7 @@ class TalentControllerTest {
                 .andDo(print())
                 .andExpect(status().isOk());
     }
+
     @DisplayName("JUnit test for update info about talent method which throw exception Unauthorized")
     @Test
     void updateTalentFullInfo_WithInvalidId_ShouldThrowUnauthorizedException() throws Exception {

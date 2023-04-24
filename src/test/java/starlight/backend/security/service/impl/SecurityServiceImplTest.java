@@ -4,12 +4,13 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
-import org.mockito.InjectMocks;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.security.oauth2.jwt.JwtClaimsSet;
 import org.springframework.security.oauth2.jwt.JwtEncoder;
 import org.springframework.security.oauth2.jwt.JwtEncoderParameters;
@@ -25,10 +26,10 @@ import starlight.backend.user.repository.UserRepository;
 import java.time.Instant;
 import java.util.Optional;
 
-import static java.time.temporal.ChronoUnit.MINUTES;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 @RunWith(SpringRunner.class)
@@ -42,10 +43,9 @@ class SecurityServiceImplTest {
     private PasswordEncoder passwordEncoder;
     @MockBean
     private MapperSecurity mapperSecurity;
-
     @MockBean
     private JwtEncoder jwtEncoder;
-    @InjectMocks
+    @Autowired
     private SecurityServiceImpl securityService;
     private NewUser newUser;
     private UserEntity user;
@@ -69,42 +69,68 @@ class SecurityServiceImplTest {
     @Test
     void register() {
         //Given
-        SessionInfo sessionInfo = SessionInfo.builder().build();
-        when(repository.existsByEmail(user.getEmail())).thenReturn(false);
-        when(repository.save(user)).thenReturn(user);
-        when(mapperSecurity.toUserDetailsImpl(any(UserEntity.class))).thenReturn(any(UserDetailsImpl.class));
-        var now = Instant.now();
-        var claims = JwtClaimsSet.builder()
-                .issuer("self")
-                .issuedAt(now)
-                .expiresAt(now.plus(180, MINUTES))
-                .subject(String.valueOf(user.getUserId()))
+        UserEntity savedUser = UserEntity.builder()
+                .userId(1L)
+                .fullName(newUser.fullName())
+                .email(newUser.email())
+                .password("encoded_password")
                 .build();
-        when(jwtEncoder.encode(JwtEncoderParameters.from(claims)).getTokenValue()).thenReturn(sessionInfo.token());
+        JwtClaimsSet claims = JwtClaimsSet.builder()
+                .issuer("self")
+                .issuedAt(Instant.now())
+                .expiresAt(Instant.now().plusSeconds(180))
+                .subject(String.valueOf(user.getUserId()))
+                .claim("scope", "ROLE_TALENT")
+                .build();
+        SessionInfo expectedSessionInfo = SessionInfo.builder().build();
+        UserDetailsImpl userDetails = new UserDetailsImpl(newUser.email(), savedUser.getPassword());
+
+        when(repository.existsByEmail(newUser.email())).thenReturn(false);
+        when(repository.save(any(UserEntity.class))).thenReturn(savedUser);
+        when(securityService.saveNewUser(newUser)).thenReturn(savedUser);
+        when(mapperSecurity.toUserDetailsImpl(savedUser)).thenReturn(userDetails);
+        when(mapperSecurity.toSessionInfo(expectedSessionInfo.token())).thenReturn(expectedSessionInfo);
+
+        Jwt mockJwt = mock(Jwt.class);
+        when(mockJwt.getClaims()).thenReturn(any());
+        when(jwtEncoder.encode(JwtEncoderParameters.from(claims)))
+                .thenReturn(mockJwt);
+
         //When
-        SessionInfo session = securityService.register(newUser);
+        SessionInfo sessionInfo = securityService.register(newUser);
 
         //Then
-        assertEquals(session,sessionInfo);
+        assertEquals(expectedSessionInfo.token(), sessionInfo.token());
     }
 
     @DisplayName("JUnit test for login")
     @Test
     void loginInfo() {
         //Given
-        when(repository.findByEmail(user.getEmail())).thenReturn(Optional.of(user));
-        when(mapperSecurity.toUserDetailsImpl(user)).thenReturn(new UserDetailsImpl(
-                user.getEmail(),
-                user.getPassword()));
+        UserDetailsImpl userDetails = new UserDetailsImpl(user.getEmail(), user.getPassword());
+        JwtClaimsSet claims = JwtClaimsSet.builder()
+                .issuer("self")
+                .issuedAt(Instant.now())
+                .expiresAt(Instant.now().plusSeconds(180))
+                .subject(String.valueOf(user.getUserId()))
+                .claim("scope", "ROLE_TALENT")
+                .build();
+        SessionInfo expectedSessionInfo = SessionInfo.builder().build();
 
+        when(repository.findByEmail(auth.getName())).thenReturn(Optional.of(user));
+        when(mapperSecurity.toUserDetailsImpl(user)).thenReturn(userDetails);
+        when(mapperSecurity.toSessionInfo(expectedSessionInfo.token())).thenReturn(expectedSessionInfo);
+
+        Jwt mockJwt = mock(Jwt.class);
+        when(mockJwt.getClaims()).thenReturn(any());
+        when(jwtEncoder.encode(JwtEncoderParameters.from(claims)))
+                .thenReturn(mockJwt);
 
         //When
-        SessionInfo sessionInfo = securityService.loginInfo(auth);
+        SessionInfo session = securityService.loginInfo(auth);
 
         //Then
-        assertNotNull(sessionInfo);
-        assertNotNull(sessionInfo.token());
-        assertThat(sessionInfo).isNotNull();
+        assertEquals(expectedSessionInfo.token(), session.token());
     }
 
     @DisplayName("JUnit test for login method which throws exception")
@@ -116,7 +142,7 @@ class SecurityServiceImplTest {
 
         //When/Then
         assertThrows(UsernameNotFoundException.class, () -> {
-            securityService.loginInfo(null);
+            securityService.loginInfo(auth);
         });
     }
 
@@ -127,6 +153,8 @@ class SecurityServiceImplTest {
         when(repository.existsByEmail(user.getEmail())).thenReturn(true);
 
         //When/Then
-        assertThrows(TalentAlreadyOccupiedException.class, () -> securityService.register(newUser));
+        assertThrows(TalentAlreadyOccupiedException.class,
+                () -> securityService.register(newUser)
+        );
     }
 }
