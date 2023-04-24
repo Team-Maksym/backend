@@ -140,10 +140,12 @@ public class TalentServiceImpl implements TalentServiceInterface {
                 kudosRepository.deleteById(kudos.getKudosId());
             }
         }
-        for (ProofEntity proof : proofRepository.findByUser_UserId(talentId)) {
-            proof.setKudos(null);
-            proof.setUser(null);
-            proofRepository.deleteById(proof.getProofId());
+        if (!user.getProofs().isEmpty()) {
+            for (ProofEntity proof : proofRepository.findByUser_UserId(talentId)) {
+                proof.setKudos(null);
+                proof.setUser(null);
+                proofRepository.deleteById(proof.getProofId());
+            }
         }
         user.getProofs().clear();
         repository.deleteById(user.getUserId());
