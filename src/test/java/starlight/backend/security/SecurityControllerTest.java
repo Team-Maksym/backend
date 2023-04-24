@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.security.core.Authentication;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
@@ -19,6 +20,8 @@ import starlight.backend.security.model.request.NewUser;
 import starlight.backend.security.model.response.SessionInfo;
 import starlight.backend.security.service.SecurityServiceInterface;
 import starlight.backend.user.model.entity.UserEntity;
+
+import java.util.Base64;
 
 import static org.mockito.Mockito.when;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.post;
@@ -63,11 +66,16 @@ class SecurityControllerTest {
         //Given
         SessionInfo sessionInfo = SessionInfo.builder().build();
         when(service.loginInfo(auth)).thenReturn(sessionInfo);
+        String username = auth.getName();
+        String password = user.getPassword();
+        String base64Credentials = new String(Base64.getEncoder()
+                .encode((username + ":" + password).getBytes()));
 
         //When //Then
-        mockMvc.perform(MockMvcRequestBuilders.post("/api/v1/talents/login")
-                        .accept(MediaType.APPLICATION_JSON))
-                .andExpect(MockMvcResultMatchers.status().isOk());
+        mockMvc.perform(post("/api/v1/talents/login")
+                        .header(HttpHeaders.AUTHORIZATION, "Basic " + base64Credentials))
+                .andDo(print())
+                .andExpect(status().isOk());
     }
 
     @DisplayName("JUnit test for register method")
