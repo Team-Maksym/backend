@@ -170,7 +170,7 @@ public class ProofServiceImpl implements ProofServiceInterface {
         var pageRequest = repository.findByUser_UserIdAndStatus(talentId,
                 Status.PUBLISHED,
                 PageRequest.of(page, size, doSort(sort, DATA_CREATED)));
-        return mapper.toProofPagePagination(pageRequest);
+        return mapper.toProofPagePaginationWithProofFullInfo(pageRequest);
     }
 
     @Override
