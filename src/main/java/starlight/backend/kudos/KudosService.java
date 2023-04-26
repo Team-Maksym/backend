@@ -42,8 +42,7 @@ public class KudosService {
 
         var kudosList = proof.getKudos()
                 .stream()
-                .filter(k -> k.getOwner()
-                        .getUserId()
+                .filter(k -> k.getFollowerId()
                         .toString()
                         .equals(auth.getName()))
                 .toList();
