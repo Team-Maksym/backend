@@ -2,6 +2,7 @@ package starlight.backend.security.service.impl;
 
 
 import lombok.AllArgsConstructor;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -13,10 +14,10 @@ import org.springframework.transaction.annotation.Transactional;
 import starlight.backend.exception.TalentAlreadyOccupiedException;
 import starlight.backend.security.MapperSecurity;
 import starlight.backend.security.model.UserDetailsImpl;
-import starlight.backend.security.service.SecurityServiceInterface;
-import starlight.backend.user.model.entity.UserEntity;
 import starlight.backend.security.model.request.NewUser;
 import starlight.backend.security.model.response.SessionInfo;
+import starlight.backend.security.service.SecurityServiceInterface;
+import starlight.backend.user.model.entity.UserEntity;
 import starlight.backend.user.repository.UserRepository;
 
 import java.time.Instant;
@@ -35,21 +36,21 @@ public class SecurityServiceImpl implements SecurityServiceInterface {
     private PasswordEncoder passwordEncoder;
 
     @Override
-    public SessionInfo loginInfo(String userName) {
-        var user = repository.findByEmail(userName)
-                .orElseThrow(() -> new UsernameNotFoundException(userName + " not found user by email"));
-        var token = getJWTToken(mapperSecurity.toUserDetailsImpl(user));
+    public SessionInfo loginInfo(Authentication auth) {
+        var user = repository.findByEmail(auth.getName())
+                .orElseThrow(() -> new UsernameNotFoundException(auth.getName() + " not found user by email"));
+        var token = getJWTToken(mapperSecurity.toUserDetailsImpl(user), user.getUserId());
         return mapperSecurity.toSessionInfo(token);
     }
 
     @Override
     public SessionInfo register(NewUser newUser) {
         var user = saveNewUser(newUser);
-        var token = getJWTToken(mapperSecurity.toUserDetailsImpl(user));
+        var token = getJWTToken(mapperSecurity.toUserDetailsImpl(user), user.getUserId());
         return mapperSecurity.toSessionInfo(token);
     }
 
-    private UserEntity saveNewUser(NewUser newUser) {
+    UserEntity saveNewUser(NewUser newUser) {
         if (repository.existsByEmail(newUser.email())) {
             throw new TalentAlreadyOccupiedException(newUser.email());
         }
@@ -60,20 +61,14 @@ public class SecurityServiceImpl implements SecurityServiceInterface {
                 .build());
     }
 
-    private String getUserIdByEmail(String email){
-       var user = repository.findByEmail(email)
-                .orElseThrow(() -> new UsernameNotFoundException(email + " not found user by email"));
-       return user.getUserId().toString();
-    }
-
     @Transactional(readOnly = true)
-    String getJWTToken(UserDetailsImpl authentication) {
+    String getJWTToken(UserDetailsImpl authentication, long id) {
         var now = Instant.now();
         var claims = JwtClaimsSet.builder()
                 .issuer("self")
                 .issuedAt(now)
                 .expiresAt(now.plus(180, MINUTES))
-                .subject(getUserIdByEmail(authentication.getUsername()))
+                .subject(String.valueOf(id))
                 .claim("scope", createScope(authentication))
                 .build();
         return jwtEncoder.encode(JwtEncoderParameters.from(claims)).getTokenValue();

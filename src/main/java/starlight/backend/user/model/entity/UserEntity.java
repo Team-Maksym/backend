@@ -18,7 +18,6 @@ import java.util.Set;
 import static jakarta.persistence.GenerationType.IDENTITY;
 
 @Builder
-@ToString
 @Getter
 @Setter
 @AllArgsConstructor
@@ -56,8 +55,10 @@ public class UserEntity {
     private Collection<String> authorities;
 
     @OneToMany(mappedBy = "user")
+    @JsonManagedReference
     private Set<ProofEntity> proofs;
 
     @OneToMany(mappedBy = "owner")
+    @JsonManagedReference
     private Set<KudosEntity> kudos;
 }

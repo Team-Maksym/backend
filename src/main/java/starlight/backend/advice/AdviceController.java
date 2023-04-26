@@ -6,8 +6,6 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import starlight.backend.exception.*;
 
-import java.sql.SQLException;
-
 @RestControllerAdvice
 public class AdviceController {
 

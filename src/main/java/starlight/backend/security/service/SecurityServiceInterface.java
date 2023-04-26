@@ -9,7 +9,7 @@ import java.util.Objects;
 public interface SecurityServiceInterface {
     SessionInfo register(NewUser newUser);
 
-    SessionInfo loginInfo(String userName);
+    SessionInfo loginInfo(Authentication auth);
 
     default boolean checkingLoggedAndToken(long talentId, Authentication auth) {
         return Objects.equals(auth.getName(), String.valueOf(talentId));

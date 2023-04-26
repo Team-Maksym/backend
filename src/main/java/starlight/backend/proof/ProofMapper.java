@@ -39,7 +39,6 @@ public interface ProofMapper {
                         .toList())
                 .build();
     }
-
     default ProofFullInfo toProofFullInfo(ProofEntity proof) {
         return ProofFullInfo.builder()
                 .id(proof.getProofId())

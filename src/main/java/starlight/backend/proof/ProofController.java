@@ -19,14 +19,12 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import starlight.backend.exception.PageNotFoundException;
 import starlight.backend.exception.TalentAlreadyOccupiedException;
-import starlight.backend.proof.model.enums.Status;
 import starlight.backend.proof.model.request.ProofAddRequest;
-import starlight.backend.proof.model.response.ProofFullInfo;
 import starlight.backend.proof.model.request.ProofUpdateRequest;
+import starlight.backend.proof.model.response.ProofFullInfo;
 import starlight.backend.proof.model.response.ProofPagePagination;
 import starlight.backend.proof.service.ProofServiceInterface;
 import starlight.backend.talent.model.response.TalentFullInfo;
-
 import starlight.backend.talent.model.response.TalentPagePagination;
 
 @Slf4j
@@ -37,8 +35,6 @@ import starlight.backend.talent.model.response.TalentPagePagination;
 @Tag(name = "Proof", description = "Proof API")
 public class ProofController {
     private ProofServiceInterface proofService;
-    private ProofRepository proofRepository;
-    private final ProofMapper proofMapper;
 
     @Operation(
             summary = "Get all proofs",
