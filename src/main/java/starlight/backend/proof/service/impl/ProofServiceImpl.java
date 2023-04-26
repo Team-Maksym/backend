@@ -139,14 +139,12 @@ public class ProofServiceImpl implements ProofServiceInterface {
         if (!securityService.checkingLoggedAndToken(talentId, auth)) {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "you cannot delete proof another talent");
         }
-        delete(proofId);
-    }
-
-    public void delete(long proofId) {
         ProofEntity proof = repository.findById(proofId)
                 .orElseThrow(() -> new ProofNotFoundException(proofId));
         proof.setUser(null);
         for (KudosEntity kudos : kudosRepository.findByProof_ProofId(proofId)) {
+            kudos.setProof(null);
+            kudos.setOwner(null);
             kudosRepository.deleteById(kudos.getKudosId());
         }
         proof.getKudos().clear();
