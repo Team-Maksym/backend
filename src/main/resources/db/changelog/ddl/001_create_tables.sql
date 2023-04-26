@@ -78,3 +78,7 @@ ALTER TABLE kudos_entity
 
 ALTER TABLE kudos_entity
     ADD CONSTRAINT FK_KUDOSENTITY_ON_PROOF FOREIGN KEY (proof_id) REFERENCES proof_entity (proof_id);
+
+-- changeset kate:6
+ALTER TABLE user_entity
+    ADD COLUMN activation_code VARCHAR(255);

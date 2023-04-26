@@ -43,7 +43,7 @@ public class UserEntity {
     private String education;
     @Length(max = 255)
     private String experience;
-
+    private String activationCode;
     @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH})
     @JoinTable(
             name = "user_position",
