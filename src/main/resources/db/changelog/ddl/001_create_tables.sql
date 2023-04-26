@@ -80,5 +80,14 @@ ALTER TABLE kudos_entity
     ADD CONSTRAINT FK_KUDOSENTITY_ON_PROOF FOREIGN KEY (proof_id) REFERENCES proof_entity (proof_id);
 
 -- changeset kate:6
-ALTER TABLE user_entity
-    ADD COLUMN activation_code VARCHAR(255);
+ALTER TABLE proof_entity DROP CONSTRAINT FK_PROOF_ON_USER;
+ALTER TABLE kudos_entity DROP CONSTRAINT FK_KUDOSENTITY_ON_OWNER;
+ALTER TABLE kudos_entity DROP CONSTRAINT  FK_KUDOSENTITY_ON_PROOF;
+
+ALTER TABLE kudos_entity DROP COLUMN follower_id;
+ALTER TABLE kudos_entity ADD COLUMN follower_id BIGINT;
+
+ALTER TABLE proof_entity ADD CONSTRAINT FK_PROOF_ON_USER FOREIGN KEY (user_id)
+        REFERENCES user_entity (user_id)
+        ON DELETE NO ACTION
+        ON UPDATE NO ACTION;

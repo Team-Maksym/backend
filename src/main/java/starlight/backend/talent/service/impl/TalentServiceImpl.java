@@ -1,7 +1,5 @@
 package starlight.backend.talent.service.impl;
 
-import jakarta.persistence.EntityManager;
-import jakarta.persistence.PersistenceContext;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
@@ -13,6 +11,11 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 import starlight.backend.exception.PageNotFoundException;
 import starlight.backend.exception.TalentNotFoundException;
+import starlight.backend.exception.UserNotFoundException;
+import starlight.backend.kudos.model.entity.KudosEntity;
+import starlight.backend.kudos.repository.KudosRepository;
+import starlight.backend.proof.ProofRepository;
+import starlight.backend.proof.model.entity.ProofEntity;
 import starlight.backend.security.service.SecurityServiceInterface;
 import starlight.backend.talent.MapperTalent;
 import starlight.backend.talent.model.request.TalentUpdateRequest;
@@ -26,7 +29,6 @@ import starlight.backend.user.repository.UserRepository;
 
 import java.util.List;
 import java.util.Objects;
-import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -38,9 +40,9 @@ public class TalentServiceImpl implements TalentServiceInterface {
     private UserRepository repository;
     private PositionRepository positionRepository;
     private SecurityServiceInterface securityService;
+    private ProofRepository proofRepository;
+    private KudosRepository kudosRepository;
     private PasswordEncoder passwordEncoder;
-    @PersistenceContext
-    private EntityManager em;
 
     @Override
     public TalentPagePagination talentPagination(int page, int size) {
@@ -53,12 +55,11 @@ public class TalentServiceImpl implements TalentServiceInterface {
     }
 
     @Override
-    public Optional<TalentFullInfo> talentFullInfo(long id) {
-        return Optional.of(repository.findById(id)
+    public TalentFullInfo talentFullInfo(long id) {
+        return repository.findById(id)
                 .map(mapper::toTalentFullInfo)
-                .orElseThrow(() -> new TalentNotFoundException(id)));
+                .orElseThrow(() -> new TalentNotFoundException(id));
     }
-
 
     @Override
     public TalentFullInfo updateTalentProfile(long id, TalentUpdateRequest talentUpdateRequest, Authentication auth) {
@@ -121,7 +122,6 @@ public class TalentServiceImpl implements TalentServiceInterface {
             return !newPosition.isEmpty() ? newPosition : talentPositions;
         }
         return talentPositions;
-
     }
 
     @Override
@@ -129,8 +129,25 @@ public class TalentServiceImpl implements TalentServiceInterface {
         if (!securityService.checkingLoggedAndToken(talentId, auth)) {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "you cannot delete another talent");
         }
-        UserEntity user = em.find(UserEntity.class, talentId);
+        UserEntity user = repository.findById(talentId)
+                .orElseThrow(() -> new UserNotFoundException(talentId));
         user.setPositions(null);
-        em.remove(user);
+        user.getAuthorities().clear();
+        if (!user.getKudos().isEmpty()) {
+            for (KudosEntity kudos : kudosRepository.findByOwner_UserId(talentId)) {
+                kudos.setProof(null);
+                kudos.setOwner(null);
+                kudosRepository.deleteById(kudos.getKudosId());
+            }
+        }
+        if (!user.getProofs().isEmpty()) {
+            for (ProofEntity proof : proofRepository.findByUser_UserId(talentId)) {
+                proof.setKudos(null);
+                proof.setUser(null);
+                proofRepository.deleteById(proof.getProofId());
+            }
+        }
+        user.getProofs().clear();
+        repository.deleteById(user.getUserId());
     }
 }

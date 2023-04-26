@@ -7,11 +7,12 @@ import org.springframework.stereotype.Repository;
 import starlight.backend.proof.model.entity.ProofEntity;
 import starlight.backend.proof.model.enums.Status;
 
+import java.util.List;
 import java.util.Optional;
 
 @Repository
 public interface ProofRepository extends JpaRepository<ProofEntity, Long> {
-    Page<ProofEntity> findAllByUser_UserId(Long userId, Pageable pageable);
+    List<ProofEntity> findByUser_UserId(Long userId);
 
     boolean existsByProofId(Long proofId);
 
