@@ -35,6 +35,5 @@ public class KudosControllerImpl  {
 
         log.info("Getting proof-id = {}", proofId);
         kudosService.addKudosOnProof(proofId, auth);
-
     }
 }

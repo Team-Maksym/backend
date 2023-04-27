@@ -42,7 +42,8 @@ public class KudosService {
 
         var kudosList = proof.getKudos()
                 .stream()
-                .filter(k -> k.getFollowerId()
+                .filter(k -> k.getOwner()
+                        .getUserId()
                         .toString()
                         .equals(auth.getName()))
                 .toList();
@@ -70,11 +71,10 @@ public class KudosService {
 
         var proof = proofRepository.findById(proofId)
                 .orElseThrow(() -> new ProofNotFoundException(proofId));
-        var follower= userRepository.findById(Long.valueOf(auth.getName()))
+        var owner = userRepository.findById(Long.valueOf(auth.getName()))
                 .orElseThrow(() -> new UserNotFoundException(auth.getName()));
-        var owner = userRepository.findById(proof.getUser().getUserId())
-                .orElseThrow(() -> new UserNotFoundException(proof.getUser().getUserId()));
-
+        var follower = userRepository.findById(proof.getUser().getUserId())
+                .orElseThrow(() -> new UserNotFoundException(auth.getName()));
         var kudos = KudosEntity.builder()
                 .followerId(follower.getUserId())
                 .createData(Instant.now())
