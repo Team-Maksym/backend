@@ -4,7 +4,6 @@ import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.AllArgsConstructor;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.http.HttpStatus;
 import org.springframework.mail.SimpleMailMessage;
@@ -14,6 +13,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
+import starlight.backend.email.model.EmailProps;
 import starlight.backend.email.model.ChangePasswordRequest;
 import starlight.backend.email.model.Email;
 import starlight.backend.email.service.EmailService;
@@ -29,8 +29,7 @@ import java.util.UUID;
 @Service
 @AllArgsConstructor
 public class EmailServiceImpl implements EmailService {
-    @Value("${spring.mail.username}")
-    private String email;
+    private EmailProps emailProps;
 
     private JavaMailSender emailSender;
 
@@ -50,7 +49,7 @@ public class EmailServiceImpl implements EmailService {
     @Override
     public void sendSimpleMessage(String to, String subject, String text) {
         SimpleMailMessage message = new SimpleMailMessage();
-        message.setFrom(email);
+        message.setFrom(emailProps.username());
         message.setTo(to);
         message.setSubject(subject);
         message.setText(text);
@@ -65,7 +64,7 @@ public class EmailServiceImpl implements EmailService {
         try {
             helper = new MimeMessageHelper(message, true);
 
-            helper.setFrom(email);
+            helper.setFrom(emailProps.username());
             helper.setTo(to);
             helper.setSubject(subject);
             helper.setText(text);

@@ -93,7 +93,7 @@ class SecurityServiceImplTest {
 
         Jwt mockJwt = mock(Jwt.class);
         when(mockJwt.getClaims()).thenReturn(any());
-        when(jwtEncoder.encode(JwtEncoderParameters.from(claims)))
+        when(jwtEncoder.encode(JwtEncoderParameters.username(claims)))
                 .thenReturn(mockJwt);
 
         //When
@@ -123,7 +123,7 @@ class SecurityServiceImplTest {
 
         Jwt mockJwt = mock(Jwt.class);
         when(mockJwt.getClaims()).thenReturn(any());
-        when(jwtEncoder.encode(JwtEncoderParameters.from(claims)))
+        when(jwtEncoder.encode(JwtEncoderParameters.username(claims)))
                 .thenReturn(mockJwt);
 
         //When
