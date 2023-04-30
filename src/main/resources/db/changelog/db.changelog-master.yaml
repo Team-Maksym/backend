@@ -46,7 +46,3 @@ databaseChangeLog:
   - changeSet:
       id: 6
       author: kate
-
-  - changeSet:
-      id: 7
-      author: kate

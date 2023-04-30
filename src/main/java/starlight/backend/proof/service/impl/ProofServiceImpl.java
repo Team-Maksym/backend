@@ -169,8 +169,7 @@ public class ProofServiceImpl implements ProofServiceInterface {
                         Status.PUBLISHED,
                         PageRequest.of(page, size, doSort(sort, DATA_CREATED)));
             } else if (status.equals(Status.ALL.getStatus())) {
-                pageRequest = repository.findByUser_UserIdAndStatus(talentId,
-                        Status.ALL,
+                pageRequest = repository.findByUser_UserId(talentId,
                         PageRequest.of(page, size, doSort(sort, DATA_CREATED)));
             } else {
                 throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "♥ Bad status in request. ♥");

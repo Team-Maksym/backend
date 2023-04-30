@@ -45,7 +45,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @ExtendWith(MockitoExtension.class)
 @WebMvcTest(controllers = ProofController.class)
 @AutoConfigureMockMvc(addFilters = false)
-public class ProofControllerTest {
+class ProofControllerTest {
     @MockBean
     private ProofServiceImpl service;
     @MockBean
