@@ -91,3 +91,9 @@ ALTER TABLE proof_entity ADD CONSTRAINT FK_PROOF_ON_USER FOREIGN KEY (user_id)
         REFERENCES user_entity (user_id)
         ON DELETE NO ACTION
         ON UPDATE NO ACTION;
+
+-- changeset kate:7
+ALTER TABLE user_entity
+    ADD COLUMN activation_code VARCHAR(255);
+ALTER TABLE user_entity
+    ADD COLUMN expiry_date TIMESTAMP WITHOUT TIME ZONE;

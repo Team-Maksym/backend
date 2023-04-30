@@ -32,7 +32,6 @@ public class SecurityServiceImpl implements SecurityServiceInterface {
     private final JwtEncoder jwtEncoder;
     private UserRepository repository;
     private MapperSecurity mapperSecurity;
-
     private PasswordEncoder passwordEncoder;
 
     @Override
