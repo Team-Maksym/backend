@@ -1,7 +1,8 @@
 package starlight.backend.email.service;
 
 import jakarta.servlet.http.HttpServletRequest;
-import starlight.backend.email.model.ChangePasswordRequest;
+import org.springframework.security.core.Authentication;
+import starlight.backend.email.model.ChangePassword;
 import starlight.backend.email.model.Email;
 
 public interface EmailService {
@@ -12,7 +13,7 @@ public interface EmailService {
 
     void sendMessageWithAttachment(String to, String subject, String text, String pathToAttachment);
 
-    void forgotPassword(HttpServletRequest request, String email);
+    void forgotPassword(HttpServletRequest request, Authentication auth);
 
-    void recoveryPassword(String token, ChangePasswordRequest changePasswordRequest);
+    void recoveryPassword(Authentication auth, ChangePassword changePassword);
 }

@@ -9,13 +9,15 @@ import org.springframework.http.HttpStatus;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
-import starlight.backend.email.model.EmailProps;
-import starlight.backend.email.model.ChangePasswordRequest;
+import starlight.backend.email.model.ChangePassword;
 import starlight.backend.email.model.Email;
+import starlight.backend.email.model.EmailProps;
 import starlight.backend.email.service.EmailService;
 import starlight.backend.user.model.entity.UserEntity;
 import starlight.backend.user.repository.UserRepository;
@@ -28,6 +30,7 @@ import java.util.UUID;
 
 @Service
 @AllArgsConstructor
+@Transactional
 public class EmailServiceImpl implements EmailService {
     private EmailProps emailProps;
 
@@ -79,22 +82,23 @@ public class EmailServiceImpl implements EmailService {
     }
 
     @Override
-    public void forgotPassword(HttpServletRequest request, String email) {
-        var user = userRepository.findByEmail(email).orElseThrow(() ->
+    public void forgotPassword(HttpServletRequest request, Authentication auth) {
+        var user = userRepository.findById(Long.valueOf(auth.getName())).orElseThrow(() ->
                 new UsernameNotFoundException("User not found"));
-
         String token = UUID.randomUUID().toString();
         createPasswordResetTokenForUser(user, token);
-        sendSimpleMessage(email, "Password recovery", constructResetTokenEmail(getAppUrl(request), token));
+        sendSimpleMessage(user.getEmail(), "Password recovery",
+                constructResetTokenEmail(getAppUrl(request)));
     }
 
     @Override
-    public void recoveryPassword(String token, ChangePasswordRequest changePasswordRequest) {
-        if (!userRepository.existsByActivationCode(token)) {
+    public void recoveryPassword(Authentication auth, ChangePassword changePassword) {
+        var user = userRepository.findById(Long.valueOf(auth.getName())).orElseThrow(() ->
+                new UsernameNotFoundException("User not found"));
+        if (!userRepository.existsByActivationCode(user.getActivationCode())) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Invalid token");
         }
-        UserEntity user = userRepository.findByActivationCode(token);
-        user.setPassword(passwordEncoder.encode(changePasswordRequest.password()));
+        user.setPassword(passwordEncoder.encode(changePassword.password()));
         user.setActivationCode(null);
         userRepository.save(user);
     }
@@ -112,10 +116,12 @@ public class EmailServiceImpl implements EmailService {
         return new Date(cal.getTime().getTime());
     }
 
-    private String constructResetTokenEmail(String appUrl, String token) {
-        return String.format("You received this email about a password recovery request. The link will be invalid after 10 minutes.\n" +
-                        "If you haven't done so, please ignore this email and change your password on your account!\n%s\n",
-                appUrl + "/recovery-password?token=" + token);
+    private String constructResetTokenEmail(String appUrl) {
+        return String.format("You received this email about a password recovery request. " +
+                        "The link will be invalid after 10 minutes.\n" +
+                        "If you haven't done so, please ignore this email and change your " +
+                        "password on your account!\n%s\n",
+                appUrl + "/recovery-password");
     }
 
     private String getAppUrl(HttpServletRequest request) {

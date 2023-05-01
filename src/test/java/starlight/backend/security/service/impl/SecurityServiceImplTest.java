@@ -1,5 +1,5 @@
 package starlight.backend.security.service.impl;
-/*
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -26,8 +26,8 @@ import starlight.backend.user.repository.UserRepository;
 import java.time.Instant;
 import java.util.Optional;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -93,7 +93,7 @@ class SecurityServiceImplTest {
 
         Jwt mockJwt = mock(Jwt.class);
         when(mockJwt.getClaims()).thenReturn(any());
-        when(jwtEncoder.encode(JwtEncoderParameters.username(claims)))
+        when(jwtEncoder.encode(JwtEncoderParameters.from(claims)))
                 .thenReturn(mockJwt);
 
         //When
@@ -123,7 +123,7 @@ class SecurityServiceImplTest {
 
         Jwt mockJwt = mock(Jwt.class);
         when(mockJwt.getClaims()).thenReturn(any());
-        when(jwtEncoder.encode(JwtEncoderParameters.username(claims)))
+        when(jwtEncoder.encode(JwtEncoderParameters.from(claims)))
                 .thenReturn(mockJwt);
 
         //When
@@ -158,5 +158,3 @@ class SecurityServiceImplTest {
         );
     }
 }
-
- */
