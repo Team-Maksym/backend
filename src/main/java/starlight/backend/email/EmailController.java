@@ -4,10 +4,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.ResponseStatus;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import starlight.backend.email.model.ChangePassword;
 import starlight.backend.email.model.Email;
 import starlight.backend.email.service.EmailService;
@@ -25,14 +22,14 @@ public class EmailController {
 
     @PostMapping("/forgot-password")
     public void forgotPassword(HttpServletRequest request,
-                               Authentication auth) {
-        emailService.forgotPassword(request, auth);
+                               @RequestParam String email) {
+        emailService.forgotPassword(request, email);
     }
 
     @PostMapping("/recovery-password")
     @ResponseStatus(HttpStatus.CREATED)
-    public void recoveryPassword(Authentication auth,
+    public void recoveryPassword(@RequestParam String token,
                                  @RequestBody ChangePassword changePassword) {
-        emailService.recoveryPassword(auth, changePassword);
+        emailService.recoveryPassword(token, changePassword);
     }
 }

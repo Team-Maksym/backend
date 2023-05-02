@@ -13,7 +13,7 @@ public interface EmailService {
 
     void sendMessageWithAttachment(String to, String subject, String text, String pathToAttachment);
 
-    void forgotPassword(HttpServletRequest request, Authentication auth);
+    void forgotPassword(HttpServletRequest request, String email);
 
-    void recoveryPassword(Authentication auth, ChangePassword changePassword);
+    void recoveryPassword(String token, ChangePassword changePassword);
 }

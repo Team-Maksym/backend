@@ -82,18 +82,18 @@ public class EmailServiceImpl implements EmailService {
     }
 
     @Override
-    public void forgotPassword(HttpServletRequest request, Authentication auth) {
-        var user = userRepository.findById(Long.valueOf(auth.getName())).orElseThrow(() ->
+    public void forgotPassword(HttpServletRequest request, String email) {
+        var user = userRepository.findByEmail(email).orElseThrow(() ->
                 new UsernameNotFoundException("User not found"));
         String token = UUID.randomUUID().toString();
         createPasswordResetTokenForUser(user, token);
-        sendSimpleMessage(user.getEmail(), "Password recovery",
-                constructResetTokenEmail(getAppUrl(request)));
+        sendSimpleMessage(email, "Password recovery",
+                constructResetTokenEmail(getAppUrl(request), token));
     }
 
     @Override
-    public void recoveryPassword(Authentication auth, ChangePassword changePassword) {
-        var user = userRepository.findById(Long.valueOf(auth.getName())).orElseThrow(() ->
+    public void recoveryPassword(String token, ChangePassword changePassword) {
+        var user = userRepository.findByActivationCode(token).orElseThrow(() ->
                 new UsernameNotFoundException("User not found"));
         if (!userRepository.existsByActivationCode(user.getActivationCode())) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Invalid token");
@@ -116,12 +116,12 @@ public class EmailServiceImpl implements EmailService {
         return new Date(cal.getTime().getTime());
     }
 
-    private String constructResetTokenEmail(String appUrl) {
+    private String constructResetTokenEmail(String appUrl, String token) {
         return String.format("You received this email about a password recovery request. " +
                         "The link will be invalid after 10 minutes.\n" +
                         "If you haven't done so, please ignore this email and change your " +
                         "password on your account!\n%s\n",
-                appUrl + "/recovery-password");
+                appUrl + "/recovery-password?token=" + token);
     }
 
     private String getAppUrl(HttpServletRequest request) {
