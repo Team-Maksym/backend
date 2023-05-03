@@ -4,6 +4,7 @@ import org.springframework.security.core.Authentication;
 import starlight.backend.security.model.UserDetailsImpl;
 import starlight.backend.security.model.request.NewUser;
 import starlight.backend.security.model.response.SessionInfo;
+import starlight.backend.sponsor.model.response.UnusableKudos;
 
 import java.util.Objects;
 
