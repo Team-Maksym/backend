@@ -171,7 +171,12 @@ public class ProofController {
 
     @Operation(
             summary = "Update proof in status draft",
-            description = "Update proof args title, description, link."
+            description = "Update proof args title, description, link." +
+                    "It is possible to change general information in Proofs with " +
+                    "the \"Draft\" status. Changing Proof status from Draft to another " +
+                    "is only possible on Published or Hidden. It is not possible to " +
+                    "return from the \"Published\" or \"Hidden\" status to the \"Draft\" status.\n" +
+                    "Evidence with status \"Draft\" or \"Hidden\" is only listed in your own profile."
     )
     @ApiResponses(value = {
             @ApiResponse(
