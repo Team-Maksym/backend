@@ -32,6 +32,7 @@ public class AdviceController {
     @ExceptionHandler({
             ProofNotFoundException.class,
             TalentNotFoundException.class,
+            SponsorNotFoundException.class
     })
     @ResponseStatus(HttpStatus.NOT_FOUND)
     public ErrorDTO notExists(Exception exception) {

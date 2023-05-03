@@ -11,12 +11,13 @@ import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 import starlight.backend.security.model.request.NewUser;
 import starlight.backend.security.model.response.SessionInfo;
 import starlight.backend.security.service.SecurityServiceInterface;
+import starlight.backend.sponsor.model.response.UnusableKudos;
+import starlight.backend.sponsor.service.SponsorServiceInterface;
 
 @AllArgsConstructor
 @RestController
@@ -24,7 +25,8 @@ import starlight.backend.security.service.SecurityServiceInterface;
 @Slf4j
 @Tag(name = "Sponsor", description = "Sponsor related endpoints")
 public class SponsorController {
-    private SecurityServiceInterface service;
+    private SecurityServiceInterface securityService;
+    private SponsorServiceInterface sponsorService;
 
     @Operation(
             summary = "Login in system",
@@ -55,7 +57,7 @@ public class SponsorController {
     @ResponseStatus(HttpStatus.OK)
     public SessionInfo login(Authentication auth) {
         log.info("@PostMapping(\"/sponsors/login\")");
-        return service.loginSponsor(auth);
+        return securityService.loginSponsor(auth);
     }
 
     @Operation(
@@ -104,6 +106,46 @@ public class SponsorController {
 
         log.info("@PostMapping(\"/sponsors\")");
 
-        return service.registerSponsor(newUser);
+        return securityService.registerSponsor(newUser);
+    }
+
+    @Operation(
+            summary = "Get unusable Sponsor's kudos",
+            description = "Get unusable Sponsor's kudos"
+    )
+    @ApiResponses(
+            value = {
+                    @ApiResponse(
+                            responseCode = "200",
+                            description = "Success",
+                            content = @Content(
+                                    mediaType = "application/json",
+                                    schema = @Schema(implementation = SessionInfo.class)
+                            )
+                    ),
+                    @ApiResponse(
+                            responseCode = "401",
+                            description = "Unauthorized",
+                            content = @Content(
+                                    mediaType = "application/json",
+                                    schema = @Schema(implementation = SessionInfo.class)
+                            )
+                    ),
+                    @ApiResponse(
+                            responseCode = "404",
+                            description = "Not Found",
+                            content = @Content(
+                                    mediaType = "application/json",
+                                    schema = @Schema(implementation = SessionInfo.class)
+                            )
+                    )
+            }
+    )
+    @GetMapping("/sponsors/{sponsor-id}/kudos")
+    public UnusableKudos register(@PathVariable("sponsor-id") long sponsorId) {
+
+        log.info("@GetMapping(\"/sponsors/{sponsor-id}/kudos\")");
+
+        return sponsorService.getUnusableKudos(sponsorId);
     }
 }

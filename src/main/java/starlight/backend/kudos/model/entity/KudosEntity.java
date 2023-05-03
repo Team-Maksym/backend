@@ -21,9 +21,9 @@ public class KudosEntity {
     @GeneratedValue(strategy = IDENTITY)
     private Long kudosId;
     private Long followerId;
-    private Instant createData;
     private Integer countKudos;
     private Instant updateData;
+    private Instant createData;
     @ManyToOne
     @JsonBackReference
     @JoinColumn(name = "sponsor_id", nullable = false)
