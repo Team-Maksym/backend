@@ -4,22 +4,18 @@ import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
-import org.springframework.web.server.ResponseStatusException;
 import starlight.backend.exception.*;
 import starlight.backend.kudos.model.entity.KudosEntity;
 import starlight.backend.kudos.repository.KudosRepository;
 import starlight.backend.proof.ProofRepository;
 import starlight.backend.proof.model.entity.ProofEntity;
 import starlight.backend.security.service.SecurityServiceInterface;
-import starlight.backend.user.model.entity.SponsorEntity;
-import starlight.backend.user.repository.SponsorRepository;
+import starlight.backend.sponsor.SponsorRepository;
 import starlight.backend.user.repository.UserRepository;
 
 import java.time.Instant;
-import java.util.stream.Collectors;
 
 @Service
 @AllArgsConstructor

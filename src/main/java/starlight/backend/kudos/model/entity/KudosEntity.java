@@ -4,8 +4,7 @@ import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.*;
 import starlight.backend.proof.model.entity.ProofEntity;
-import starlight.backend.user.model.entity.SponsorEntity;
-import starlight.backend.user.model.entity.UserEntity;
+import starlight.backend.sponsor.model.entity.SponsorEntity;
 
 import java.time.Instant;
 

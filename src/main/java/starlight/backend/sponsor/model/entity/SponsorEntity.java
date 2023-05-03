@@ -1,4 +1,4 @@
-package starlight.backend.user.model.entity;
+package starlight.backend.sponsor.model.entity;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;

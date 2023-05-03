@@ -18,9 +18,9 @@ import starlight.backend.security.model.enums.Role;
 import starlight.backend.security.model.request.NewUser;
 import starlight.backend.security.model.response.SessionInfo;
 import starlight.backend.security.service.SecurityServiceInterface;
-import starlight.backend.user.model.entity.SponsorEntity;
+import starlight.backend.sponsor.model.entity.SponsorEntity;
 import starlight.backend.user.model.entity.UserEntity;
-import starlight.backend.user.repository.SponsorRepository;
+import starlight.backend.sponsor.SponsorRepository;
 import starlight.backend.user.repository.UserRepository;
 
 import java.time.Instant;

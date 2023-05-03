@@ -1,8 +1,7 @@
-package starlight.backend.user.repository;
+package starlight.backend.sponsor;
 
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.security.config.annotation.web.PortMapperDsl;
-import starlight.backend.user.model.entity.SponsorEntity;
+import starlight.backend.sponsor.model.entity.SponsorEntity;
 
 import java.util.Optional;
 
