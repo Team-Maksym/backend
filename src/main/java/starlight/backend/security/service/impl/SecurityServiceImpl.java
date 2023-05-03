@@ -11,7 +11,7 @@ import org.springframework.security.oauth2.jwt.JwtEncoder;
 import org.springframework.security.oauth2.jwt.JwtEncoderParameters;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import starlight.backend.exception.TalentAlreadyOccupiedException;
+import starlight.backend.exception.EmailAlreadyOccupiedException;
 import starlight.backend.security.MapperSecurity;
 import starlight.backend.security.model.UserDetailsImpl;
 import starlight.backend.security.model.request.NewUser;
@@ -32,7 +32,6 @@ public class SecurityServiceImpl implements SecurityServiceInterface {
     private final JwtEncoder jwtEncoder;
     private UserRepository repository;
     private MapperSecurity mapperSecurity;
-
     private PasswordEncoder passwordEncoder;
 
     @Override
@@ -40,6 +39,19 @@ public class SecurityServiceImpl implements SecurityServiceInterface {
         var user = repository.findByEmail(auth.getName())
                 .orElseThrow(() -> new UsernameNotFoundException(auth.getName() + " not found user by email"));
         var token = getJWTToken(mapperSecurity.toUserDetailsImpl(user), user.getUserId());
+        return mapperSecurity.toSessionInfo(token);
+    }
+    @Override
+    public SessionInfo loginSponsor(Authentication auth) {
+        var user = repository.findByEmail(auth.getName())
+                .orElseThrow(() -> new UsernameNotFoundException(auth.getName() + " not found user by email"));
+        var token = getJWTToken(mapperSecurity.toUserDetailsImplForSponsor(user), user.getUserId());
+        return mapperSecurity.toSessionInfo(token);
+    }
+    @Override
+    public SessionInfo registerSponsor(NewUser newUser) {
+        var user = saveNewUser(newUser);
+        var token = getJWTToken(mapperSecurity.toUserDetailsImplForSponsor(user), user.getUserId());
         return mapperSecurity.toSessionInfo(token);
     }
 
@@ -52,7 +64,7 @@ public class SecurityServiceImpl implements SecurityServiceInterface {
 
     UserEntity saveNewUser(NewUser newUser) {
         if (repository.existsByEmail(newUser.email())) {
-            throw new TalentAlreadyOccupiedException(newUser.email());
+            throw new EmailAlreadyOccupiedException(newUser.email());
         }
         return repository.save(UserEntity.builder()
                 .fullName(newUser.fullName())
@@ -61,8 +73,9 @@ public class SecurityServiceImpl implements SecurityServiceInterface {
                 .build());
     }
 
+    @Override
     @Transactional(readOnly = true)
-    String getJWTToken(UserDetailsImpl authentication, long id) {
+    public String getJWTToken(UserDetailsImpl authentication, long id) {
         var now = Instant.now();
         var claims = JwtClaimsSet.builder()
                 .issuer("self")
@@ -74,8 +87,9 @@ public class SecurityServiceImpl implements SecurityServiceInterface {
         return jwtEncoder.encode(JwtEncoderParameters.from(claims)).getTokenValue();
     }
 
+    @Override
     @Transactional(readOnly = true)
-    String createScope(UserDetailsImpl authentication) {
+    public String createScope(UserDetailsImpl authentication) {
         return authentication.getAuthorities().stream()
                 .map(GrantedAuthority::getAuthority)
                 .collect(Collectors.joining(" "));

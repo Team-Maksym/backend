@@ -17,8 +17,8 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import starlight.backend.exception.EmailAlreadyOccupiedException;
 import starlight.backend.exception.PageNotFoundException;
-import starlight.backend.exception.TalentAlreadyOccupiedException;
 import starlight.backend.proof.model.request.ProofAddRequest;
 import starlight.backend.proof.model.request.ProofUpdateRequest;
 import starlight.backend.proof.model.response.ProofFullInfo;
@@ -155,7 +155,7 @@ public class ProofController {
                     content = @Content(
                             mediaType = MediaType.APPLICATION_JSON_VALUE,
                             schema = @Schema(
-                                    implementation = TalentAlreadyOccupiedException.class
+                                    implementation = EmailAlreadyOccupiedException.class
                             )
                     )
             )
@@ -171,7 +171,12 @@ public class ProofController {
 
     @Operation(
             summary = "Update proof in status draft",
-            description = "Update proof args title, description, link."
+            description = "Update proof args title, description, link." +
+                    "It is possible to change general information in Proofs with " +
+                    "the \"Draft\" status. Changing Proof status from Draft to another " +
+                    "is only possible on Published or Hidden. It is not possible to " +
+                    "return from the \"Published\" or \"Hidden\" status to the \"Draft\" status.\n" +
+                    "Evidence with status \"Draft\" or \"Hidden\" is only listed in your own profile."
     )
     @ApiResponses(value = {
             @ApiResponse(

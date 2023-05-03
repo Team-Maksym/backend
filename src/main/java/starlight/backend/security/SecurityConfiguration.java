@@ -9,7 +9,6 @@ import org.springframework.security.config.annotation.method.configuration.Enabl
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.oauth2.server.resource.OAuth2ResourceServerConfigurer;
-import org.springframework.security.config.web.server.ServerHttpSecurity;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -23,7 +22,6 @@ import org.springframework.security.oauth2.server.resource.authentication.JwtGra
 import org.springframework.security.oauth2.server.resource.web.BearerTokenAuthenticationEntryPoint;
 import org.springframework.security.oauth2.server.resource.web.access.BearerTokenAccessDeniedHandler;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.security.web.server.SecurityWebFilterChain;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import starlight.backend.security.model.UserDetailsImpl;
@@ -34,7 +32,6 @@ import java.security.KeyPairGenerator;
 import java.security.NoSuchAlgorithmException;
 import java.security.interfaces.RSAPublicKey;
 
-import static org.springframework.http.HttpMethod.GET;
 import static org.springframework.http.HttpMethod.POST;
 import static org.springframework.security.config.http.SessionCreationPolicy.STATELESS;
 import static org.springframework.security.web.util.matcher.AntPathRequestMatcher.antMatcher;
@@ -43,7 +40,6 @@ import static org.springframework.security.web.util.matcher.AntPathRequestMatche
 @EnableMethodSecurity
 @Configuration
 class SecurityConfiguration {
-
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http.authorizeHttpRequests(c -> c
@@ -62,9 +58,11 @@ class SecurityConfiguration {
                 .requestMatchers(antMatcher("/actuator/**")).permitAll()
                 /////////////////////////Production////////////////////////////////////////////////
                 .requestMatchers("/api/v1/talents").permitAll()
+                .requestMatchers("/api/v1/sponsors").permitAll()
                 .requestMatchers("/api/v1/proofs").permitAll()
                 .requestMatchers(POST, "/api/v1/talents/login").permitAll()
-                .requestMatchers(antMatcher( "/api/v1/proofs/**")).permitAll()
+                .requestMatchers(POST, "/api/v1/sponsors/login").permitAll()
+                .requestMatchers(antMatcher("/api/v1/proofs/**")).permitAll()
                 /////////////////////////Another///////////////////////////////////////////////////
                 .anyRequest().authenticated()
         );
@@ -79,6 +77,7 @@ class SecurityConfiguration {
                         .accessDeniedHandler(new BearerTokenAccessDeniedHandler()));
         return http.build();
     }
+
     @Bean
     public WebMvcConfigurer corsConfigurer() {
         return new WebMvcConfigurer() {
@@ -134,5 +133,4 @@ class SecurityConfiguration {
                 .map(user -> new UserDetailsImpl(user.getEmail(), user.getPassword()))
                 .orElseThrow(() -> new UsernameNotFoundException(email + " not found user by email"));
     }
-
 }
