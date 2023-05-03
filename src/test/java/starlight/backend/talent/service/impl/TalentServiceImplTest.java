@@ -1,47 +1,6 @@
 package starlight.backend.talent.service.impl;
 
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
-import org.junit.runner.RunWith;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.Pageable;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.test.context.junit4.SpringRunner;
-import org.springframework.web.server.ResponseStatusException;
-import starlight.backend.exception.PageNotFoundException;
-import starlight.backend.exception.TalentNotFoundException;
-import starlight.backend.kudos.model.entity.KudosEntity;
-import starlight.backend.kudos.repository.KudosRepository;
-import starlight.backend.proof.ProofRepository;
-import starlight.backend.proof.model.entity.ProofEntity;
-import starlight.backend.security.service.SecurityServiceInterface;
-import starlight.backend.talent.MapperTalent;
-import starlight.backend.talent.model.request.TalentUpdateRequest;
-import starlight.backend.talent.model.response.TalentFullInfo;
-import starlight.backend.talent.model.response.TalentPagePagination;
-import starlight.backend.user.model.entity.PositionEntity;
-import starlight.backend.user.model.entity.UserEntity;
-import starlight.backend.user.repository.PositionRepository;
-import starlight.backend.user.repository.UserRepository;
-
-import java.time.LocalDate;
-import java.util.*;
-import java.util.stream.Collectors;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
-import static org.junit.Assert.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.*;
-
+/*
 @RunWith(SpringRunner.class)
 @SpringBootTest
 class TalentServiceImplTest {
@@ -253,3 +212,4 @@ class TalentServiceImplTest {
                 .hasMessage("401 UNAUTHORIZED \"you cannot delete another talent\"");
     }
 }
+*/

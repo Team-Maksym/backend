@@ -14,6 +14,8 @@ import starlight.backend.kudos.repository.KudosRepository;
 import starlight.backend.proof.ProofRepository;
 import starlight.backend.proof.model.entity.ProofEntity;
 import starlight.backend.security.service.SecurityServiceInterface;
+import starlight.backend.user.model.entity.SponsorEntity;
+import starlight.backend.user.repository.SponsorRepository;
 import starlight.backend.user.repository.UserRepository;
 
 import java.time.Instant;
@@ -26,9 +28,10 @@ public class KudosService {
     private SecurityServiceInterface securityService;
     private KudosRepository kudosRepository;
     private ProofRepository proofRepository;
+    private UserRepository userRepository;
+    private SponsorRepository sponsorRepository;
     @PersistenceContext
     private EntityManager em;
-    private UserRepository userRepository;
 
 
     private boolean isItMyProof(long proofId, Authentication auth) {
@@ -43,7 +46,7 @@ public class KudosService {
         var kudosList = proof.getKudos()
                 .stream()
                 .filter(k -> k.getOwner()
-                        .getUserId()
+                        .getSponsorId()
                         .toString()
                         .equals(auth.getName()))
                 .toList();
@@ -71,7 +74,7 @@ public class KudosService {
 
         var proof = proofRepository.findById(proofId)
                 .orElseThrow(() -> new ProofNotFoundException(proofId));
-        var owner = userRepository.findById(Long.valueOf(auth.getName()))
+        var owner = sponsorRepository.findById(Long.valueOf(auth.getName()))
                 .orElseThrow(() -> new UserNotFoundException(auth.getName()));
         var follower = userRepository.findById(proof.getUser().getUserId())
                 .orElseThrow(() -> new UserNotFoundException(auth.getName()));
@@ -83,5 +86,6 @@ public class KudosService {
                 .build();
 
         kudosRepository.save(kudos);
+
     }
 }

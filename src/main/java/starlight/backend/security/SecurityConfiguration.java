@@ -25,6 +25,7 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import starlight.backend.security.model.UserDetailsImpl;
+import starlight.backend.user.repository.SponsorRepository;
 import starlight.backend.user.repository.UserRepository;
 
 import java.security.KeyPair;
@@ -127,10 +128,18 @@ class SecurityConfiguration {
 
     @Bean
     UserDetailsService userDetailsService(
-            UserRepository repository
+            UserRepository userRepository, SponsorRepository sponsorRepository
     ) {
-        return email -> repository.findByEmail(email)
-                .map(user -> new UserDetailsImpl(user.getEmail(), user.getPassword()))
-                .orElseThrow(() -> new UsernameNotFoundException(email + " not found user by email"));
+        return email -> {
+            if (userRepository.existsByEmail(email)) {
+                return userRepository.findByEmail(email)
+                        .map(user -> new UserDetailsImpl(user.getEmail(), user.getPassword()))
+                        .orElseThrow(() -> new UsernameNotFoundException(email + " not found user by email"));
+            } else {
+                return sponsorRepository.findByEmail(email)
+                        .map(sponsor -> new UserDetailsImpl(sponsor.getEmail(), sponsor.getPassword()))
+                        .orElseThrow(() -> new UsernameNotFoundException(email + " not found user by email"));
+            }
+        };
     }
 }

@@ -42,3 +42,11 @@ databaseChangeLog:
   - changeSet:
       id: 5
       author: kate
+
+  - changeSet:
+      id: 6
+      author: kate
+
+  - include:
+      file: dml/006_insert_data_sponsor.sql
+      relativeToChangelogFile: true
