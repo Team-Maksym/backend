@@ -17,8 +17,8 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import starlight.backend.exception.EmailAlreadyOccupiedException;
 import starlight.backend.exception.PageNotFoundException;
-import starlight.backend.exception.TalentAlreadyOccupiedException;
 import starlight.backend.proof.model.request.ProofAddRequest;
 import starlight.backend.proof.model.request.ProofUpdateRequest;
 import starlight.backend.proof.model.response.ProofFullInfo;
@@ -155,7 +155,7 @@ public class ProofController {
                     content = @Content(
                             mediaType = MediaType.APPLICATION_JSON_VALUE,
                             schema = @Schema(
-                                    implementation = TalentAlreadyOccupiedException.class
+                                    implementation = EmailAlreadyOccupiedException.class
                             )
                     )
             )

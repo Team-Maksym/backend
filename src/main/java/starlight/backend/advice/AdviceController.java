@@ -21,7 +21,7 @@ public class AdviceController {
     }
 
     @ExceptionHandler({
-            TalentAlreadyOccupiedException.class,
+            EmailAlreadyOccupiedException.class,
             ProofAlreadyHaveKudosFromUser.class,
     })
     @ResponseStatus(HttpStatus.CONFLICT)
