@@ -1,22 +1,22 @@
 --liquibase formatted sql
 --changeset sasha:inset-kudos-05
-INSERT INTO kudos_entity (user_id,proof_id,follower_id,create_data)
-VALUES (1,1,2,'2001-09-14 22:11:12');
-INSERT INTO kudos_entity (user_id,proof_id,follower_id,create_data)
-VALUES (1,2,3,'2002-09-14 22:11:12');
-INSERT INTO kudos_entity (user_id,proof_id,follower_id,create_data)
-VALUES (1,3,4,'2003-09-14 22:11:12');
-INSERT INTO kudos_entity (user_id,proof_id,follower_id,create_data)
-VALUES (2,1,2,'2004-09-14 22:11:12');
-INSERT INTO kudos_entity (user_id,proof_id,follower_id,create_data)
-VALUES (2,1,2,'2005-09-14 22:11:12');
-INSERT INTO kudos_entity (user_id,proof_id,follower_id,create_data)
-VALUES (3,1,2,'2006-09-14 22:11:12');
-INSERT INTO kudos_entity (user_id,proof_id,follower_id,create_data)
-VALUES (3,1,2,'2007-09-14 22:11:12');
-INSERT INTO kudos_entity (user_id,proof_id,follower_id,create_data)
-VALUES (4,1,2,'2008-09-14 22:11:12');
-INSERT INTO kudos_entity (user_id,proof_id,follower_id,create_data)
-VALUES (5,1,2,'2009-09-14 22:11:12');
-INSERT INTO kudos_entity (user_id,proof_id,follower_id,create_data)
-VALUES (6,1,2,'2010-09-14 22:11:12');
+INSERT INTO kudos_entity (sponsor_id,proof_id,follower_id,create_data, count_kudos)
+VALUES (1,1,2,'2001-09-14 22:11:12', 50);
+INSERT INTO kudos_entity (sponsor_id,proof_id,follower_id,create_data, count_kudos)
+VALUES (1,2,3,'2002-09-14 22:11:12', 150);
+INSERT INTO kudos_entity (sponsor_id,proof_id,follower_id,create_data, count_kudos)
+VALUES (1,3,4,'2003-09-14 22:11:12', 30);
+INSERT INTO kudos_entity (sponsor_id,proof_id,follower_id,create_data, count_kudos)
+VALUES (2,1,2,'2004-09-14 22:11:12', 40);
+INSERT INTO kudos_entity (sponsor_id,proof_id,follower_id,create_data, count_kudos)
+VALUES (2,1,2,'2005-09-14 22:11:12', 70);
+INSERT INTO kudos_entity (sponsor_id,proof_id,follower_id,create_data, count_kudos)
+VALUES (1,1,2,'2006-09-14 22:11:12', 60);
+INSERT INTO kudos_entity (sponsor_id,proof_id,follower_id,create_data, count_kudos)
+VALUES (1,1,2,'2007-09-14 22:11:12', 10);
+INSERT INTO kudos_entity (sponsor_id,proof_id,follower_id,create_data, count_kudos)
+VALUES (2,1,2,'2008-09-14 22:11:12', 5);
+INSERT INTO kudos_entity (sponsor_id,proof_id,follower_id,create_data, count_kudos)
+VALUES (2,1,2,'2009-09-14 22:11:12', 56);
+INSERT INTO kudos_entity (sponsor_id,proof_id,follower_id,create_data, count_kudos)
+VALUES (1,1,2,'2010-09-14 22:11:12', 12);
