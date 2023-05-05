@@ -11,16 +11,21 @@ import org.springframework.security.oauth2.jwt.JwtEncoder;
 import org.springframework.security.oauth2.jwt.JwtEncoderParameters;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import starlight.backend.exception.TalentAlreadyOccupiedException;
+import starlight.backend.exception.EmailAlreadyOccupiedException;
 import starlight.backend.security.MapperSecurity;
 import starlight.backend.security.model.UserDetailsImpl;
+import starlight.backend.security.model.enums.Role;
 import starlight.backend.security.model.request.NewUser;
 import starlight.backend.security.model.response.SessionInfo;
 import starlight.backend.security.service.SecurityServiceInterface;
+import starlight.backend.sponsor.model.entity.SponsorEntity;
+import starlight.backend.sponsor.model.response.UnusableKudos;
 import starlight.backend.user.model.entity.UserEntity;
+import starlight.backend.sponsor.SponsorRepository;
 import starlight.backend.user.repository.UserRepository;
 
 import java.time.Instant;
+import java.util.Collections;
 import java.util.stream.Collectors;
 
 import static java.time.temporal.ChronoUnit.MINUTES;
@@ -31,6 +36,7 @@ import static java.time.temporal.ChronoUnit.MINUTES;
 public class SecurityServiceImpl implements SecurityServiceInterface {
     private final JwtEncoder jwtEncoder;
     private UserRepository repository;
+    private SponsorRepository sponsorRepository;
     private MapperSecurity mapperSecurity;
     private PasswordEncoder passwordEncoder;
 
@@ -51,17 +57,47 @@ public class SecurityServiceImpl implements SecurityServiceInterface {
 
     UserEntity saveNewUser(NewUser newUser) {
         if (repository.existsByEmail(newUser.email())) {
-            throw new TalentAlreadyOccupiedException(newUser.email());
+            throw new EmailAlreadyOccupiedException(newUser.email());
         }
         return repository.save(UserEntity.builder()
                 .fullName(newUser.fullName())
                 .email(newUser.email())
                 .password(passwordEncoder.encode(newUser.password()))
+                .authorities(Collections.singleton(Role.TALENT.getAuthority()))
                 .build());
     }
 
+    @Override
+    public SessionInfo loginSponsor(Authentication auth) {
+        var user = sponsorRepository.findByEmail(auth.getName())
+                .orElseThrow(() -> new UsernameNotFoundException(auth.getName() + " not found user by email"));
+        var token = getJWTToken(mapperSecurity.toUserDetailsImplForSponsor(user), user.getSponsorId());
+        return mapperSecurity.toSessionInfo(token);
+    }
+
+    @Override
+    public SessionInfo registerSponsor(NewUser newUser) {
+        var user = saveNewSponsor(newUser);
+        var token = getJWTToken(mapperSecurity.toUserDetailsImplForSponsor(user), user.getSponsorId());
+        return mapperSecurity.toSessionInfo(token);
+    }
+
+    SponsorEntity saveNewSponsor(NewUser newUser) {
+        if (sponsorRepository.existsByEmail(newUser.email())) {
+            throw new EmailAlreadyOccupiedException(newUser.email());
+        }
+        return sponsorRepository.save(SponsorEntity.builder()
+                .fullName(newUser.fullName())
+                .email(newUser.email())
+                .password(passwordEncoder.encode(newUser.password()))
+                .authorities(Collections.singleton(Role.SPONSOR.getAuthority()))
+                .unusedKudos(100) //TODO не хадкодить
+                .build());
+    }
+
+    @Override
     @Transactional(readOnly = true)
-    String getJWTToken(UserDetailsImpl authentication, long id) {
+    public String getJWTToken(UserDetailsImpl authentication, long id) {
         var now = Instant.now();
         var claims = JwtClaimsSet.builder()
                 .issuer("self")
@@ -73,8 +109,9 @@ public class SecurityServiceImpl implements SecurityServiceInterface {
         return jwtEncoder.encode(JwtEncoderParameters.from(claims)).getTokenValue();
     }
 
+    @Override
     @Transactional(readOnly = true)
-    String createScope(UserDetailsImpl authentication) {
+    public String createScope(UserDetailsImpl authentication) {
         return authentication.getAuthorities().stream()
                 .map(GrantedAuthority::getAuthority)
                 .collect(Collectors.joining(" "));

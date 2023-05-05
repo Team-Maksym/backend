@@ -21,7 +21,7 @@ public class AdviceController {
     }
 
     @ExceptionHandler({
-            TalentAlreadyOccupiedException.class,
+            EmailAlreadyOccupiedException.class,
             ProofAlreadyHaveKudosFromUser.class,
     })
     @ResponseStatus(HttpStatus.CONFLICT)
@@ -30,11 +30,29 @@ public class AdviceController {
     }
 
     @ExceptionHandler({
+            AuthorizationFailureException.class,
+    })
+    @ResponseStatus(HttpStatus.UNAUTHORIZED)
+    public ErrorDTO authFailure(Exception exception) {
+        return new ErrorDTO(exception.getMessage());
+    }
+
+    @ExceptionHandler({
             ProofNotFoundException.class,
             TalentNotFoundException.class,
+            SponsorNotFoundException.class
     })
     @ResponseStatus(HttpStatus.NOT_FOUND)
     public ErrorDTO notExists(Exception exception) {
+        return new ErrorDTO(exception.getMessage());
+    }
+
+    @ExceptionHandler({
+            TalentCanNotAddKudos.class,
+            NotEnoughKudosException.class,
+    })
+    @ResponseStatus(HttpStatus.FORBIDDEN)
+    public ErrorDTO forbidden(Exception exception) {
         return new ErrorDTO(exception.getMessage());
     }
     // @ExceptionHandler({

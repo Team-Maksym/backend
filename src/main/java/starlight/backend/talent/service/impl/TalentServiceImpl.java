@@ -12,8 +12,6 @@ import org.springframework.web.server.ResponseStatusException;
 import starlight.backend.exception.PageNotFoundException;
 import starlight.backend.exception.TalentNotFoundException;
 import starlight.backend.exception.UserNotFoundException;
-import starlight.backend.kudos.model.entity.KudosEntity;
-import starlight.backend.kudos.repository.KudosRepository;
 import starlight.backend.proof.ProofRepository;
 import starlight.backend.proof.model.entity.ProofEntity;
 import starlight.backend.security.service.SecurityServiceInterface;
@@ -41,7 +39,6 @@ public class TalentServiceImpl implements TalentServiceInterface {
     private PositionRepository positionRepository;
     private SecurityServiceInterface securityService;
     private ProofRepository proofRepository;
-    private KudosRepository kudosRepository;
     private PasswordEncoder passwordEncoder;
 
     @Override
@@ -133,13 +130,6 @@ public class TalentServiceImpl implements TalentServiceInterface {
                 .orElseThrow(() -> new UserNotFoundException(talentId));
         user.setPositions(null);
         user.getAuthorities().clear();
-        if (!user.getKudos().isEmpty()) {
-            for (KudosEntity kudos : kudosRepository.findByOwner_UserId(talentId)) {
-                kudos.setProof(null);
-                kudos.setOwner(null);
-                kudosRepository.deleteById(kudos.getKudosId());
-            }
-        }
         if (!user.getProofs().isEmpty()) {
             for (ProofEntity proof : proofRepository.findByUser_UserId(talentId)) {
                 proof.setKudos(null);

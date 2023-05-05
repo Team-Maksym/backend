@@ -8,7 +8,5 @@ import java.util.List;
 
 @Repository
 public interface KudosRepository extends JpaRepository<KudosEntity, Long> {
-    List<KudosEntity> findByOwner_UserId(Long userId);
-
     List<KudosEntity> findByProof_ProofId(long proofId);
 }

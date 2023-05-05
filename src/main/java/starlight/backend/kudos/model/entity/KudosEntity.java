@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.*;
 import starlight.backend.proof.model.entity.ProofEntity;
-import starlight.backend.user.model.entity.UserEntity;
+import starlight.backend.sponsor.model.entity.SponsorEntity;
 
 import java.time.Instant;
 
@@ -21,12 +21,13 @@ public class KudosEntity {
     @GeneratedValue(strategy = IDENTITY)
     private Long kudosId;
     private Long followerId;
+    private Integer countKudos;
+    private Instant updateData;
     private Instant createData;
-
     @ManyToOne
     @JsonBackReference
-    @JoinColumn(name = "user_id", nullable = false)
-    private UserEntity owner;
+    @JoinColumn(name = "sponsor_id", nullable = false)
+    private SponsorEntity owner;
 
     @ManyToOne
     @JsonBackReference

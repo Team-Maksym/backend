@@ -19,6 +19,11 @@ public class UserDetailsImpl implements UserDetails {
         this.password = password;
         this.role = role.TALENT;
     }
+    public UserDetailsImpl(String username, String password, Role role) {
+        this.username = username;
+        this.password = password;
+        this.role = role;
+    }
 
     public void setRole(Role role) {
         this.role = role;

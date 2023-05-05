@@ -1,19 +1,16 @@
-package starlight.backend.user.model.entity;
+package starlight.backend.sponsor.model.entity;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import lombok.*;
-import org.hibernate.validator.constraints.Length;
 import org.hibernate.validator.constraints.URL;
 import org.springframework.validation.annotation.Validated;
 import starlight.backend.kudos.model.entity.KudosEntity;
-import starlight.backend.proof.model.entity.ProofEntity;
 
 import java.time.LocalDate;
 import java.util.Collection;
-import java.util.Date;
 import java.util.Set;
 
 import static jakarta.persistence.GenerationType.IDENTITY;
@@ -25,10 +22,10 @@ import static jakarta.persistence.GenerationType.IDENTITY;
 @NoArgsConstructor
 @Entity
 @Validated
-public class UserEntity {
+public class SponsorEntity {
     @Id
     @GeneratedValue(strategy = IDENTITY)
-    private Long userId;
+    private Long sponsorId;
     @NotBlank
     private String fullName;
     @NotBlank
@@ -36,27 +33,13 @@ public class UserEntity {
     private String email;
     @NotBlank
     private String password;
-    private LocalDate birthday;
     @URL
     private String avatar;
-    @Length(max = 255)
-    private String education;
-    @Length(max = 255)
-    private String experience;
-    private String activationCode;
-    private Date expiryDate;
-    @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH})
-    @JoinTable(
-            name = "user_position",
-            joinColumns = @JoinColumn(name = "user_id"),
-            inverseJoinColumns = @JoinColumn(name = "position_id"))
-    @JsonManagedReference
-    private Set<PositionEntity> positions;
-
+    private String company;
+    private Integer unusedKudos;
     @ElementCollection(fetch = FetchType.EAGER)
     private Collection<String> authorities;
-
-    @OneToMany(mappedBy = "user")
+    @OneToMany(mappedBy = "owner")
     @JsonManagedReference
-    private Set<ProofEntity> proofs;
+    private Set<KudosEntity> kudos;
 }
