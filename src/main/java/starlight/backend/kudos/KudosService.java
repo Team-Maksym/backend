@@ -1,46 +1,45 @@
 package starlight.backend.kudos;
 
-import jakarta.persistence.EntityManager;
-import jakarta.persistence.PersistenceContext;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import starlight.backend.exception.*;
+import starlight.backend.exception.AuthorizationFailureException;
+import starlight.backend.exception.UserNotFoundException;
+import starlight.backend.exception.kudos.KudosRequestMustBeNotZeroException;
+import starlight.backend.exception.kudos.NotEnoughKudosException;
+import starlight.backend.exception.kudos.TalentCanNotAddKudos;
+import starlight.backend.exception.kudos.YouCanNotReturnMoreKudosThanGaveException;
+import starlight.backend.exception.proof.ProofNotFoundException;
 import starlight.backend.kudos.model.entity.KudosEntity;
 import starlight.backend.kudos.model.response.KudosOnProof;
 import starlight.backend.kudos.repository.KudosRepository;
 import starlight.backend.proof.ProofRepository;
 import starlight.backend.proof.model.entity.ProofEntity;
 import starlight.backend.security.model.enums.Role;
-import starlight.backend.security.service.SecurityServiceInterface;
 import starlight.backend.sponsor.SponsorRepository;
+import starlight.backend.sponsor.model.entity.SponsorEntity;
+import starlight.backend.user.model.entity.UserEntity;
 import starlight.backend.user.repository.UserRepository;
+
+import java.time.Instant;
+import java.util.stream.Collectors;
 
 @Service
 @AllArgsConstructor
 @Slf4j
 @Transactional
 public class KudosService {
-    private SecurityServiceInterface securityService;
     private KudosRepository kudosRepository;
     private ProofRepository proofRepository;
     private UserRepository userRepository;
     private SponsorRepository sponsorRepository;
-    @PersistenceContext
-    private EntityManager em;
-
-    private boolean isItMyProof(long proofId, Authentication auth) {
-        var talentId = em.find(ProofEntity.class, proofId).getUser().getUserId();
-        return securityService.checkingLoggedAndToken(talentId, auth);
-    }
 
     private boolean isProofAlreadyHaveKudosFromUser(long proofId, Authentication auth) {
         var proof = proofRepository.findById(proofId)
                 .orElseThrow(() -> new ProofNotFoundException(proofId));
-
         var kudosList = proof.getKudos()
                 .stream()
                 .filter(k -> k.getOwner()
@@ -73,7 +72,7 @@ public class KudosService {
     }
 
 
-    public KudosEntity addKudosOnProof(long proofId, int kudos, Authentication auth) {
+    public KudosEntity addKudosOnProof(long proofId, int kudosRequest, Authentication auth) {
         if (auth == null) {
             throw new AuthorizationFailureException();
         }
@@ -82,50 +81,56 @@ public class KudosService {
                 throw new TalentCanNotAddKudos();
             }
         }
-        if (isItMyProof(proofId, auth)) {
-            throw new UserCannotAddKudosToTheirAccount();
+        if (kudosRequest == 0){
+            throw new KudosRequestMustBeNotZeroException();
         }
         var proof = proofRepository.findById(proofId)
                 .orElseThrow(() -> new ProofNotFoundException(proofId));
         var owner = sponsorRepository.findById(Long.valueOf(auth.getName()))
                 .orElseThrow(() -> new UserNotFoundException(auth.getName()));
-        if (kudos > owner.getUnusedKudos()) {
+        if (kudosRequest > owner.getUnusedKudos()) {
             throw new NotEnoughKudosException();
         }
         var follower = userRepository.findById(proof.getUser().getUserId())
                 .orElseThrow(() -> new UserNotFoundException(auth.getName()));
+        updateSponsorUnusedKudos(owner, kudosRequest);
+        return updateSponsorKudosField(proof, follower, owner, kudosRequest, proofId);
+    }
 
+    private void updateSponsorUnusedKudos(SponsorEntity owner, int kudosRequest) {
         sponsorRepository.findById(owner.getSponsorId()).map(sponsor -> {
-            sponsor.setUnusedKudos(owner.getUnusedKudos() - kudos);
+            sponsor.setUnusedKudos(owner.getUnusedKudos() - kudosRequest);
             sponsorRepository.save(sponsor);
             return null;
         });
+    }
 
-        /*var foo = proof.getKudos().stream()
+    private KudosEntity updateSponsorKudosField (ProofEntity proof, UserEntity follower, SponsorEntity owner,
+                                                 int kudosRequest, long proofId) {
+        if (proof.getKudos().stream()
                 .filter(kudos1 -> kudos1.getOwner().getSponsorId().equals(owner.getSponsorId()))
-                .collect(Collectors.toSet()).isEmpty()
-
-
-            if (proof.getKudos().stream()
-                    .filter(kudos1 -> kudos1.getOwner().getSponsorId().equals(owner.getSponsorId()))
-                    .collect(Collectors.toSet()).isEmpty()) {
-                kudos1.setCountKudos(kudos1.getCountKudos() + kudos);
-                kudosRepository.save(kudos1);
-                return kudos1;
-            }
+                .collect(Collectors.toSet()).isEmpty()) {
+            if (kudosRequest < 0) throw new YouCanNotReturnMoreKudosThanGaveException();
             var kudosBuild = KudosEntity.builder()
                     .followerId(follower.getUserId())
                     .createData(Instant.now())
                     .proof(proof)
                     .owner(owner)
-                    .countKudos(kudos)
+                    .countKudos(kudosRequest)
                     .build();
             kudosRepository.save(kudosBuild);
             return kudosBuild;
-        });
-
-        return null;
-*/
-        return new KudosEntity();
+        }
+        var kudos = kudosRepository.findByOwner_SponsorIdAndProof_ProofId(owner.getSponsorId(), proofId);
+        if (kudos.getCountKudos() + kudosRequest < 0) {
+            throw new YouCanNotReturnMoreKudosThanGaveException();
+        }
+        kudos.setCountKudos(kudos.getCountKudos() + kudosRequest);
+        kudos.setUpdateData(Instant.now());
+        kudosRepository.save(kudos);
+        if (kudos.getCountKudos() == 0) {
+            kudosRepository.delete(kudos);
+        }
+        return kudos;
     }
 }

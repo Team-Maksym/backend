@@ -13,7 +13,7 @@ import org.springframework.http.MediaType;
 import org.springframework.security.core.Authentication;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import starlight.backend.exception.ProofNotFoundException;
+import starlight.backend.exception.proof.ProofNotFoundException;
 import starlight.backend.kudos.KudosService;
 import starlight.backend.kudos.model.entity.KudosEntity;
 import starlight.backend.kudos.model.response.KudosOnProof;
@@ -81,8 +81,8 @@ public class KudosController {
     @PostMapping("/proofs/{proof-id}/kudos")
     @ResponseStatus(HttpStatus.CREATED)
     public KudosEntity addKudos(@PathVariable("proof-id") long proofId,
-                                @RequestParam int kudos,
-                                Authentication auth
+                                          @RequestParam int kudos,
+                                          Authentication auth
     ) {
         log.info("@PostMapping(\"/proofs/{proof-id}/kudos\")");
 

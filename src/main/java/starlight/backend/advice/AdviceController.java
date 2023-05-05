@@ -5,6 +5,10 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import starlight.backend.exception.*;
+import starlight.backend.exception.kudos.*;
+import starlight.backend.exception.proof.ProofNotFoundException;
+import starlight.backend.exception.proof.UserAccesDeniedToProofException;
+import starlight.backend.exception.proof.UserCanNotEditProofNotInDraftException;
 
 @RestControllerAdvice
 public class AdviceController {
@@ -14,6 +18,7 @@ public class AdviceController {
             UserCanNotEditProofNotInDraftException.class,
             UserAccesDeniedToProofException.class,
             UserCannotAddKudosToTheirAccount.class,
+            KudosRequestMustBeNotZeroException.class,
     })
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ErrorDTO badRequest(Exception exception) {
@@ -51,6 +56,7 @@ public class AdviceController {
             TalentCanNotAddKudos.class,
             NotEnoughKudosException.class,
             SponsorCanNotSeeAnotherSponsor.class,
+            YouCanNotReturnMoreKudosThanGaveException.class,
     })
     @ResponseStatus(HttpStatus.FORBIDDEN)
     public ErrorDTO forbidden(Exception exception) {
