@@ -6,13 +6,18 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
+import org.springframework.web.bind.annotation.*;
+import starlight.backend.security.model.request.NewUser;
 import starlight.backend.security.model.response.SessionInfo;
+import starlight.backend.security.service.SecurityServiceInterface;
+import starlight.backend.sponsor.model.response.SponsorFullInfo;
 import starlight.backend.sponsor.model.response.UnusableKudos;
 import starlight.backend.sponsor.service.SponsorServiceInterface;
 
@@ -62,5 +67,39 @@ public class SponsorController {
         log.info("@GetMapping(\"/sponsors/{sponsor-id}/kudos\")");
 
         return sponsorService.getUnusableKudos(sponsorId);
+    }
+
+    @Operation(
+            summary = "Get Sponsor full info",
+            description = "Get Sponsor full info"
+    )
+    @ApiResponses(
+            value = {
+                    @ApiResponse(
+                            responseCode = "401",
+                            description = "Unauthorized",
+                            content = @Content(
+                                    mediaType = "application/json",
+                                    schema = @Schema(implementation = Exception.class)
+                            )
+                    ),
+                    @ApiResponse(
+                            responseCode = "403",
+                            description = "Forbidden",
+                            content = @Content(
+                                    mediaType = "application/json",
+                                    schema = @Schema(implementation = Exception.class)
+                            )
+                    )
+            }
+    )
+    @GetMapping("/sponsors/{sponsor-id}")
+    @PreAuthorize("hasRole('SPONSOR')")
+    public SponsorFullInfo sponsorFullInfo(@PathVariable("sponsor-id") long sponsorId,
+                                           Authentication auth) {
+
+        log.info("@GetMapping(\"/sponsors/{sponsor-id}\")");
+
+        return sponsorService.getSponsorFullInfo(sponsorId, auth);
     }
 }

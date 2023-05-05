@@ -50,6 +50,7 @@ public class AdviceController {
     @ExceptionHandler({
             TalentCanNotAddKudos.class,
             NotEnoughKudosException.class,
+            SponsorCanNotSeeAnotherSponsor.class,
     })
     @ResponseStatus(HttpStatus.FORBIDDEN)
     public ErrorDTO forbidden(Exception exception) {
