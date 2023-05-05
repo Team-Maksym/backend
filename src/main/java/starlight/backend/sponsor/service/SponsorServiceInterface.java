@@ -8,4 +8,5 @@ public interface SponsorServiceInterface {
     UnusableKudos getUnusableKudos(long sponsorId);
 
     SponsorFullInfo getSponsorFullInfo(long sponsorId, Authentication auth);
+    SponsorFullInfo updateSponsorProfile(long id, SponsorFullInfo sponsorUpdateRequest, Authentication auth);
 }

@@ -20,6 +20,8 @@ import starlight.backend.security.service.SecurityServiceInterface;
 import starlight.backend.sponsor.model.response.SponsorFullInfo;
 import starlight.backend.sponsor.model.response.UnusableKudos;
 import starlight.backend.sponsor.service.SponsorServiceInterface;
+import starlight.backend.talent.model.request.TalentUpdateRequest;
+import starlight.backend.talent.model.response.TalentFullInfo;
 
 @AllArgsConstructor
 @RestController
@@ -101,5 +103,77 @@ public class SponsorController {
         log.info("@GetMapping(\"/sponsors/{sponsor-id}\")");
 
         return sponsorService.getSponsorFullInfo(sponsorId, auth);
+    }
+
+    @Operation(summary = "Update sponsor by id")
+    @ApiResponses(value = {
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "Success",
+                    content = @Content(
+                            mediaType = MediaType.APPLICATION_JSON_VALUE,
+                            schema = @Schema(
+                                    implementation = SponsorFullInfo.class
+                            )
+                    )
+            ),
+            @ApiResponse(
+                    responseCode = "400",
+                    description = "Bad request",
+                    content = @Content(
+                            mediaType = MediaType.APPLICATION_JSON_VALUE,
+                            schema = @Schema(
+                                    implementation = Exception.class
+                            )
+                    )
+            ),
+            @ApiResponse(
+                    responseCode = "401",
+                    description = "Unauthorized",
+                    content = @Content(
+                            mediaType = MediaType.APPLICATION_JSON_VALUE,
+                            schema = @Schema(
+                                    implementation = Exception.class
+                            )
+                    )
+            ),
+            @ApiResponse(
+                    responseCode = "403",
+                    description = "Forbidden",
+                    content = @Content(
+                            mediaType = MediaType.APPLICATION_JSON_VALUE,
+                            schema = @Schema(
+                                    implementation = Exception.class
+                            )
+                    )
+            ),
+            @ApiResponse(
+                    responseCode = "404",
+                    description = "Not found",
+                    content = @Content(
+                            mediaType = MediaType.APPLICATION_JSON_VALUE,
+                            schema = @Schema(
+                                    implementation = Exception.class
+                            )
+                    )
+            ),
+            @ApiResponse(
+                    responseCode = "409",
+                    description = "Conflict",
+                    content = @Content(
+                            mediaType = MediaType.APPLICATION_JSON_VALUE,
+                            schema = @Schema(
+                                    implementation = Exception.class
+                            )
+                    )
+            )
+    })
+    @PreAuthorize("hasRole('SPONSOR')")
+    @PatchMapping("/sponsors/{sponsor-id}")
+    public SponsorFullInfo updateTalentFullInfo(@PathVariable("sponsor-id") long sponsorId,
+                                               @RequestBody SponsorFullInfo sponsorUpdateRequest,
+                                               Authentication auth) {
+        log.info("@PatchMapping(\"/sponsors/{sponsor-id}\")");
+        return sponsorService.updateSponsorProfile(sponsorId, sponsorUpdateRequest, auth);
     }
 }

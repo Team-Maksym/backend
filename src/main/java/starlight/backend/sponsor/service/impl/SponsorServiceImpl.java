@@ -1,16 +1,21 @@
 package starlight.backend.sponsor.service.impl;
 
 import lombok.AllArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.server.ResponseStatusException;
 import starlight.backend.exception.SponsorCanNotSeeAnotherSponsor;
 import starlight.backend.exception.SponsorNotFoundException;
+import starlight.backend.exception.TalentNotFoundException;
 import starlight.backend.security.service.SecurityServiceInterface;
 import starlight.backend.sponsor.SponsorRepository;
 import starlight.backend.sponsor.model.response.SponsorFullInfo;
 import starlight.backend.sponsor.model.response.UnusableKudos;
 import starlight.backend.sponsor.service.SponsorServiceInterface;
+import starlight.backend.talent.model.request.TalentUpdateRequest;
+import starlight.backend.talent.model.response.TalentFullInfo;
 
 @AllArgsConstructor
 @Service
@@ -41,5 +46,36 @@ public class SponsorServiceImpl implements SponsorServiceInterface {
         if (!serviceService.checkingLoggedAndToken(sponsorId, auth)) {
             throw new SponsorCanNotSeeAnotherSponsor();
         }
+    }
+
+    @Override
+    public SponsorFullInfo updateSponsorProfile(long sponsorId, SponsorFullInfo sponsorUpdateRequest, Authentication auth) {
+        if (!serviceService.checkingLoggedAndToken(sponsorId, auth)) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "you cannot change another talent");
+        }
+        return sponsorRepository.findById(sponsorId).map(sponsor->{
+            sponsor.setAvatar(validationField(
+                    sponsorUpdateRequest.avatar(),
+                    sponsor.getAvatar()));
+            sponsor.setCompany(validationField(
+                    sponsorUpdateRequest.company(),
+                    sponsor.getCompany()
+            ));
+            sponsor.setFullName(validationField(
+                    sponsorUpdateRequest.fullName(),
+                    sponsor.getFullName()));
+            return SponsorFullInfo.builder()
+                    .fullName(sponsor.getFullName())
+                    .avatar(sponsor.getAvatar())
+                    .company(sponsor.getCompany())
+                    .build();
+                })
+        .orElseThrow(() -> new SponsorNotFoundException(sponsorId));
+    }
+
+    private String validationField(String newParam, String lastParam) {
+        return newParam == null ?
+                lastParam :
+                newParam;
     }
 }
