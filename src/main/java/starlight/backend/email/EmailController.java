@@ -90,8 +90,8 @@ public class EmailController {
     @ApiResponses(
             value = {
                     @ApiResponse(
-                            responseCode = "200",
-                            description = "Success"
+                            responseCode = "201",
+                            description = "CREATED"
                     ),
                     @ApiResponse(
                             responseCode = "404",
