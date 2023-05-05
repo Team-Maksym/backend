@@ -1,9 +1,9 @@
 --liquibase formatted sql
 --changeset kate:inset-user-01
 INSERT INTO user_entity (full_name,email,password,birthday,avatar,education,experience)
-VALUES ('Maksym Khudoliy','1zaxaqueiboigreu-5997@gmail.com','$2a$10$A40TjVC8xC1tC7uChck0BOWVxgMKY..7sfG2.YHrjkrG2GLSy4YLW','1980-08-22','https://drive.google.com/file/d/14KHHoX72gArjYtbdIeFrE6y3qjiW08YH/view?usp=share_link','education','experience');
+VALUES ('Maksym Khudoliy','zaxaqueiboigreu-5997@gmail.com','$2a$10$A40TjVC8xC1tC7uChck0BOWVxgMKY..7sfG2.YHrjkrG2GLSy4YLW','1980-08-22','https://drive.google.com/file/d/14KHHoX72gArjYtbdIeFrE6y3qjiW08YH/view?usp=share_link','education','experience');
 INSERT INTO user_entity (full_name,email,password,birthday,avatar,education,experience)
-VALUES ('Alex Lee','fa2ulleureheiyei-5854@gmail.com','$2a$10$A40TjVC8xC1tC7uChck0BOWVxgMKY..7sfG2.YHrjkrG2GLSy4YLW','1995-02-02',null,'education','experience');
+VALUES ('Alex Lee','faulleureheiyei-5854@gmail.com','$2a$10$A40TjVC8xC1tC7uChck0BOWVxgMKY..7sfG2.YHrjkrG2GLSy4YLW','1995-02-02',null,'education','experience');
 INSERT INTO user_entity (full_name,email,password,birthday,avatar,education,experience)
 VALUES ('Brandon Hernandez','merekucrautta-6463@gmail.com','$2a$10$A40TjVC8xC1tC7uChck0BOWVxgMKY..7sfG2.YHrjkrG2GLSy4YLW','1998-08-09',null,'education','experience');
 INSERT INTO user_entity (full_name,email,password,birthday,avatar,education,experience)
@@ -72,3 +72,7 @@ INSERT INTO user_entity (full_name,email,password)
 VALUES ('ABoba','ref07lynad@gmail.com','$2a$10$8dDgfyCcwAJPSMpAQAjbVuMnAhS4vfZc2RuGuqn8/Wm8q.B9u2iDS');
 INSERT INTO user_entity (full_name,email,password)
 VALUES ('Test','email@email.com','$2a$10$/1f8thpvBU9P58gsHCbTiukL3u5pPpxscChs8K0L.F2x2xusuI.7y');
+
+-- changeset kate:8
+UPDATE user_entity SET email = 'jaxifiееsammi-2877@gmail.com' WHERE id = 1;
+UPDATE user_entity SET email = 'jaxifiееееsammi-2877@gmail.com' WHERE id = 2;
