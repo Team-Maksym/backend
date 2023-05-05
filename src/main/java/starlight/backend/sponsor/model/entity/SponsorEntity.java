@@ -10,7 +10,10 @@ import org.springframework.validation.annotation.Validated;
 import starlight.backend.kudos.model.entity.KudosEntity;
 import starlight.backend.sponsor.model.enums.SponsorStatus;
 
+import java.time.Instant;
+import java.time.LocalDate;
 import java.util.Collection;
+import java.util.Date;
 import java.util.Set;
 
 import static jakarta.persistence.GenerationType.IDENTITY;
@@ -37,6 +40,8 @@ public class SponsorEntity {
     private String avatar;
     private String company;
     private Integer unusedKudos;
+    private String activationCode;
+    private Instant expiryDate;
     @NotBlank
     private SponsorStatus status;
     @ElementCollection(fetch = FetchType.EAGER)

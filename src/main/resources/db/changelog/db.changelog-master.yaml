@@ -31,10 +31,6 @@ databaseChangeLog:
       id: 3
       author: sasha
 
-  - include:
-      file: dml/005_insert_data_kudos.sql
-      relativeToChangelogFile: true
-
   - changeSet:
       id: 4
       author: kate
@@ -53,6 +49,19 @@ databaseChangeLog:
 
   - changeSet:
       id: 7
+      author: sasha
+
+  - include:
+      file: dml/007_insert_data_kudos_updated.sql
+      relativeToChangelogFile: true
+
+  - changeSet:
+      id: 8
+      author: kate
+
+
+  - changeSet:
+      id: 9
       author: serhii
 
   - include:

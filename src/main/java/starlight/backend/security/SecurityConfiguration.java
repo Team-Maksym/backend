@@ -55,6 +55,9 @@ class SecurityConfiguration {
                 .requestMatchers(antMatcher("/webjars/**")).permitAll()
                 /////////////////////////DevOps////////////////////////////////////////////////////
                 .requestMatchers("/error").permitAll()
+                /////////////////////////Email/////////////////////////////////////////////////////
+                .requestMatchers("/api/v1/sponsors/forgot-password").permitAll()
+                .requestMatchers("/api/v1/sponsors/recovery-password").permitAll()
                 /////////////////////////Actuator//////////////////////////////////////////////////
                 .requestMatchers(antMatcher("/actuator/**")).permitAll()
                 /////////////////////////Production////////////////////////////////////////////////

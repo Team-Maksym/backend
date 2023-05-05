@@ -59,6 +59,9 @@ public class SecurityServiceImpl implements SecurityServiceInterface {
         if (repository.existsByEmail(newUser.email())) {
             throw new EmailAlreadyOccupiedException(newUser.email());
         }
+        if (sponsorRepository.existsByEmail(newUser.email())) {
+            throw new EmailAlreadyOccupiedException(newUser.email());
+        }
         return repository.save(UserEntity.builder()
                 .fullName(newUser.fullName())
                 .email(newUser.email())
@@ -84,6 +87,9 @@ public class SecurityServiceImpl implements SecurityServiceInterface {
 
     SponsorEntity saveNewSponsor(NewUser newUser) {
         if (sponsorRepository.existsByEmail(newUser.email())) {
+            throw new EmailAlreadyOccupiedException(newUser.email());
+        }
+        if (repository.existsByEmail(newUser.email())) {
             throw new EmailAlreadyOccupiedException(newUser.email());
         }
         return sponsorRepository.save(SponsorEntity.builder()

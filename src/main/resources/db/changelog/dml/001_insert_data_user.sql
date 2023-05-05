@@ -72,3 +72,7 @@ INSERT INTO user_entity (full_name,email,password)
 VALUES ('ABoba','ref07lynad@gmail.com','$2a$10$8dDgfyCcwAJPSMpAQAjbVuMnAhS4vfZc2RuGuqn8/Wm8q.B9u2iDS');
 INSERT INTO user_entity (full_name,email,password)
 VALUES ('Test','email@email.com','$2a$10$/1f8thpvBU9P58gsHCbTiukL3u5pPpxscChs8K0L.F2x2xusuI.7y');
+
+-- changeset kate:8
+UPDATE user_entity SET email = 'jaxifiееsammi-2877@gmail.com' WHERE user_id = 1;
+UPDATE user_entity SET email = 'jaxifiееееsammi-2877@gmail.com' WHERE user_id = 2;

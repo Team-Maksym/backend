@@ -13,6 +13,7 @@ import starlight.backend.proof.model.entity.ProofEntity;
 
 import java.time.LocalDate;
 import java.util.Collection;
+import java.util.Date;
 import java.util.Set;
 
 import static jakarta.persistence.GenerationType.IDENTITY;
@@ -42,7 +43,6 @@ public class UserEntity {
     private String education;
     @Length(max = 255)
     private String experience;
-
     @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH})
     @JoinTable(
             name = "user_position",

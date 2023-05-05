@@ -1,8 +1,7 @@
 package starlight.backend.sponsor.service.impl;
 
-import jakarta.persistence.EntityManager;
-import jakarta.persistence.PersistenceContext;
 import lombok.AllArgsConstructor;
+import org.springframework.security.core.Authentication;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
@@ -13,10 +12,11 @@ import starlight.backend.advice.model.entity.DelayedDeleteEntity;
 import starlight.backend.advice.model.enums.DeletingEntityType;
 import starlight.backend.advice.repository.DelayedDeleteRepository;
 import starlight.backend.advice.service.impl.AdviceServiceImpl;
+import starlight.backend.exception.SponsorCanNotSeeAnotherSponsor;
 import starlight.backend.exception.SponsorNotFoundException;
 import starlight.backend.security.service.SecurityServiceInterface;
 import starlight.backend.sponsor.SponsorRepository;
-import starlight.backend.sponsor.model.entity.SponsorEntity;
+import starlight.backend.sponsor.model.response.SponsorFullInfo;
 import starlight.backend.sponsor.model.enums.SponsorStatus;
 import starlight.backend.sponsor.model.response.UnusableKudos;
 import starlight.backend.sponsor.service.SponsorServiceInterface;
@@ -36,12 +36,30 @@ public class SponsorServiceImpl implements SponsorServiceInterface {
     private AdviceConfiguration adviceConfiguration;
     @PersistenceContext
     private EntityManager em;
+    private SecurityServiceInterface serviceService;
     @Override
     public UnusableKudos getUnusableKudos(long sponsorId) {
-        if (!sponsorRepository.existsBySponsorId(sponsorId)) {
-            throw new SponsorNotFoundException(sponsorId);
+        var sponsor = sponsorRepository.findById(sponsorId)
+                .orElseThrow(() -> new SponsorNotFoundException(sponsorId));
+        return new UnusableKudos(sponsor.getUnusedKudos());
+    }
+
+    @Override
+    public SponsorFullInfo getSponsorFullInfo(long sponsorId, Authentication auth) {
+        var sponsor = sponsorRepository.findById(sponsorId)
+                .orElseThrow(() -> new SponsorNotFoundException(sponsorId));
+        isItMyAccount(sponsorId, auth);
+        return SponsorFullInfo.builder()
+                .fullName(sponsor.getFullName())
+                .avatar(sponsor.getAvatar())
+                .company(sponsor.getCompany())
+                .build();
+    }
+
+    private void isItMyAccount(long sponsorId, Authentication auth) {
+        if (!serviceService.checkingLoggedAndToken(sponsorId, auth)) {
+            throw new SponsorCanNotSeeAnotherSponsor();
         }
-        return new UnusableKudos(em.find(SponsorEntity.class, sponsorId).getUnusedKudos());
     }
 
     @Override
