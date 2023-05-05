@@ -66,7 +66,7 @@ public class TalentController {
 
     @Operation(
             summary = "Get talent by id",
-            description = "Get a talent username id. The response is talent object with fields 'full_name', 'email', 'birthday', 'avatar', 'education', 'experience', 'positions'.")
+            description = "Get a talent from id. The response is talent object with fields 'full_name', 'email', 'birthday', 'avatar', 'education', 'experience', 'positions'.")
     @ApiResponses(value = {
             @ApiResponse(
                     responseCode = "200",
