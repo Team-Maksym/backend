@@ -99,7 +99,6 @@ public class TalentController {
                     )
             )
     })
-    @PreAuthorize("hasRole('TALENT')")
     @GetMapping("/talents/{talent-id}")
     public TalentFullInfo searchTalentById(@PathVariable("talent-id") long talentId) {
         log.info("@GetMapping(\"/talents/{talent-id}\")");

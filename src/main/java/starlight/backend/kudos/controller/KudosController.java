@@ -1,4 +1,4 @@
-package starlight.backend.kudos.controller.impl;
+package starlight.backend.kudos.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -24,7 +24,7 @@ import starlight.backend.kudos.model.response.KudosOnProof;
 @Validated
 @Tag(name = "Kudos", description = "Kudos API")
 @RestController
-public class KudosControllerImpl {
+public class KudosController {
     KudosService kudosService;
 
     @Operation(

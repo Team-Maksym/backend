@@ -37,3 +37,4 @@ logs/life-log.log
 /sampleDB.trace.db
 /sampleDB.mv.db
 /sampleDB.trace.db
+/logs/

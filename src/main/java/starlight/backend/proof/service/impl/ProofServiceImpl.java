@@ -98,34 +98,31 @@ public class ProofServiceImpl implements ProofServiceInterface {
             throw new UserCanNotEditProofNotInDraftException();
         }
         if (proofEntity.getStatus().equals(Status.DRAFT)) {
-            return repository.findById(id).map(proof -> {
-                if (!proof.getStatus().equals(Status.DRAFT)) {
-                    throw new UserCanNotEditProofNotInDraftException();
-                }
-                proof.setTitle(validationField(
-                        proofUpdateRequest.title(),
-                        proof.getTitle()));
-                proof.setDescription(validationField(
-                        proofUpdateRequest.description(),
-                        proof.getDescription()));
-                proof.setLink(validationField(
-                        proofUpdateRequest.link(),
-                        proof.getLink()));
-                proof.setStatus(proofUpdateRequest.status());
-                proof.setDateLastUpdated(Instant.now());
-                repository.save(proof);
-                return mapper.toProofFullInfo(proof);
-            }).orElseThrow(() -> new ProofNotFoundException(id));
+            return changeStatusFromDraft(proofUpdateRequest, proofEntity);
         }
-        return repository.findById(id).map(proof -> {
-            if (proofUpdateRequest.status().equals(Status.HIDDEN)
-                    || proofUpdateRequest.status().equals(Status.PUBLISHED)) {
-                proof.setStatus(proofUpdateRequest.status());
-            }
-            proof.setDateLastUpdated(Instant.now());
-            repository.save(proof);
-            return mapper.toProofFullInfo(proof);
-        }).orElseThrow(() -> new ProofNotFoundException(id));
+        if (proofUpdateRequest.status().equals(Status.HIDDEN)
+                || proofUpdateRequest.status().equals(Status.PUBLISHED)) {
+            proofEntity.setStatus(proofUpdateRequest.status());
+        }
+        proofEntity.setDateLastUpdated(Instant.now());
+        repository.save(proofEntity);
+        return mapper.toProofFullInfo(proofEntity);
+    }
+
+    private ProofFullInfo changeStatusFromDraft(ProofUpdateRequest proofUpdateRequest, ProofEntity proofEntity) {
+        proofEntity.setTitle(validationField(
+                proofUpdateRequest.title(),
+                proofEntity.getTitle()));
+        proofEntity.setDescription(validationField(
+                proofUpdateRequest.description(),
+                proofEntity.getDescription()));
+        proofEntity.setLink(validationField(
+                proofUpdateRequest.link(),
+                proofEntity.getLink()));
+        proofEntity.setStatus(proofUpdateRequest.status());
+        proofEntity.setDateLastUpdated(Instant.now());
+        repository.save(proofEntity);
+        return mapper.toProofFullInfo(proofEntity);
     }
 
     private String validationField(String newParam, String lastParam) {
@@ -155,31 +152,22 @@ public class ProofServiceImpl implements ProofServiceInterface {
     public ProofPagePagination getTalentAllProofs(Authentication auth, long talentId,
                                                   int page, int size, boolean sort, String status) {
         if (securityService.checkingLoggedAndToken(talentId, auth)) {
-            Page<ProofEntity> pageRequest;
-            if (status.equals(Status.DRAFT.getStatus())) {
-                pageRequest = repository.findByUser_UserIdAndStatus(talentId,
-                        Status.DRAFT,
-                        PageRequest.of(page, size, doSort(sort, DATA_CREATED)));
-            } else if (status.equals(Status.HIDDEN.getStatus())) {
-                pageRequest = repository.findByUser_UserIdAndStatus(talentId,
-                        Status.HIDDEN,
-                        PageRequest.of(page, size, doSort(sort, DATA_CREATED)));
-            } else if (status.equals(Status.PUBLISHED.getStatus())) {
-                pageRequest = repository.findByUser_UserIdAndStatus(talentId,
-                        Status.PUBLISHED,
-                        PageRequest.of(page, size, doSort(sort, DATA_CREATED)));
-            } else if (status.equals(Status.ALL.getStatus())) {
-                pageRequest = repository.findByUser_UserId(talentId,
-                        PageRequest.of(page, size, doSort(sort, DATA_CREATED)));
-            } else {
-                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "♥ Bad status in request. ♥");
-            }
+            Page<ProofEntity> pageRequest = getPaginationForTheTalent(talentId, page, size, sort, status);
             return mapper.toProofPagePaginationWithProofFullInfo(pageRequest);
         }
-        var pageRequest = repository.findByUser_UserIdAndStatus(talentId,
-                Status.PUBLISHED,
-                PageRequest.of(page, size, doSort(sort, DATA_CREATED)));
+        var pageRequest = getPaginationForTheTalent(talentId, page,
+                size, sort, Status.PUBLISHED.name());
         return mapper.toProofPagePaginationWithProofFullInfo(pageRequest);
+    }
+
+    private Page<ProofEntity> getPaginationForTheTalent(long talentId, int page, int size,
+                                                        boolean sort, String status) {
+        return (status.equals(Status.ALL.getStatus())) ?
+                repository.findByUser_UserId(talentId,
+                        PageRequest.of(page, size, doSort(sort, DATA_CREATED)))
+                :
+                repository.findByUser_UserIdAndStatus(talentId, Status.valueOf(status),
+                        PageRequest.of(page, size, doSort(sort, DATA_CREATED)));
     }
 
     @Override

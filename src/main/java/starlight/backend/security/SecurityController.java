@@ -106,4 +106,84 @@ public class SecurityController {
 
         return service.register(newUser);
     }
+    @Operation(
+            summary = "Login in system",
+            description = "Login in system",
+            tags = {"Security"}
+    )
+    @ApiResponses(
+            value = {
+                    @ApiResponse(
+                            responseCode = "200",
+                            description = "Success",
+                            content = @Content(
+                                    mediaType = "application/json",
+                                    schema = @Schema(implementation = SessionInfo.class)
+                            )
+                    ),
+                    @ApiResponse(
+                            responseCode = "401",
+                            description = "Unauthorized",
+                            content = @Content(
+                                    mediaType = "application/json",
+                                    schema = @Schema(implementation = SessionInfo.class)
+                            )
+                    )
+            }
+    )
+    @PostMapping("/sponsors/login")
+    @ResponseStatus(HttpStatus.OK)
+    public SessionInfo loginSponsor(Authentication auth) {
+        log.info("@PostMapping(\"/sponsors/login\")");
+        return service.loginSponsor(auth);
+    }
+
+    @Operation(
+            summary = "Create a new sponsor",
+            description = "Create a new sponsor",
+            tags = {"Security"}
+    )
+    @ApiResponses(
+            value = {
+                    @ApiResponse(
+                            responseCode = "201",
+                            description = "Created",
+                            content = @Content(
+                                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                                    schema = @Schema(
+                                            implementation = SessionInfo.class
+                                    )
+                            )
+                    ),
+                    @ApiResponse(
+                            responseCode = "400",
+                            description = "Validation error",
+                            content = @Content(
+                                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                                    schema = @Schema(
+                                            implementation = Exception.class
+                                    )
+                            )
+                    ),
+                    @ApiResponse(
+                            responseCode = "409",
+                            description = "Conflict",
+                            content = @Content(
+                                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                                    schema = @Schema(
+                                            name = "Exception",
+                                            implementation = Exception.class
+                                    )
+                            )
+                    )
+            }
+    )
+    @PostMapping("/sponsors")
+    @ResponseStatus(HttpStatus.CREATED)
+    public SessionInfo registerSponsor(@Valid @RequestBody NewUser newUser) {
+
+        log.info("@PostMapping(\"/sponsors\")");
+
+        return service.registerSponsor(newUser);
+    }
 }
