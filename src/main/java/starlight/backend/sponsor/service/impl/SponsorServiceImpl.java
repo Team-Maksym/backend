@@ -1,9 +1,10 @@
 package starlight.backend.sponsor.service.impl;
 
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
 import lombok.AllArgsConstructor;
 import org.springframework.security.core.Authentication;
 import org.springframework.http.HttpStatus;
-import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
@@ -34,8 +35,6 @@ public class SponsorServiceImpl implements SponsorServiceInterface {
     private DelayedDeleteRepository delayedDeleteRepository;
     private AdviceServiceImpl adviceService;
     private AdviceConfiguration adviceConfiguration;
-    @PersistenceContext
-    private EntityManager em;
     private SecurityServiceInterface serviceService;
     @Override
     public UnusableKudos getUnusableKudos(long sponsorId) {
