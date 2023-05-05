@@ -9,7 +9,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -19,10 +18,11 @@ import starlight.backend.email.model.ChangePassword;
 import starlight.backend.email.model.Email;
 import starlight.backend.email.model.EmailProps;
 import starlight.backend.email.service.EmailService;
-import starlight.backend.user.model.entity.UserEntity;
-import starlight.backend.user.repository.UserRepository;
+import starlight.backend.sponsor.SponsorRepository;
+import starlight.backend.sponsor.model.entity.SponsorEntity;
 
 import java.io.File;
+import java.time.Instant;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Objects;
@@ -36,7 +36,7 @@ public class EmailServiceImpl implements EmailService {
 
     private JavaMailSender emailSender;
 
-    private UserRepository userRepository;
+    private SponsorRepository sponsorRepository;
 
     private PasswordEncoder passwordEncoder;
 
@@ -83,7 +83,7 @@ public class EmailServiceImpl implements EmailService {
 
     @Override
     public void forgotPassword(HttpServletRequest request, String email) {
-        var user = userRepository.findByEmail(email).orElseThrow(() ->
+        var user = sponsorRepository.findByEmail(email).orElseThrow(() ->
                 new UsernameNotFoundException("User not found"));
         String token = UUID.randomUUID().toString();
         createPasswordResetTokenForUser(user, token);
@@ -93,27 +93,27 @@ public class EmailServiceImpl implements EmailService {
 
     @Override
     public void recoveryPassword(String token, ChangePassword changePassword) {
-        var user = userRepository.findByActivationCode(token).orElseThrow(() ->
+        var user = sponsorRepository.findByActivationCode(token).orElseThrow(() ->
                 new UsernameNotFoundException("User not found"));
-        if (!userRepository.existsByActivationCode(user.getActivationCode())) {
+        if (!sponsorRepository.existsByActivationCode(user.getActivationCode())) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Invalid token");
         }
         user.setPassword(passwordEncoder.encode(changePassword.password()));
         user.setActivationCode(null);
-        userRepository.save(user);
+        sponsorRepository.save(user);
     }
 
-    private void createPasswordResetTokenForUser(UserEntity user, String token) {
+    private void createPasswordResetTokenForUser(SponsorEntity user, String token) {
         user.setActivationCode(token);
         user.setExpiryDate(calculateExpiryDate(10));
-        userRepository.save(user);
+        sponsorRepository.save(user);
     }
 
-    private Date calculateExpiryDate(int expiryTimeInMinutes) {
+    private Instant calculateExpiryDate(int expiryTimeInMinutes) {
         Calendar cal = Calendar.getInstance();
         cal.setTimeInMillis(new Date().getTime());
         cal.add(Calendar.MINUTE, expiryTimeInMinutes);
-        return new Date(cal.getTime().getTime());
+        return cal.toInstant();
     }
 
     private String constructResetTokenEmail(String appUrl, String token) {

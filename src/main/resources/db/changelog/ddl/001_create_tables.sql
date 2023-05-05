@@ -129,3 +129,8 @@ CREATE TABLE kudos_entity
     create_data TIMESTAMP WITHOUT TIME ZONE,
     CONSTRAINT pk_kudosentity PRIMARY KEY (kudos_id)
 );
+
+-- changeset kate:8
+
+ALTER TABLE sponsor_entity ADD COLUMN IF NOT EXISTS activation_code VARCHAR(255) NULL;
+ALTER TABLE sponsor_entity ADD COLUMN IF NOT EXISTS expiry_date TIMESTAMP WITHOUT TIME ZONE;
