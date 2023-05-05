@@ -24,7 +24,6 @@ public class AdviceServiceImpl {
             if (account.getDeleteDate().isAfter(Instant.now())) {
                 continue;
             }
-
             var userId = account.getEntityID();
             var exists = sponsorRepository.existsBySponsorId(userId);
             if (!exists) {
