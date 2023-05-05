@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.*;
 import starlight.backend.security.model.request.NewUser;
 import starlight.backend.security.model.response.SessionInfo;
 import starlight.backend.security.service.SecurityServiceInterface;
+import starlight.backend.sponsor.model.request.SponsorUpdateRequest;
 import starlight.backend.sponsor.model.response.SponsorFullInfo;
 import starlight.backend.sponsor.model.response.UnusableKudos;
 import starlight.backend.sponsor.service.SponsorServiceInterface;
@@ -171,7 +172,7 @@ public class SponsorController {
     @PreAuthorize("hasRole('SPONSOR')")
     @PatchMapping("/sponsors/{sponsor-id}")
     public SponsorFullInfo updateTalentFullInfo(@PathVariable("sponsor-id") long sponsorId,
-                                               @RequestBody SponsorFullInfo sponsorUpdateRequest,
+                                               @RequestBody SponsorUpdateRequest sponsorUpdateRequest,
                                                Authentication auth) {
         log.info("@PatchMapping(\"/sponsors/{sponsor-id}\")");
         return sponsorService.updateSponsorProfile(sponsorId, sponsorUpdateRequest, auth);
