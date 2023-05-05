@@ -30,7 +30,6 @@ import java.util.UUID;
 
 @Service
 @AllArgsConstructor
-@Transactional
 public class EmailServiceImpl implements EmailService {
     private EmailProps emailProps;
 
@@ -82,43 +81,46 @@ public class EmailServiceImpl implements EmailService {
     }
 
     @Override
+    @Transactional
     public void forgotPassword(HttpServletRequest request, String email) {
-        var user = sponsorRepository.findByEmail(email).orElseThrow(() ->
+        var sponsor = sponsorRepository.findByEmail(email).orElseThrow(() ->
                 new UsernameNotFoundException("User not found"));
         String token = UUID.randomUUID().toString();
-        createPasswordResetTokenForUser(user, token);
+        createPasswordResetTokenForUser(sponsor, token);
         sendSimpleMessage(email, "Password recovery",
                 constructResetTokenEmail(getAppUrl(request), token));
     }
 
     @Override
+    @Transactional
     public void recoveryPassword(String token, ChangePassword changePassword) {
-        var user = sponsorRepository.findByActivationCode(token).orElseThrow(() ->
+        var sponsor = sponsorRepository.findByActivationCode(token).orElseThrow(() ->
                 new UsernameNotFoundException("User not found"));
-        if (!sponsorRepository.existsByActivationCode(user.getActivationCode())) {
+        if (!sponsorRepository.existsByActivationCode(sponsor.getActivationCode())) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Invalid token");
         }
-        user.setPassword(passwordEncoder.encode(changePassword.password()));
-        user.setActivationCode(null);
-        sponsorRepository.save(user);
+        sponsor.setPassword(passwordEncoder.encode(changePassword.password()));
+        sponsor.setActivationCode(null);
+        sponsorRepository.save(sponsor);
     }
 
-    private void createPasswordResetTokenForUser(SponsorEntity user, String token) {
-        user.setActivationCode(token);
-        user.setExpiryDate(calculateExpiryDate(10));
-        sponsorRepository.save(user);
+    @Transactional
+    void createPasswordResetTokenForUser(SponsorEntity sponsor, String token) {
+        sponsor.setActivationCode(token);
+        sponsor.setExpiryDate(calculateExpiryDate(7));
+        sponsorRepository.save(sponsor);
     }
 
     private Instant calculateExpiryDate(int expiryTimeInMinutes) {
         Calendar cal = Calendar.getInstance();
         cal.setTimeInMillis(new Date().getTime());
-        cal.add(Calendar.MINUTE, expiryTimeInMinutes);
+        cal.add(Calendar.DAY_OF_WEEK, expiryTimeInMinutes);
         return cal.toInstant();
     }
 
     private String constructResetTokenEmail(String appUrl, String token) {
         return String.format("You received this email about a password recovery request. " +
-                        "The link will be invalid after 10 minutes.\n" +
+                        "The link will be invalid after 7 days.\n" +
                         "If you haven't done so, please ignore this email and change your " +
                         "password on your account!\n%s\n",
                 appUrl + "/recovery-password?token=" + token);
