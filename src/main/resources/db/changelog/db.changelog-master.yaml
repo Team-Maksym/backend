@@ -54,3 +54,7 @@ databaseChangeLog:
   - include:
       file: dml/007_insert_data_kudos_updated.sql
       relativeToChangelogFile: true
+
+  - changeSet:
+      id: 8
+      author: kate
