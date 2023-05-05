@@ -7,6 +7,8 @@ import org.springframework.stereotype.Service;
 import starlight.backend.advice.repository.DelayedDeleteRepository;
 import starlight.backend.sponsor.SponsorRepository;
 
+import java.time.Instant;
+
 @Service
 @AllArgsConstructor
 @Slf4j
@@ -19,6 +21,10 @@ public class AdviceServiceImpl {
         var accounts = delayedDeleteRepository.findAll();
 
         for (var account : accounts) {
+            if (account.getDeleteDate().isAfter(Instant.now())) {
+                continue;
+            }
+
             var userId = account.getEntityID();
             var exists = sponsorRepository.existsBySponsorId(userId);
             if (!exists) {
