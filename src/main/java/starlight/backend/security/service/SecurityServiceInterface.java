@@ -13,8 +13,8 @@ public interface SecurityServiceInterface {
 
     SessionInfo loginInfo(Authentication auth);
 
-    default boolean checkingLoggedAndToken(long talentId, Authentication auth) {
-        return Objects.equals(auth.getName(), String.valueOf(talentId));
+    default boolean checkingLoggedAndToken(long userId, Authentication auth) {
+        return Objects.equals(auth.getName(), String.valueOf(userId));
     }
     String getJWTToken(UserDetailsImpl authentication, long id);
     String createScope(UserDetailsImpl authentication);

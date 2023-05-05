@@ -114,3 +114,15 @@ CREATE TABLE sponsor_entity_authorities
 
 ALTER TABLE sponsor_entity_authorities
     ADD CONSTRAINT fk_sponsorlpos_on_pk_sponsor_entity_authorities FOREIGN KEY (sponsor_entity_authorities_id) REFERENCES sponsor_entity_authorities (sponsor_entity_authorities_id);
+
+-- changeset serhii:9
+Create TABLE delayed_delete_process_entity
+(
+    user_id BIGINT NOT NULL,
+    user_deleting_process_UUID uuid NOT NULL,
+    delete_date timestamp without time zone
+);
+
+ALTER TABLE sponsor_entity ADD COLUMN IF NOT EXISTS status VARCHAR(255) DEFAULT 'ACTIVE';
+
+ALTER TABLE kudos_entity ALTER COLUMN user_id DROP NOT NULL;

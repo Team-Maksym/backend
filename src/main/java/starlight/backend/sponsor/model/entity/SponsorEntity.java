@@ -8,8 +8,8 @@ import lombok.*;
 import org.hibernate.validator.constraints.URL;
 import org.springframework.validation.annotation.Validated;
 import starlight.backend.kudos.model.entity.KudosEntity;
+import starlight.backend.sponsor.model.enums.SponsorStatus;
 
-import java.time.LocalDate;
 import java.util.Collection;
 import java.util.Set;
 
@@ -37,9 +37,12 @@ public class SponsorEntity {
     private String avatar;
     private String company;
     private Integer unusedKudos;
+    @NotBlank
+    private SponsorStatus status;
     @ElementCollection(fetch = FetchType.EAGER)
     private Collection<String> authorities;
     @OneToMany(mappedBy = "owner")
     @JsonManagedReference
     private Set<KudosEntity> kudos;
+
 }

@@ -50,3 +50,11 @@ databaseChangeLog:
   - include:
       file: dml/006_insert_data_sponsor.sql
       relativeToChangelogFile: true
+
+  - changeSet:
+      id: 7
+      author: serhii
+
+  - include:
+      file: ddl/001_create_tables.sql
+      relativeToChangelogFile: true

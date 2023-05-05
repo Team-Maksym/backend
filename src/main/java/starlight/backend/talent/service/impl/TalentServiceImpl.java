@@ -35,7 +35,7 @@ import java.util.stream.Collectors;
 @Transactional
 public class TalentServiceImpl implements TalentServiceInterface {
     private MapperTalent mapper;
-    private UserRepository repository;
+    private UserRepository userRepository;
     private PositionRepository positionRepository;
     private SecurityServiceInterface securityService;
     private ProofRepository proofRepository;
@@ -43,7 +43,7 @@ public class TalentServiceImpl implements TalentServiceInterface {
 
     @Override
     public TalentPagePagination talentPagination(int page, int size) {
-        var pageRequest = repository.findAll(
+        var pageRequest = userRepository.findAll(
                 PageRequest.of(page, size, Sort.by("userId").descending())
         );
         if (page >= pageRequest.getTotalPages())
@@ -53,7 +53,7 @@ public class TalentServiceImpl implements TalentServiceInterface {
 
     @Override
     public TalentFullInfo talentFullInfo(long id) {
-        return repository.findById(id)
+        return userRepository.findById(id)
                 .map(mapper::toTalentFullInfo)
                 .orElseThrow(() -> new TalentNotFoundException(id));
     }
@@ -63,7 +63,7 @@ public class TalentServiceImpl implements TalentServiceInterface {
         if (!securityService.checkingLoggedAndToken(id, auth)) {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "you cannot change another talent");
         }
-        return repository.findById(id).map(talent -> {
+        return userRepository.findById(id).map(talent -> {
             talent.setFullName(validationField(
                     talentUpdateRequest.fullName(),
                     talent.getFullName()));
@@ -87,7 +87,7 @@ public class TalentServiceImpl implements TalentServiceInterface {
             talent.setPositions(validationPosition(
                     talent.getPositions(),
                     talentUpdateRequest.positions()));
-            repository.save(talent);
+            userRepository.save(talent);
             return mapper.toTalentFullInfo(talent);
         }).orElseThrow(() -> new TalentNotFoundException(id));
     }
@@ -126,7 +126,7 @@ public class TalentServiceImpl implements TalentServiceInterface {
         if (!securityService.checkingLoggedAndToken(talentId, auth)) {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "you cannot delete another talent");
         }
-        UserEntity user = repository.findById(talentId)
+        UserEntity user = userRepository.findById(talentId)
                 .orElseThrow(() -> new UserNotFoundException(talentId));
         user.setPositions(null);
         user.getAuthorities().clear();
@@ -138,6 +138,6 @@ public class TalentServiceImpl implements TalentServiceInterface {
             }
         }
         user.getProofs().clear();
-        repository.deleteById(user.getUserId());
+        userRepository.deleteById(user.getUserId());
     }
 }

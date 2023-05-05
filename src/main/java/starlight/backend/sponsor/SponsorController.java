@@ -11,6 +11,7 @@ import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 import starlight.backend.security.model.request.NewUser;
@@ -147,5 +148,16 @@ public class SponsorController {
         log.info("@GetMapping(\"/sponsors/{sponsor-id}/kudos\")");
 
         return sponsorService.getUnusableKudos(sponsorId);
+    }
+
+    @PreAuthorize("hasRole('ROLE_SPONSOR')")
+    @DeleteMapping("/sponsors/{sponsor-id}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void delete(@PathVariable("sponsor-id") long sponsorId,
+                       Authentication auth
+    ) {
+
+        log.info("@DeleteMapping(\"/sponsors/{sponsor-id}\")");
+        sponsorService.deleteSponsor(sponsorId, auth);
     }
 }
