@@ -5,7 +5,7 @@ import starlight.backend.sponsor.model.response.SponsorFullInfo;
 import starlight.backend.sponsor.model.response.UnusableKudos;
 
 public interface SponsorServiceInterface {
-    UnusableKudos getUnusableKudos(long sponsorId);
+    UnusableKudos getUnusableKudos(long sponsorId, Authentication auth);
 
     SponsorFullInfo getSponsorFullInfo(long sponsorId, Authentication auth);
 }

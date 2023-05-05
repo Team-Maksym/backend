@@ -144,11 +144,12 @@ public class SponsorController {
             }
     )
     @GetMapping("/sponsors/{sponsor-id}/kudos")
-    public UnusableKudos register(@PathVariable("sponsor-id") long sponsorId) {
+    public UnusableKudos register(@PathVariable("sponsor-id") long sponsorId,
+                                  Authentication auth) {
 
         log.info("@GetMapping(\"/sponsors/{sponsor-id}/kudos\")");
 
-        return sponsorService.getUnusableKudos(sponsorId);
+        return sponsorService.getUnusableKudos(sponsorId, auth);
     }
 
     @Operation(

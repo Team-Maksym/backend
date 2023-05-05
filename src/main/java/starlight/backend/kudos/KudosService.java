@@ -19,8 +19,6 @@ import starlight.backend.security.service.SecurityServiceInterface;
 import starlight.backend.sponsor.SponsorRepository;
 import starlight.backend.user.repository.UserRepository;
 
-import java.time.Instant;
-
 @Service
 @AllArgsConstructor
 @Slf4j
@@ -75,7 +73,7 @@ public class KudosService {
     }
 
 
-    public void addKudosOnProof(long proofId, int kudos, Authentication auth) {
+    public KudosEntity addKudosOnProof(long proofId, int kudos, Authentication auth) {
         if (auth == null) {
             throw new AuthorizationFailureException();
         }
@@ -96,18 +94,38 @@ public class KudosService {
         }
         var follower = userRepository.findById(proof.getUser().getUserId())
                 .orElseThrow(() -> new UserNotFoundException(auth.getName()));
-        var kudosBuild = KudosEntity.builder()
-                .followerId(follower.getUserId())
-                .createData(Instant.now())
-                .proof(proof)
-                .owner(owner)
-                .countKudos(kudos)
-                .build();
-        kudosRepository.save(kudosBuild);
+
         sponsorRepository.findById(owner.getSponsorId()).map(sponsor -> {
             sponsor.setUnusedKudos(owner.getUnusedKudos() - kudos);
             sponsorRepository.save(sponsor);
             return null;
         });
+
+        /*var foo = proof.getKudos().stream()
+                .filter(kudos1 -> kudos1.getOwner().getSponsorId().equals(owner.getSponsorId()))
+                .collect(Collectors.toSet()).isEmpty()
+
+
+            if (proof.getKudos().stream()
+                    .filter(kudos1 -> kudos1.getOwner().getSponsorId().equals(owner.getSponsorId()))
+                    .collect(Collectors.toSet()).isEmpty()) {
+                kudos1.setCountKudos(kudos1.getCountKudos() + kudos);
+                kudosRepository.save(kudos1);
+                return kudos1;
+            }
+            var kudosBuild = KudosEntity.builder()
+                    .followerId(follower.getUserId())
+                    .createData(Instant.now())
+                    .proof(proof)
+                    .owner(owner)
+                    .countKudos(kudos)
+                    .build();
+            kudosRepository.save(kudosBuild);
+            return kudosBuild;
+        });
+
+        return null;
+*/
+        return new KudosEntity();
     }
 }

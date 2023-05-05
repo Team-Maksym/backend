@@ -9,9 +9,8 @@ import org.hibernate.validator.constraints.URL;
 import org.springframework.validation.annotation.Validated;
 import starlight.backend.kudos.model.entity.KudosEntity;
 
-import java.time.LocalDate;
 import java.util.Collection;
-import java.util.Set;
+import java.util.List;
 
 import static jakarta.persistence.GenerationType.IDENTITY;
 
@@ -41,5 +40,5 @@ public class SponsorEntity {
     private Collection<String> authorities;
     @OneToMany(mappedBy = "owner")
     @JsonManagedReference
-    private Set<KudosEntity> kudos;
+    private List<KudosEntity> kudos;
 }
