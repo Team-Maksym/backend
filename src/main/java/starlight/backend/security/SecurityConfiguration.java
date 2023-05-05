@@ -56,9 +56,8 @@ class SecurityConfiguration {
                 /////////////////////////DevOps////////////////////////////////////////////////////
                 .requestMatchers("/error").permitAll()
                 /////////////////////////Email/////////////////////////////////////////////////////
-                .requestMatchers("/send").permitAll()
-                .requestMatchers("/forgot-password").permitAll()
-                .requestMatchers("/recovery-password").permitAll()
+                .requestMatchers("/api/v1/sponsors/forgot-password").permitAll()
+                .requestMatchers("/api/v1/sponsors/recovery-password").permitAll()
                 /////////////////////////Actuator//////////////////////////////////////////////////
                 .requestMatchers(antMatcher("/actuator/**")).permitAll()
                 /////////////////////////Production////////////////////////////////////////////////

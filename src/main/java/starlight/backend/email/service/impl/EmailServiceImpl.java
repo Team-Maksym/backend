@@ -9,6 +9,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -18,6 +19,10 @@ import starlight.backend.email.model.ChangePassword;
 import starlight.backend.email.model.Email;
 import starlight.backend.email.model.EmailProps;
 import starlight.backend.email.service.EmailService;
+import starlight.backend.exception.SponsorCanNotSeeAnotherSponsor;
+import starlight.backend.exception.SponsorNotFoundException;
+import starlight.backend.security.service.SecurityServiceInterface;
+import starlight.backend.security.service.impl.SecurityServiceImpl;
 import starlight.backend.sponsor.SponsorRepository;
 import starlight.backend.sponsor.model.entity.SponsorEntity;
 
@@ -36,15 +41,21 @@ public class EmailServiceImpl implements EmailService {
     private JavaMailSender emailSender;
 
     private SponsorRepository sponsorRepository;
+    private SecurityServiceInterface securityService;
 
     private PasswordEncoder passwordEncoder;
 
     @Override
-    public void sendMail(Email email) {
+    public void sendMail(Email email,long sponsorId, Authentication auth) {
+        if (!securityService.checkingLoggedAndToken(sponsorId, auth)) {
+            throw new SponsorCanNotSeeAnotherSponsor();
+        }
+        var sponsor = sponsorRepository.findById(sponsorId)
+                .orElseThrow(() -> new SponsorNotFoundException(sponsorId));
         if (email.pathToAttachment() == null) {
-            sendSimpleMessage(email.to(), email.subject(), email.text());
+            sendSimpleMessage(sponsor.getEmail(), email.subject(), email.text());
         } else {
-            sendMessageWithAttachment(email.to(), email.subject(), email.text(), email.pathToAttachment());
+            sendMessageWithAttachment(sponsor.getEmail(), email.subject(), email.text(), email.pathToAttachment());
         }
     }
 
@@ -107,23 +118,23 @@ public class EmailServiceImpl implements EmailService {
     @Transactional
     void createPasswordResetTokenForUser(SponsorEntity sponsor, String token) {
         sponsor.setActivationCode(token);
-        sponsor.setExpiryDate(calculateExpiryDate(7));
+        sponsor.setExpiryDate(calculateExpiryDate(10));
         sponsorRepository.save(sponsor);
     }
 
     private Instant calculateExpiryDate(int expiryTimeInMinutes) {
         Calendar cal = Calendar.getInstance();
         cal.setTimeInMillis(new Date().getTime());
-        cal.add(Calendar.DAY_OF_WEEK, expiryTimeInMinutes);
+        cal.add(Calendar.MINUTE, expiryTimeInMinutes);
         return cal.toInstant();
     }
 
     private String constructResetTokenEmail(String appUrl, String token) {
         return String.format("You received this email about a password recovery request. " +
-                        "The link will be invalid after 7 days.\n" +
+                        "The link will be invalid after 10 minutes.\n" +
                         "If you haven't done so, please ignore this email and change your " +
                         "password on your account!\n%s\n",
-                appUrl + "/recovery-password?token=" + token);
+                appUrl + "/api/v1/sponsors/recovery-password?token=" + token);
     }
 
     private String getAppUrl(HttpServletRequest request) {

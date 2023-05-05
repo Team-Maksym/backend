@@ -7,7 +7,7 @@ import starlight.backend.email.model.Email;
 
 public interface EmailService {
 
-    void sendMail(Email email);
+    void sendMail(Email email, long sponsorId, Authentication auth);
 
     void sendSimpleMessage(String to, String subject, String text);
 
