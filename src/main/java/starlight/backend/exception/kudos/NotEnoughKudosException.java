@@ -1,4 +1,4 @@
-package starlight.backend.exception;
+package starlight.backend.exception.kudos;
 
 public class NotEnoughKudosException extends RuntimeException{
     public NotEnoughKudosException() {

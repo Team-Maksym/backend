@@ -15,11 +15,10 @@ import org.springframework.http.MediaType;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
-import starlight.backend.security.model.request.NewUser;
 import starlight.backend.security.model.response.SessionInfo;
-import starlight.backend.security.service.SecurityServiceInterface;
+import starlight.backend.sponsor.model.request.SponsorUpdateRequest;
 import starlight.backend.sponsor.model.response.SponsorFullInfo;
-import starlight.backend.sponsor.model.response.UnusableKudos;
+import starlight.backend.sponsor.model.response.SponsorKudosInfo;
 import starlight.backend.sponsor.service.SponsorServiceInterface;
 
 @AllArgsConstructor
@@ -63,11 +62,12 @@ public class SponsorController {
             }
     )
     @GetMapping("/sponsors/{sponsor-id}/kudos")
-    public UnusableKudos register(@PathVariable("sponsor-id") long sponsorId) {
+    public SponsorKudosInfo register(@PathVariable("sponsor-id") long sponsorId,
+                                     Authentication auth) {
 
         log.info("@GetMapping(\"/sponsors/{sponsor-id}/kudos\")");
 
-        return sponsorService.getUnusableKudos(sponsorId);
+        return sponsorService.getUnusableKudos(sponsorId, auth);
     }
 
     @Operation(
@@ -102,6 +102,78 @@ public class SponsorController {
         log.info("@GetMapping(\"/sponsors/{sponsor-id}\")");
 
         return sponsorService.getSponsorFullInfo(sponsorId, auth);
+    }
+
+    @Operation(summary = "Update sponsor by id")
+    @ApiResponses(value = {
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "Success",
+                    content = @Content(
+                            mediaType = MediaType.APPLICATION_JSON_VALUE,
+                            schema = @Schema(
+                                    implementation = SponsorFullInfo.class
+                            )
+                    )
+            ),
+            @ApiResponse(
+                    responseCode = "400",
+                    description = "Bad request",
+                    content = @Content(
+                            mediaType = MediaType.APPLICATION_JSON_VALUE,
+                            schema = @Schema(
+                                    implementation = Exception.class
+                            )
+                    )
+            ),
+            @ApiResponse(
+                    responseCode = "401",
+                    description = "Unauthorized",
+                    content = @Content(
+                            mediaType = MediaType.APPLICATION_JSON_VALUE,
+                            schema = @Schema(
+                                    implementation = Exception.class
+                            )
+                    )
+            ),
+            @ApiResponse(
+                    responseCode = "403",
+                    description = "Forbidden",
+                    content = @Content(
+                            mediaType = MediaType.APPLICATION_JSON_VALUE,
+                            schema = @Schema(
+                                    implementation = Exception.class
+                            )
+                    )
+            ),
+            @ApiResponse(
+                    responseCode = "404",
+                    description = "Not found",
+                    content = @Content(
+                            mediaType = MediaType.APPLICATION_JSON_VALUE,
+                            schema = @Schema(
+                                    implementation = Exception.class
+                            )
+                    )
+            ),
+            @ApiResponse(
+                    responseCode = "409",
+                    description = "Conflict",
+                    content = @Content(
+                            mediaType = MediaType.APPLICATION_JSON_VALUE,
+                            schema = @Schema(
+                                    implementation = Exception.class
+                            )
+                    )
+            )
+    })
+    @PreAuthorize("hasRole('SPONSOR')")
+    @PatchMapping("/sponsors/{sponsor-id}")
+    public SponsorFullInfo updateTalentFullInfo(@PathVariable("sponsor-id") long sponsorId,
+                                               @RequestBody SponsorUpdateRequest sponsorUpdateRequest,
+                                               Authentication auth) {
+        log.info("@PatchMapping(\"/sponsors/{sponsor-id}\")");
+        return sponsorService.updateSponsorProfile(sponsorId, sponsorUpdateRequest, auth);
     }
 
     @Operation(

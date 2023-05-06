@@ -61,4 +61,8 @@ databaseChangeLog:
 
   - changeSet:
       id: 9
+      author: sasha
+
+  - changeSet:
+      id: 10
       author: serhii

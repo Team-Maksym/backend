@@ -38,22 +38,22 @@ public class SecurityServiceImpl implements SecurityServiceInterface {
     private final JwtEncoder jwtEncoder;
     private UserRepository repository;
     private SponsorRepository sponsorRepository;
-    private SecurityMapper securityMapper;
+    private MapperSecurity mapperSecurity;
     private PasswordEncoder passwordEncoder;
 
     @Override
     public SessionInfo loginInfo(Authentication auth) {
         var user = repository.findByEmail(auth.getName())
                 .orElseThrow(() -> new UsernameNotFoundException(auth.getName() + " not found user by email"));
-        var token = getJWTToken(securityMapper.toUserDetailsImpl(user), user.getUserId());
-        return securityMapper.toSessionInfo(token);
+        var token = getJWTToken(mapperSecurity.toUserDetailsImpl(user), user.getUserId());
+        return mapperSecurity.toSessionInfo(token);
     }
 
     @Override
     public SessionInfo register(NewUser newUser) {
         var user = saveNewUser(newUser);
-        var token = getJWTToken(securityMapper.toUserDetailsImpl(user), user.getUserId());
-        return securityMapper.toSessionInfo(token);
+        var token = getJWTToken(mapperSecurity.toUserDetailsImpl(user), user.getUserId());
+        return mapperSecurity.toSessionInfo(token);
     }
 
     UserEntity saveNewUser(NewUser newUser) {
@@ -75,16 +75,15 @@ public class SecurityServiceImpl implements SecurityServiceInterface {
     public SessionInfo loginSponsor(Authentication auth) {
         var user = sponsorRepository.findByEmail(auth.getName())
                 .orElseThrow(() -> new UsernameNotFoundException(auth.getName() + " not found user by email"));
-        var token = getJWTToken(securityMapper.toUserDetailsImplForSponsor(user), user.getSponsorId());
-        return securityMapper.toSessionInfo(token);
+        var token = getJWTToken(mapperSecurity.toUserDetailsImplForSponsor(user), user.getSponsorId());
+        return mapperSecurity.toSessionInfo(token);
     }
 
     @Override
     public SessionInfo registerSponsor(NewUser newUser) {
-
         var user = saveNewSponsor(newUser);
-        var token = getJWTToken(securityMapper.toUserDetailsImplForSponsor(user), user.getSponsorId());
-        return securityMapper.toSessionInfo(token);
+        var token = getJWTToken(mapperSecurity.toUserDetailsImplForSponsor(user), user.getSponsorId());
+        return mapperSecurity.toSessionInfo(token);
     }
 
     SponsorEntity saveNewSponsor(NewUser newUser) {

@@ -13,6 +13,7 @@ import starlight.backend.sponsor.model.enums.SponsorStatus;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.util.Collection;
+import java.util.List;
 import java.util.Date;
 import java.util.Set;
 
@@ -47,6 +48,5 @@ public class SponsorEntity {
     private Collection<String> authorities;
     @OneToMany(mappedBy = "owner")
     @JsonManagedReference
-    private Set<KudosEntity> kudos;
-
+    private List<KudosEntity> kudos;
 }
