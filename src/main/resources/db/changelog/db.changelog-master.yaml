@@ -58,3 +58,8 @@ databaseChangeLog:
   - changeSet:
       id: 8
       author: kate
+
+
+  - changeSet:
+      id: 9
+      author: sasha

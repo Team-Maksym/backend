@@ -1,4 +1,4 @@
-package starlight.backend.exception;
+package starlight.backend.exception.proof;
 
 public class UserAccesDeniedToProofException extends RuntimeException{
     public UserAccesDeniedToProofException() {

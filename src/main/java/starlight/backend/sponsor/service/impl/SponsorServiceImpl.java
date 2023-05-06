@@ -1,6 +1,7 @@
 package starlight.backend.sponsor.service.impl;
 
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
@@ -11,24 +12,41 @@ import starlight.backend.exception.SponsorNotFoundException;
 import starlight.backend.security.service.SecurityServiceInterface;
 import starlight.backend.sponsor.SponsorMapper;
 import starlight.backend.sponsor.SponsorRepository;
+import starlight.backend.sponsor.model.response.KudosWithProofId;
 import starlight.backend.sponsor.model.request.SponsorUpdateRequest;
 import starlight.backend.sponsor.model.response.SponsorFullInfo;
-import starlight.backend.sponsor.model.response.UnusableKudos;
+import starlight.backend.sponsor.model.response.SponsorKudosInfo;
 import starlight.backend.sponsor.service.SponsorServiceInterface;
+
+import java.util.List;
 
 @AllArgsConstructor
 @Service
 @Transactional
+@Slf4j
 public class SponsorServiceImpl implements SponsorServiceInterface {
     private SponsorRepository sponsorRepository;
     private SecurityServiceInterface serviceService;
-    private SponsorMapper mapper;
-
+    private SponsorMapper sponsorMapper;
     @Override
-    public UnusableKudos getUnusableKudos(long sponsorId) {
+    public SponsorKudosInfo getUnusableKudos(long sponsorId, Authentication auth) {
+        isItMyAccount(sponsorId, auth);
+        int alreadyMarkedKudos;
         var sponsor = sponsorRepository.findById(sponsorId)
                 .orElseThrow(() -> new SponsorNotFoundException(sponsorId));
-        return new UnusableKudos(sponsor.getUnusedKudos());
+        List<KudosWithProofId> kudosList = sponsor.getKudos()
+                .stream()
+                .map(el -> sponsorMapper.toKudosWithProofId(el))
+                .toList();
+        if (kudosList.isEmpty()) {
+            alreadyMarkedKudos = 0;
+        } else {
+            alreadyMarkedKudos = kudosList.stream()
+                    .map(KudosWithProofId::countKudos)
+                    .reduce(Integer::sum)
+                    .get();
+        }
+        return new SponsorKudosInfo(sponsor.getUnusedKudos(), alreadyMarkedKudos, kudosList);
     }
 
     @Override
@@ -69,7 +87,7 @@ public class SponsorServiceImpl implements SponsorServiceInterface {
                             sponsorUpdateRequest.unusedKudos() == 0 ?
                                     sponsor.getUnusedKudos() :
                                     sponsorUpdateRequest.unusedKudos());
-                    return mapper.toSponsorFullInfo(sponsor);
+                    return sponsorMapper.toSponsorFullInfo(sponsor);
                 })
                 .orElseThrow(() -> new SponsorNotFoundException(sponsorId));
     }
