@@ -10,7 +10,7 @@ import starlight.backend.user.model.entity.UserEntity;
 import static org.mapstruct.ReportingPolicy.IGNORE;
 
 @Mapper(componentModel = "spring", unmappedTargetPolicy = IGNORE)
-public interface SecurityMapper {
+public interface MapperSecurity {
     default SessionInfo toSessionInfo(String token) {
         return SessionInfo.builder()
                 .token(token)

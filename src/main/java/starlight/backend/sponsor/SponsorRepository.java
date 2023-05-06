@@ -13,4 +13,6 @@ public interface SponsorRepository extends JpaRepository<SponsorEntity, Long> {
     Optional<SponsorEntity> findByActivationCode(String token);
 
     boolean existsByActivationCode(String activationCode);
+
+    boolean existsBySponsorId(long sponsorId);
 }
