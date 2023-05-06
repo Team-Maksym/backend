@@ -41,14 +41,7 @@ public class SecurityController {
                                     schema = @Schema(implementation = SessionInfo.class)
                             )
                     ),
-                    @ApiResponse(
-                            responseCode = "401",
-                            description = "Unauthorized",
-                            content = @Content(
-                                    mediaType = "application/json",
-                                    schema = @Schema(implementation = SessionInfo.class)
-                            )
-                    )
+                    @ApiResponse(responseCode = "401", description = "Unauthorized")
             }
     )
     @PostMapping("/talents/login")
@@ -75,27 +68,8 @@ public class SecurityController {
                                     )
                             )
                     ),
-                    @ApiResponse(
-                            responseCode = "400",
-                            description = "Validation error",
-                            content = @Content(
-                                    mediaType = MediaType.APPLICATION_JSON_VALUE,
-                                    schema = @Schema(
-                                            implementation = Exception.class
-                                    )
-                            )
-                    ),
-                    @ApiResponse(
-                            responseCode = "409",
-                            description = "Conflict",
-                            content = @Content(
-                                    mediaType = MediaType.APPLICATION_JSON_VALUE,
-                                    schema = @Schema(
-                                            name = "Exception",
-                                            implementation = Exception.class
-                                    )
-                            )
-                    )
+                    @ApiResponse(responseCode = "400", description = "Validation error"),
+                    @ApiResponse(responseCode = "409", description = "Conflict")
             }
     )
     @PostMapping("/talents")
@@ -121,14 +95,7 @@ public class SecurityController {
                                     schema = @Schema(implementation = SessionInfo.class)
                             )
                     ),
-                    @ApiResponse(
-                            responseCode = "401",
-                            description = "Unauthorized",
-                            content = @Content(
-                                    mediaType = "application/json",
-                                    schema = @Schema(implementation = SessionInfo.class)
-                            )
-                    )
+                    @ApiResponse(responseCode = "401", description = "Unauthorized")
             }
     )
     @PostMapping("/sponsors/login")
@@ -155,27 +122,8 @@ public class SecurityController {
                                     )
                             )
                     ),
-                    @ApiResponse(
-                            responseCode = "400",
-                            description = "Validation error",
-                            content = @Content(
-                                    mediaType = MediaType.APPLICATION_JSON_VALUE,
-                                    schema = @Schema(
-                                            implementation = Exception.class
-                                    )
-                            )
-                    ),
-                    @ApiResponse(
-                            responseCode = "409",
-                            description = "Conflict",
-                            content = @Content(
-                                    mediaType = MediaType.APPLICATION_JSON_VALUE,
-                                    schema = @Schema(
-                                            name = "Exception",
-                                            implementation = Exception.class
-                                    )
-                            )
-                    )
+                    @ApiResponse(responseCode = "400", description = "Validation error"),
+                    @ApiResponse(responseCode = "409", description = "Conflict")
             }
     )
     @PostMapping("/sponsors")

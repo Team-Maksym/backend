@@ -39,14 +39,7 @@ public class EmailController {
                             responseCode = "200",
                             description = "Success"
                     ),
-                    @ApiResponse(
-                            responseCode = "401",
-                            description = "Unauthorized",
-                            content = @Content(
-                                    mediaType = "application/json",
-                                    schema = @Schema(implementation = Exception.class)
-                            )
-                    )
+                    @ApiResponse(responseCode = "401", description = "Unauthorized")
             }
     )
     @PostMapping("/sponsors/{sponsor-id}/send")
@@ -68,14 +61,7 @@ public class EmailController {
                             responseCode = "200",
                             description = "Success"
                     ),
-                    @ApiResponse(
-                            responseCode = "401",
-                            description = "Unauthorized",
-                            content = @Content(
-                                    mediaType = "application/json",
-                                    schema = @Schema(implementation = Exception.class)
-                            )
-                    )
+                    @ApiResponse(responseCode = "401", description = "Unauthorized")
             }
     )
     @PostMapping("/sponsors/forgot-password")
@@ -96,14 +82,7 @@ public class EmailController {
                             responseCode = "201",
                             description = "CREATED"
                     ),
-                    @ApiResponse(
-                            responseCode = "404",
-                            description = "Unauthorized",
-                            content = @Content(
-                                    mediaType = "application/json",
-                                    schema = @Schema(implementation = Exception.class)
-                            )
-                    )
+                    @ApiResponse(responseCode = "404", description = "Unauthorized")
             }
     )
     @PostMapping("/sponsors/recovery-password")
@@ -132,14 +111,7 @@ public class EmailController {
                             )
                     ),
 
-                    @ApiResponse(
-                            responseCode = "400",
-                            description = "Bad request",
-                            content = @Content(
-                                    mediaType = "application/json",
-                                    schema = @Schema(implementation = Exception.class)
-                            )
-                    ),
+                    @ApiResponse(responseCode = "400", description = "Bad request"),
 
             }
     )
