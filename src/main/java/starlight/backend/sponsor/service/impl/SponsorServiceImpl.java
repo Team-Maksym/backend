@@ -12,7 +12,7 @@ import starlight.backend.sponsor.SponsorMapper;
 import starlight.backend.sponsor.SponsorRepository;
 import starlight.backend.sponsor.model.response.KudosWithProofId;
 import starlight.backend.sponsor.model.response.SponsorFullInfo;
-import starlight.backend.sponsor.model.response.UnusableKudos;
+import starlight.backend.sponsor.model.response.SponsorKudosInfo;
 import starlight.backend.sponsor.service.SponsorServiceInterface;
 
 import java.util.List;
@@ -26,15 +26,24 @@ public class SponsorServiceImpl implements SponsorServiceInterface {
     private SecurityServiceInterface serviceService;
     private SponsorMapper sponsorMapper;
     @Override
-    public UnusableKudos getUnusableKudos(long sponsorId, Authentication auth) {
+    public SponsorKudosInfo getUnusableKudos(long sponsorId, Authentication auth) {
         isItMyAccount(sponsorId, auth);
+        int alreadyMarkedKudos;
         var sponsor = sponsorRepository.findById(sponsorId)
                 .orElseThrow(() -> new SponsorNotFoundException(sponsorId));
         List<KudosWithProofId> kudosList = sponsor.getKudos()
                 .stream()
                 .map(el -> sponsorMapper.toKudosWithProofId(el))
                 .toList();
-        return new UnusableKudos(sponsor.getUnusedKudos(), kudosList);
+        if (kudosList.isEmpty()) {
+            alreadyMarkedKudos = 0;
+        } else {
+            alreadyMarkedKudos = kudosList.stream()
+                    .map(KudosWithProofId::countKudos)
+                    .reduce(Integer::sum)
+                    .get();
+        }
+        return new SponsorKudosInfo(sponsor.getUnusedKudos(), alreadyMarkedKudos, kudosList);
     }
 
     @Override

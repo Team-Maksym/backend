@@ -19,7 +19,6 @@ import starlight.backend.security.model.request.NewUser;
 import starlight.backend.security.model.response.SessionInfo;
 import starlight.backend.security.service.SecurityServiceInterface;
 import starlight.backend.sponsor.model.entity.SponsorEntity;
-import starlight.backend.sponsor.model.response.UnusableKudos;
 import starlight.backend.user.model.entity.UserEntity;
 import starlight.backend.sponsor.SponsorRepository;
 import starlight.backend.user.repository.UserRepository;

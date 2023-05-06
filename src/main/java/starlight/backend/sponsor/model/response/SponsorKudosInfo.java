@@ -5,7 +5,8 @@ import lombok.Builder;
 import java.util.List;
 
 @Builder
-public record UnusableKudos(
-        int total,
+public record SponsorKudosInfo(
+        int unusedKudos,
+        int alreadyMarkedKudos,
         List<KudosWithProofId> data
 ) {}

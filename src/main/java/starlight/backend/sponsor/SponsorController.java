@@ -6,19 +6,14 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
-import starlight.backend.security.model.request.NewUser;
 import starlight.backend.security.model.response.SessionInfo;
-import starlight.backend.security.service.SecurityServiceInterface;
 import starlight.backend.sponsor.model.response.SponsorFullInfo;
-import starlight.backend.sponsor.model.response.UnusableKudos;
+import starlight.backend.sponsor.model.response.SponsorKudosInfo;
 import starlight.backend.sponsor.service.SponsorServiceInterface;
 
 @AllArgsConstructor
@@ -62,8 +57,8 @@ public class SponsorController {
             }
     )
     @GetMapping("/sponsors/{sponsor-id}/kudos")
-    public UnusableKudos register(@PathVariable("sponsor-id") long sponsorId,
-                                  Authentication auth) {
+    public SponsorKudosInfo register(@PathVariable("sponsor-id") long sponsorId,
+                                     Authentication auth) {
 
         log.info("@GetMapping(\"/sponsors/{sponsor-id}/kudos\")");
 
