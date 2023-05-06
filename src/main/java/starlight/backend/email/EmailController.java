@@ -10,6 +10,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 import starlight.backend.email.model.ChangePassword;
@@ -113,9 +114,39 @@ public class EmailController {
         emailService.recoveryPassword(token, changePassword);
     }
 
-    @GetMapping("/sponsors/recovery-account") //TODO: можно гет
-    public void recoveryAccount(@RequestParam String uuid) throws Exception {
+
+    @Operation(
+            summary = "Recover account by UUID",
+            description = "Recover account by UUID",
+            tags = {"Email", "Sponsor"}
+    )
+    @ApiResponses(
+            value = {
+                    @ApiResponse(
+                            responseCode = "200",
+                            description = "Success",
+                            content = @Content(
+                                    mediaType = "application/json",
+                                    schema = @Schema(implementation = ResponseEntity.class)
+
+                            )
+                    ),
+
+                    @ApiResponse(
+                            responseCode = "400",
+                            description = "Bad request",
+                            content = @Content(
+                                    mediaType = "application/json",
+                                    schema = @Schema(implementation = Exception.class)
+                            )
+                    ),
+
+            }
+    )
+    @GetMapping("/sponsors/recovery-account")
+    public ResponseEntity<String> recoveryAccount(@RequestParam String uuid) throws Exception {
         log.info("@PostMapping(\"/recovery-account\")");
         emailService.recoveryAccount(UUID.fromString(uuid));
+        return ResponseEntity.ok("Account recovered");
     }
 }

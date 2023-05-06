@@ -104,6 +104,17 @@ public class SponsorController {
         return sponsorService.getSponsorFullInfo(sponsorId, auth);
     }
 
+    @Operation(
+            summary = "Delete sponsor",
+            description = "Deletes a sponsor by the specified identifier. Only users with the 'ROLE_SPONSOR' role can use this endpoint."
+    )
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Successful sponsor deletion"),
+            @ApiResponse(responseCode = "401", description = "User not authenticated"),
+            @ApiResponse(responseCode = "403", description = "Access denied"),
+            @ApiResponse(responseCode = "404", description = "Sponsor not found"),
+            @ApiResponse(responseCode = "500", description = "Server error")
+    })
     @PreAuthorize("hasRole('ROLE_SPONSOR')")
     @PostMapping ("/sponsors/{sponsor-id}/delete")
     @ResponseStatus(HttpStatus.OK)
