@@ -64,11 +64,22 @@ public class KudosService {
             for (GrantedAuthority grantedAuthority : auth.getAuthorities()) {
                 if (grantedAuthority.getAuthority().equals(Role.SPONSOR.getAuthority())) {
                     log.info("Is Sponsor = {}", grantedAuthority.getAuthority().equals(Role.SPONSOR.getAuthority()));
-                    return new KudosOnProof(countKudos, isProofAlreadyHaveKudosFromUser(proofId, auth));
+                    var kudosFromMeList = kudos.stream()
+                            .filter(k -> k.getOwner().getSponsorId().toString().equals(auth.getName()))
+                            .toList();
+                    int kudosFromMe;
+                    if (kudosFromMeList.isEmpty()) {
+                        kudosFromMe = 0;
+                    } else {
+                        kudosFromMe = kudosFromMeList.stream()
+                                .mapToInt(KudosEntity::getCountKudos)
+                                .sum();
+                    }
+                    return new KudosOnProof(countKudos, kudosFromMe, isProofAlreadyHaveKudosFromUser(proofId, auth));
                 }
             }
         }
-        return new KudosOnProof(countKudos, false);
+        return new KudosOnProof(countKudos, 0, false);
     }
 
 

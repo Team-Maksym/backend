@@ -87,7 +87,7 @@ public class SponsorServiceImpl implements SponsorServiceInterface {
                             sponsorUpdateRequest.unusedKudos() == 0 ?
                                     sponsor.getUnusedKudos() :
                                     sponsorUpdateRequest.unusedKudos());
-                    return mapper.toSponsorFullInfo(sponsor);
+                    return sponsorMapper.toSponsorFullInfo(sponsor);
                 })
                 .orElseThrow(() -> new SponsorNotFoundException(sponsorId));
     }
