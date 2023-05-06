@@ -6,6 +6,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -104,13 +105,14 @@ public class SponsorController {
     }
 
     @PreAuthorize("hasRole('ROLE_SPONSOR')")
-    @DeleteMapping("/sponsors/{sponsor-id}")
-    @ResponseStatus(HttpStatus.NO_CONTENT)
+    @PostMapping ("/sponsors/{sponsor-id}/delete")
+    @ResponseStatus(HttpStatus.OK)
     public void delete(@PathVariable("sponsor-id") long sponsorId,
-                       Authentication auth
+                       Authentication auth,
+                       HttpServletRequest request
     ) {
 
-        log.info("@DeleteMapping(\"/sponsors/{sponsor-id}\")");
-        sponsorService.deleteSponsor(sponsorId, auth);
+        log.info("@PostMapping(\"/sponsors/{sponsor-id}/delete\")");
+        sponsorService.deleteSponsor(sponsorId, auth, request);
     }
 }

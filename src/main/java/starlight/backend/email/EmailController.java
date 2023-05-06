@@ -16,6 +16,8 @@ import starlight.backend.email.model.ChangePassword;
 import starlight.backend.email.model.Email;
 import starlight.backend.email.service.EmailService;
 
+import java.util.UUID;
+
 @RestController
 @AllArgsConstructor
 @Slf4j
@@ -109,5 +111,11 @@ public class EmailController {
                                  @RequestBody ChangePassword changePassword) {
         log.info("@PostMapping(\"/recovery-password\")");
         emailService.recoveryPassword(token, changePassword);
+    }
+
+    @GetMapping("/sponsors/recovery-account") //TODO: можно гет
+    public void recoveryAccount(@RequestParam String uuid) throws Exception {
+        log.info("@PostMapping(\"/recovery-account\")");
+        emailService.recoveryAccount(UUID.fromString(uuid));
     }
 }

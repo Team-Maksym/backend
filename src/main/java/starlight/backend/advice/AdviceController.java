@@ -23,6 +23,7 @@ public class AdviceController {
     @ExceptionHandler({
             EmailAlreadyOccupiedException.class,
             ProofAlreadyHaveKudosFromUser.class,
+            SponsorAlreadyOnDeleteList.class,
     })
     @ResponseStatus(HttpStatus.CONFLICT)
     public ErrorDTO alreadyIs(Exception exception) {

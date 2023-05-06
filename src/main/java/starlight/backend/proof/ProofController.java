@@ -317,7 +317,7 @@ public class ProofController {
                     )
             )
     })
-    @PreAuthorize("hasRole('TALENT')")
+//    @PreAuthorize("hasRole('TALENT')")
     @GetMapping("/proofs/{proof-id}")
     public ProofFullInfo getFullProof(@PathVariable("proof-id") long proofId,
                                          Authentication auth) {

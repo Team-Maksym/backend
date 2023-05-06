@@ -1,7 +1,6 @@
 package starlight.backend.sponsor.service.impl;
 
-import jakarta.persistence.EntityManager;
-import jakarta.persistence.PersistenceContext;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.AllArgsConstructor;
 import org.springframework.security.core.Authentication;
 import org.springframework.http.HttpStatus;
@@ -13,6 +12,8 @@ import starlight.backend.advice.model.entity.DelayedDeleteEntity;
 import starlight.backend.advice.model.enums.DeletingEntityType;
 import starlight.backend.advice.repository.DelayedDeleteRepository;
 import starlight.backend.advice.service.impl.AdviceServiceImpl;
+import starlight.backend.email.service.impl.EmailServiceImpl;
+import starlight.backend.exception.SponsorAlreadyOnDeleteList;
 import starlight.backend.exception.SponsorCanNotSeeAnotherSponsor;
 import starlight.backend.exception.SponsorNotFoundException;
 import starlight.backend.security.service.SecurityServiceInterface;
@@ -24,18 +25,16 @@ import starlight.backend.sponsor.service.SponsorServiceInterface;
 
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
-import java.util.UUID;
 
 @AllArgsConstructor
 @Service
-@Transactional
 public class SponsorServiceImpl implements SponsorServiceInterface {
     private SponsorRepository sponsorRepository;
     private SecurityServiceInterface securityService;
     private DelayedDeleteRepository delayedDeleteRepository;
-    private AdviceServiceImpl adviceService;
     private AdviceConfiguration adviceConfiguration;
     private SecurityServiceInterface serviceService;
+    private EmailServiceImpl emailServiceImpl;
     @Override
     public UnusableKudos getUnusableKudos(long sponsorId) {
         var sponsor = sponsorRepository.findById(sponsorId)
@@ -62,7 +61,8 @@ public class SponsorServiceImpl implements SponsorServiceInterface {
     }
 
     @Override
-    public void deleteSponsor(long sponsorId, Authentication auth) {
+    @Transactional
+    public void deleteSponsor(long sponsorId, Authentication auth, HttpServletRequest request) {
         if (!sponsorRepository.existsBySponsorId(sponsorId)) {
             throw new SponsorNotFoundException(sponsorId);
         }
@@ -71,17 +71,22 @@ public class SponsorServiceImpl implements SponsorServiceInterface {
         }
 
         sponsorRepository.findById(sponsorId).ifPresent(sponsor -> {
-            delayedDeleteRepository.save(DelayedDeleteEntity.builder()
+            if (delayedDeleteRepository.existsByEntityID(sponsorId)){
+                throw new SponsorAlreadyOnDeleteList(sponsorId);
+            }
+            delayedDeleteRepository.save(
+                    DelayedDeleteEntity.builder()
                             .entityID(sponsorId)
                             .deletingEntityType(DeletingEntityType.SPONSOR)
                             .deleteDate(Instant.now().plus(adviceConfiguration.delayDays(), ChronoUnit.DAYS))
-                            .userDeletingProcessUUID(UUID.randomUUID())
+                            .userDeletingProcessUUID(emailServiceImpl.recoveryAccount(request, sponsor.getEmail()))
                             .build()
-
             );
+
 
             sponsor.setStatus(SponsorStatus.DELETING);
             sponsorRepository.save(sponsor);
+
         });
     }
 }

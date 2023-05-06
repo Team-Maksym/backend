@@ -2,6 +2,7 @@ package starlight.backend.security.service.impl;
 
 
 import lombok.AllArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -12,14 +13,14 @@ import org.springframework.security.oauth2.jwt.JwtEncoderParameters;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import starlight.backend.exception.EmailAlreadyOccupiedException;
-import starlight.backend.security.MapperSecurity;
+import starlight.backend.security.SecurityMapper;
 import starlight.backend.security.model.UserDetailsImpl;
 import starlight.backend.security.model.enums.Role;
 import starlight.backend.security.model.request.NewUser;
 import starlight.backend.security.model.response.SessionInfo;
 import starlight.backend.security.service.SecurityServiceInterface;
 import starlight.backend.sponsor.model.entity.SponsorEntity;
-import starlight.backend.sponsor.model.response.UnusableKudos;
+import starlight.backend.sponsor.model.enums.SponsorStatus;
 import starlight.backend.user.model.entity.UserEntity;
 import starlight.backend.sponsor.SponsorRepository;
 import starlight.backend.user.repository.UserRepository;
@@ -37,22 +38,22 @@ public class SecurityServiceImpl implements SecurityServiceInterface {
     private final JwtEncoder jwtEncoder;
     private UserRepository repository;
     private SponsorRepository sponsorRepository;
-    private MapperSecurity mapperSecurity;
+    private SecurityMapper securityMapper;
     private PasswordEncoder passwordEncoder;
 
     @Override
     public SessionInfo loginInfo(Authentication auth) {
         var user = repository.findByEmail(auth.getName())
                 .orElseThrow(() -> new UsernameNotFoundException(auth.getName() + " not found user by email"));
-        var token = getJWTToken(mapperSecurity.toUserDetailsImpl(user), user.getUserId());
-        return mapperSecurity.toSessionInfo(token);
+        var token = getJWTToken(securityMapper.toUserDetailsImpl(user), user.getUserId());
+        return securityMapper.toSessionInfo(token);
     }
 
     @Override
     public SessionInfo register(NewUser newUser) {
         var user = saveNewUser(newUser);
-        var token = getJWTToken(mapperSecurity.toUserDetailsImpl(user), user.getUserId());
-        return mapperSecurity.toSessionInfo(token);
+        var token = getJWTToken(securityMapper.toUserDetailsImpl(user), user.getUserId());
+        return securityMapper.toSessionInfo(token);
     }
 
     UserEntity saveNewUser(NewUser newUser) {
@@ -74,15 +75,16 @@ public class SecurityServiceImpl implements SecurityServiceInterface {
     public SessionInfo loginSponsor(Authentication auth) {
         var user = sponsorRepository.findByEmail(auth.getName())
                 .orElseThrow(() -> new UsernameNotFoundException(auth.getName() + " not found user by email"));
-        var token = getJWTToken(mapperSecurity.toUserDetailsImplForSponsor(user), user.getSponsorId());
-        return mapperSecurity.toSessionInfo(token);
+        var token = getJWTToken(securityMapper.toUserDetailsImplForSponsor(user), user.getSponsorId());
+        return securityMapper.toSessionInfo(token);
     }
 
     @Override
     public SessionInfo registerSponsor(NewUser newUser) {
+
         var user = saveNewSponsor(newUser);
-        var token = getJWTToken(mapperSecurity.toUserDetailsImplForSponsor(user), user.getSponsorId());
-        return mapperSecurity.toSessionInfo(token);
+        var token = getJWTToken(securityMapper.toUserDetailsImplForSponsor(user), user.getSponsorId());
+        return securityMapper.toSessionInfo(token);
     }
 
     SponsorEntity saveNewSponsor(NewUser newUser) {
@@ -98,6 +100,7 @@ public class SecurityServiceImpl implements SecurityServiceInterface {
                 .password(passwordEncoder.encode(newUser.password()))
                 .authorities(Collections.singleton(Role.SPONSOR.getAuthority()))
                 .unusedKudos(100) //TODO не хадкодить
+                .status(SponsorStatus.ACTIVE)
                 .build());
     }
 

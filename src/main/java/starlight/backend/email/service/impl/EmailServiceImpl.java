@@ -15,16 +15,20 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
+import starlight.backend.advice.model.entity.DelayedDeleteEntity;
+import starlight.backend.advice.repository.DelayedDeleteRepository;
 import starlight.backend.email.model.ChangePassword;
 import starlight.backend.email.model.Email;
 import starlight.backend.email.model.EmailProps;
 import starlight.backend.email.service.EmailService;
 import starlight.backend.exception.SponsorCanNotSeeAnotherSponsor;
 import starlight.backend.exception.SponsorNotFoundException;
+import starlight.backend.exception.UserNotFoundException;
 import starlight.backend.security.service.SecurityServiceInterface;
 import starlight.backend.security.service.impl.SecurityServiceImpl;
 import starlight.backend.sponsor.SponsorRepository;
 import starlight.backend.sponsor.model.entity.SponsorEntity;
+import starlight.backend.sponsor.model.enums.SponsorStatus;
 
 import java.io.File;
 import java.time.Instant;
@@ -42,8 +46,24 @@ public class EmailServiceImpl implements EmailService {
 
     private SponsorRepository sponsorRepository;
     private SecurityServiceInterface securityService;
+    private DelayedDeleteRepository delayedDeleteRepository;
 
     private PasswordEncoder passwordEncoder;
+
+    @Override
+    @Transactional
+    public void recoveryAccount(UUID uuid) {
+        DelayedDeleteEntity delayedDeleteEntity = delayedDeleteRepository.findByUserDeletingProcessUUID(uuid)
+                .orElseThrow(() ->  new UserNotFoundException(String.valueOf(uuid)));
+        long sponsorId = delayedDeleteEntity.getEntityID();
+        SponsorEntity sponsor = sponsorRepository.findById(sponsorId)
+                .orElseThrow(() -> new SponsorNotFoundException(sponsorId));
+        sponsor.setStatus(SponsorStatus.ACTIVE);
+        sponsorRepository.save(sponsor);
+//        delayedDeleteEntity.setDeleteDate(null);
+        delayedDeleteRepository.delete(delayedDeleteEntity);
+
+    }
 
     @Override
     public void sendMail(Email email,long sponsorId, Authentication auth) {
@@ -102,6 +122,13 @@ public class EmailServiceImpl implements EmailService {
                 constructResetTokenEmail(getAppUrl(request), token));
     }
 
+    public UUID recoveryAccount(HttpServletRequest request, String email){
+        UUID uuid = UUID.randomUUID();
+        sendSimpleMessage(email, "Recovery Account",
+                constructRecoveryAccount(getAppUrl(request), uuid.toString()));
+        return uuid;
+    }
+
     @Override
     @Transactional
     public void recoveryPassword(String token, ChangePassword changePassword) {
@@ -116,7 +143,7 @@ public class EmailServiceImpl implements EmailService {
     }
 
     @Transactional
-    void createPasswordResetTokenForUser(SponsorEntity sponsor, String token) {
+    public void createPasswordResetTokenForUser(SponsorEntity sponsor, String token) {
         sponsor.setActivationCode(token);
         sponsor.setExpiryDate(calculateExpiryDate(10));
         sponsorRepository.save(sponsor);
@@ -135,6 +162,13 @@ public class EmailServiceImpl implements EmailService {
                         "If you haven't done so, please ignore this email and change your " +
                         "password on your account!\n%s\n",
                 appUrl + "/api/v1/sponsors/recovery-password?token=" + token);
+    }
+    private String constructRecoveryAccount(String appUrl, String uuid){
+        return String.format("You received this email about a deleting your profile on Starlight project. " +
+                        "The link will be invalid after 7 days.\n" +
+                        "If you haven't done so, please dont ignore this email and press on link " +
+                        "for activate your account!\n%s\n",
+                appUrl + "/api/v1/sponsors/recovery-account?uuid=" + uuid);
     }
 
     private String getAppUrl(HttpServletRequest request) {

@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import starlight.backend.advice.repository.DelayedDeleteRepository;
 import starlight.backend.sponsor.SponsorRepository;
 
@@ -12,9 +13,10 @@ import java.time.Instant;
 @Service
 @AllArgsConstructor
 @Slf4j
+@Transactional
 public class AdviceServiceImpl {
-    DelayedDeleteRepository delayedDeleteRepository;
-    SponsorRepository sponsorRepository;
+    private DelayedDeleteRepository delayedDeleteRepository;
+    private SponsorRepository sponsorRepository;
 
     @Scheduled(cron = "**0 0 * * ***") // 24 hours
     public void deleteAccounts() {

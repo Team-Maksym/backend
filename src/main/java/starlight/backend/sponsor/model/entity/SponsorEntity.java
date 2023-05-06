@@ -42,7 +42,6 @@ public class SponsorEntity {
     private Integer unusedKudos;
     private String activationCode;
     private Instant expiryDate;
-    @NotBlank
     private SponsorStatus status;
     @ElementCollection(fetch = FetchType.EAGER)
     private Collection<String> authorities;
