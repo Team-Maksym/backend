@@ -1,9 +1,9 @@
-package starlight.backend.sponsor.model.response;
+package starlight.backend.sponsor.model.request;
 
 import lombok.Builder;
 
 @Builder
-public record SponsorFullInfo(
+public record SponsorUpdateRequest(
         String fullName,
         String avatar,
         String company,

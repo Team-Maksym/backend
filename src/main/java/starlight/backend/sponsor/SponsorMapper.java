@@ -3,6 +3,8 @@ package starlight.backend.sponsor;
 import org.mapstruct.Mapper;
 import starlight.backend.kudos.model.entity.KudosEntity;
 import starlight.backend.sponsor.model.response.KudosWithProofId;
+import starlight.backend.sponsor.model.entity.SponsorEntity;
+import starlight.backend.sponsor.model.response.SponsorFullInfo;
 
 import static org.mapstruct.ReportingPolicy.IGNORE;
 
@@ -19,4 +21,12 @@ public interface SponsorMapper {
                 .build();
     }
 
+    default SponsorFullInfo toSponsorFullInfo(SponsorEntity sponsor) {
+        return SponsorFullInfo.builder()
+                .fullName(sponsor.getFullName())
+                .avatar(sponsor.getAvatar())
+                .company(sponsor.getCompany())
+                .unusedKudos(sponsor.getUnusedKudos())
+                .build();
+    }
 }
