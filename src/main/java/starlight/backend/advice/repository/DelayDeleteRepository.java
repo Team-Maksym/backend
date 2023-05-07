@@ -8,7 +8,7 @@ import java.util.Optional;
 import java.util.UUID;
 
 @Repository
-public interface DelayedDeleteRepository extends JpaRepository<DelayedDeleteEntity, Long> {
+public interface DelayDeleteRepository extends JpaRepository<DelayedDeleteEntity, Long> {
     Optional<DelayedDeleteEntity> findByUserDeletingProcessUUID(UUID userDeletingProcessUUID);
 
     boolean existsByEntityID(Long entityID);

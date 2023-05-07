@@ -5,7 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import starlight.backend.advice.repository.DelayedDeleteRepository;
+import starlight.backend.advice.repository.DelayDeleteRepository;
 import starlight.backend.exception.user.sponsor.SponsorNotFoundException;
 import starlight.backend.sponsor.SponsorRepository;
 
@@ -16,12 +16,12 @@ import java.time.Instant;
 @Slf4j
 @Transactional
 public class AdviceServiceImpl {
-    private DelayedDeleteRepository delayedDeleteRepository;
+    private DelayDeleteRepository delayDeleteRepository;
     private SponsorRepository sponsorRepository;
 
     @Scheduled(cron = "**0 0 * * ***") // 24 hours
     public void deleteAccounts() {
-        var accounts = delayedDeleteRepository.findAll();
+        var accounts = delayDeleteRepository.findAll();
 
         for (var account : accounts) {
             if (account.getDeleteDate().isAfter(Instant.now())) {
@@ -31,8 +31,8 @@ public class AdviceServiceImpl {
             //Тут можно имплементировать распределение логики на удаления аккаунтов с разными ролями в системе
             var accountEntityID = account.getEntityID();
             if (sponsorRepository.findBySponsorId(accountEntityID).isEmpty()){
-                //Если спонсора уже нету в системе, то удаляем из DelayedDeleteRepository
-                delayedDeleteRepository.deleteById(accountEntityID);
+                //Если спонсора уже нету в системе, то удаляем из DelayDeleteRepository
+                delayDeleteRepository.deleteById(accountEntityID);
                 continue;
             }
 
@@ -49,9 +49,9 @@ public class AdviceServiceImpl {
                     kudos.setOwner(null);
                 }
             }
-            //Удаляем спонсора из SponsorRepository & DelayedDeleteRepository
+            //Удаляем спонсора из SponsorRepository & DelayDeleteRepository
             sponsorRepository.deleteById(accountEntityID);
-            delayedDeleteRepository.deleteById(accountEntityID);
+            delayDeleteRepository.deleteById(accountEntityID);
         }
     }
 }

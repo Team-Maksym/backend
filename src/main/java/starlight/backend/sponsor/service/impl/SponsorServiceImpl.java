@@ -11,7 +11,7 @@ import org.springframework.web.server.ResponseStatusException;
 import starlight.backend.advice.config.AdviceConfiguration;
 import starlight.backend.advice.model.entity.DelayedDeleteEntity;
 import starlight.backend.advice.model.enums.DeletingEntityType;
-import starlight.backend.advice.repository.DelayedDeleteRepository;
+import starlight.backend.advice.repository.DelayDeleteRepository;
 import starlight.backend.email.service.impl.EmailServiceImpl;
 import starlight.backend.exception.user.sponsor.SponsorAlreadyOnDeleteList;
 import starlight.backend.exception.user.sponsor.SponsorCanNotSeeAnotherSponsor;
@@ -37,7 +37,7 @@ import java.util.List;
 public class SponsorServiceImpl implements SponsorServiceInterface {
     private SponsorRepository sponsorRepository;
     private SecurityServiceInterface securityService;
-    private DelayedDeleteRepository delayedDeleteRepository;
+    private DelayDeleteRepository delayDeleteRepository;
     private AdviceConfiguration adviceConfiguration;
     private SecurityServiceInterface serviceService;
     private SponsorMapper sponsorMapper;
@@ -123,10 +123,10 @@ public class SponsorServiceImpl implements SponsorServiceInterface {
         }
 
         sponsorRepository.findById(sponsorId).ifPresent(sponsor -> {
-            if (delayedDeleteRepository.existsByEntityID(sponsorId)){
+            if (delayDeleteRepository.existsByEntityID(sponsorId)){
                 throw new SponsorAlreadyOnDeleteList(sponsorId);
             }
-            delayedDeleteRepository.save(
+            delayDeleteRepository.save(
                     DelayedDeleteEntity.builder()
                             .entityID(sponsorId)
                             .deletingEntityType(DeletingEntityType.SPONSOR)

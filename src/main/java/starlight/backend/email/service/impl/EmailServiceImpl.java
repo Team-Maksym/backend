@@ -17,14 +17,14 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 import starlight.backend.advice.config.AdviceConfiguration;
 import starlight.backend.advice.model.entity.DelayedDeleteEntity;
-import starlight.backend.advice.repository.DelayedDeleteRepository;
+import starlight.backend.advice.repository.DelayDeleteRepository;
 import starlight.backend.email.model.ChangePassword;
 import starlight.backend.email.model.Email;
 import starlight.backend.email.model.EmailProps;
 import starlight.backend.email.service.EmailService;
+import starlight.backend.exception.user.UserNotFoundWithUUIDException;
 import starlight.backend.exception.user.sponsor.SponsorCanNotSeeAnotherSponsor;
 import starlight.backend.exception.user.sponsor.SponsorNotFoundException;
-import starlight.backend.exception.user.UserNotFoundException;
 import starlight.backend.security.service.SecurityServiceInterface;
 import starlight.backend.sponsor.SponsorRepository;
 import starlight.backend.sponsor.model.entity.SponsorEntity;
@@ -46,7 +46,7 @@ public class EmailServiceImpl implements EmailService {
 
     private SponsorRepository sponsorRepository;
     private SecurityServiceInterface securityService;
-    private DelayedDeleteRepository delayedDeleteRepository;
+    private DelayDeleteRepository delayDeleteRepository;
 
     private PasswordEncoder passwordEncoder;
     private AdviceConfiguration adviceConfiguration;
@@ -54,15 +54,17 @@ public class EmailServiceImpl implements EmailService {
     @Override
     @Transactional
     public void recoverySponsorAccount(UUID uuid) {
-        DelayedDeleteEntity delayedDeleteEntity = delayedDeleteRepository.findByUserDeletingProcessUUID(uuid)
-                .orElseThrow(() ->  new UserNotFoundException(String.valueOf(uuid)));
+        DelayedDeleteEntity delayedDeleteEntity = delayDeleteRepository.findByUserDeletingProcessUUID(uuid)
+
+                .orElseThrow(() ->  new UserNotFoundWithUUIDException(String.valueOf(uuid)));
+
         long sponsorId = delayedDeleteEntity.getEntityID();
         SponsorEntity sponsor = sponsorRepository.findById(sponsorId)
                 .orElseThrow(() -> new SponsorNotFoundException(sponsorId));
         sponsor.setStatus(SponsorStatus.ACTIVE);
         sponsorRepository.save(sponsor);
 //        delayedDeleteEntity.setDeleteDate(null);
-        delayedDeleteRepository.delete(delayedDeleteEntity);
+        delayDeleteRepository.delete(delayedDeleteEntity);
 
     }
 
