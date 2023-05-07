@@ -43,7 +43,6 @@ public class AdviceServiceImpl {
             //Чистим связи с другими таблицами.
             //Чистим роли
             sponsor.getAuthorities().clear();
-            //Чистиим кудосы
             if (!sponsor.getKudos().isEmpty()) {
                 //Если есть кудосы, то очищяем владельцев каждого из них
                 for (var kudos : sponsor.getKudos()) {
