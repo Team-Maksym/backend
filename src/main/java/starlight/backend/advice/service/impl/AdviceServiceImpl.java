@@ -6,6 +6,7 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import starlight.backend.advice.repository.DelayedDeleteRepository;
+import starlight.backend.exception.user.sponsor.SponsorNotFoundException;
 import starlight.backend.sponsor.SponsorRepository;
 
 import java.time.Instant;
@@ -24,31 +25,34 @@ public class AdviceServiceImpl {
 
         for (var account : accounts) {
             if (account.getDeleteDate().isAfter(Instant.now())) {
+                //Если дата удаления аккаунта больше текущего момента, то пропускаем
                 continue;
             }
-            var userId = account.getEntityID();
-            var exists = sponsorRepository.existsBySponsorId(userId);
-            if (!exists) {
-                log.info("User not found in DelayedDeleteRepository: {}", userId);
+            //Тут можно имплементировать распределение логики на удаления аккаунтов с разными ролями в системе
+            var accountEntityID = account.getEntityID();
+            if (sponsorRepository.findBySponsorId(accountEntityID).isEmpty()){
+                //Если спонсора уже нету в системе, то удаляем из DelayedDeleteRepository
+                delayedDeleteRepository.deleteById(accountEntityID);
                 continue;
             }
-            if (exists) {
-                log.info("Deleting user: {}", userId);
-                var sponsor = sponsorRepository.findById(userId).get();
-                sponsor.getAuthorities().clear();
-                if (!sponsor.getKudos().isEmpty()) {
-                    for (var kudos : sponsor.getKudos()) {
-                        kudos.setOwner(null);
-                    }
 
-                    sponsorRepository.deleteById(userId);
+            log.info("Deleting user with id: {}", accountEntityID);
+            //Вытягиваем спонсора
+            var sponsor = sponsorRepository.findBySponsorId(accountEntityID)
+                    .orElseThrow(() -> new SponsorNotFoundException(accountEntityID));
+            //Чистим связи с другими таблицами.
+            //Чистим роли
+            sponsor.getAuthorities().clear();
+            //Чистиим кудосы
+            if (!sponsor.getKudos().isEmpty()) {
+                //Если есть кудосы, то очищяем владельцев каждого из них
+                for (var kudos : sponsor.getKudos()) {
+                    kudos.setOwner(null);
                 }
-                delayedDeleteRepository.deleteById(userId);
-            } else {
-                log.info("User not found in SponsorRepository: {}", userId);
-
-
             }
+            //Удаляем спонсора из SponsorRepository & DelayedDeleteRepository
+            sponsorRepository.deleteById(accountEntityID);
+            delayedDeleteRepository.deleteById(accountEntityID);
         }
     }
 }

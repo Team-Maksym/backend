@@ -7,7 +7,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import starlight.backend.exception.AuthorizationFailureException;
-import starlight.backend.exception.UserNotFoundException;
+import starlight.backend.exception.user.UserNotFoundException;
 import starlight.backend.exception.kudos.KudosRequestMustBeNotZeroException;
 import starlight.backend.exception.kudos.NotEnoughKudosException;
 import starlight.backend.exception.kudos.TalentCanNotAddKudos;

@@ -1,4 +1,4 @@
-package starlight.backend.exception;
+package starlight.backend.exception.user.sponsor;
 
 public class SponsorAlreadyOnDeleteList extends RuntimeException {
     public SponsorAlreadyOnDeleteList(long sponsorId) {

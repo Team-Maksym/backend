@@ -1,4 +1,4 @@
-package starlight.backend.exception;
+package starlight.backend.exception.user.sponsor;
 
 import lombok.extern.slf4j.Slf4j;
 
