@@ -12,9 +12,5 @@ public interface DelayedDeleteRepository extends JpaRepository<DelayedDeleteEnti
     Optional<DelayedDeleteEntity> findByUserDeletingProcessUUID(UUID userDeletingProcessUUID);
 
     boolean existsByEntityID(Long entityID);
-
-
-//    @Query("select d from DelayedDeleteEntity d where d.userDeletingProcessUUID = ?1")
-//    DelayedDeleteEntity findByUserDeletingProcessUUID(UUID userDeletingProcessUUID);
-
+    
 }
