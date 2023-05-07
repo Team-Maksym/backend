@@ -8,11 +8,11 @@ import java.util.UUID;
 public class UserNotFoundWithUUIDException extends RuntimeException{
     public UserNotFoundWithUUIDException(UUID uuid) {
         super("User with UUID = " + uuid + "not found");
-        log.debug("User with UUID = " + uuid + "not found in DeleyedDeleteRepository");
+        log.debug("User with UUID = " + uuid + " not found in DelayDeleteRepository");
     }
 
     public UserNotFoundWithUUIDException(String uuid) {
         super("User with UUID = " + uuid + "not found");
-        log.debug("User with UUID = " + uuid + "not found in DeleyedDeleteRepository");
+        log.debug("User with UUID = " + uuid + " not found in DelayDeleteRepository");
     }
 }
