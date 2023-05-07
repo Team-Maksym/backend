@@ -6,6 +6,7 @@ import starlight.backend.sponsor.model.entity.SponsorEntity;
 import java.util.Optional;
 
 public interface SponsorRepository extends JpaRepository<SponsorEntity, Long> {
+    Optional<SponsorEntity> findBySponsorId(Long sponsorId);
     boolean existsByEmail(String email);
 
     Optional<SponsorEntity> findByEmail(String email);
@@ -13,4 +14,6 @@ public interface SponsorRepository extends JpaRepository<SponsorEntity, Long> {
     Optional<SponsorEntity> findByActivationCode(String token);
 
     boolean existsByActivationCode(String activationCode);
+
+    boolean existsBySponsorId(long sponsorId);
 }

@@ -5,6 +5,8 @@ import org.springframework.security.core.Authentication;
 import starlight.backend.email.model.ChangePassword;
 import starlight.backend.email.model.Email;
 
+import java.util.UUID;
+
 public interface EmailService {
 
     void sendMail(Email email, long sponsorId, Authentication auth);
@@ -16,4 +18,6 @@ public interface EmailService {
     void forgotPassword(HttpServletRequest request, String email);
 
     void recoveryPassword(String token, ChangePassword changePassword);
+
+    void recoverySponsorAccount(UUID uuid) throws Exception;
 }

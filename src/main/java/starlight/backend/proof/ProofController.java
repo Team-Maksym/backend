@@ -17,8 +17,6 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import starlight.backend.exception.EmailAlreadyOccupiedException;
-import starlight.backend.exception.PageNotFoundException;
 import starlight.backend.proof.model.request.ProofAddRequest;
 import starlight.backend.proof.model.request.ProofUpdateRequest;
 import starlight.backend.proof.model.response.ProofFullInfo;
@@ -51,16 +49,7 @@ public class ProofController {
                             )
                     )
             ),
-            @ApiResponse(
-                    responseCode = "404",
-                    description = "Not found",
-                    content = @Content(
-                            mediaType = MediaType.APPLICATION_JSON_VALUE,
-                            schema = @Schema(
-                                    implementation = PageNotFoundException.class
-                            )
-                    )
-            )
+            @ApiResponse(responseCode = "404", description = "Not found")
     })
     @GetMapping("/proofs")
     public ProofPagePagination pagination(@RequestParam(defaultValue = "0") @Min(0) int page,
@@ -85,26 +74,8 @@ public class ProofController {
                             )
                     )
             ),
-            @ApiResponse(
-                    responseCode = "404",
-                    description = "Not found",
-                    content = @Content(
-                            mediaType = MediaType.APPLICATION_JSON_VALUE,
-                            schema = @Schema(
-                                    implementation = Exception.class
-                            )
-                    )
-            ),
-            @ApiResponse(
-                    responseCode = "401",
-                    description = "Unauthorized",
-                    content = @Content(
-                            mediaType = MediaType.APPLICATION_JSON_VALUE,
-                            schema = @Schema(
-                                    implementation = Exception.class
-                            )
-                    )
-            )
+            @ApiResponse(responseCode = "404", description = "Not found"),
+            @ApiResponse(responseCode = "401", description = "Unauthorized")
     })
 
     @PreAuthorize("hasRole('TALENT')")
@@ -129,36 +100,9 @@ public class ProofController {
                             )
                     )
             ),
-            @ApiResponse(
-                    responseCode = "401",
-                    description = "Unauthorized",
-                    content = @Content(
-                            mediaType = MediaType.APPLICATION_JSON_VALUE,
-                            schema = @Schema(
-                                    implementation = Exception.class
-                            )
-                    )
-            ),
-            @ApiResponse(
-                    responseCode = "403",
-                    description = "Forbidden",
-                    content = @Content(
-                            mediaType = MediaType.APPLICATION_JSON_VALUE,
-                            schema = @Schema(
-                                    implementation = Exception.class
-                            )
-                    )
-            ),
-            @ApiResponse(
-                    responseCode = "409",
-                    description = "Conflict",
-                    content = @Content(
-                            mediaType = MediaType.APPLICATION_JSON_VALUE,
-                            schema = @Schema(
-                                    implementation = EmailAlreadyOccupiedException.class
-                            )
-                    )
-            )
+            @ApiResponse(responseCode = "401", description = "Unauthorized"),
+            @ApiResponse(responseCode = "403", description = "Forbidden"),
+            @ApiResponse(responseCode = "409", description = "Conflict")
     })
     @PreAuthorize("hasRole('TALENT')")
     @DeleteMapping("/talents/{talent-id}/proofs/{proof-id}")
@@ -173,10 +117,10 @@ public class ProofController {
             summary = "Update proof in status draft",
             description = "Update proof args title, description, link." +
                     "It is possible to change general information in Proofs with " +
-                    "the \"Draft\" status. Changing Proof status from Draft to another " +
-                    "is only possible on Published or Hidden. It is not possible to " +
-                    "return from the \"Published\" or \"Hidden\" status to the \"Draft\" status.\n" +
-                    "Evidence with status \"Draft\" or \"Hidden\" is only listed in your own profile."
+                    "the \"DRAFT\" status. Changing Proof status from Draft to another " +
+                    "is only possible on PUBLISHED or HIDDEN. It is not possible to " +
+                    "return from the \"PUBLISHED\" or \"HIDDEN\" status to the \"DRAFT\" status.\n" +
+                    "Evidence with status \"DRAFT\" or \"HIDDEN\" is only listed in your own profile."
     )
     @ApiResponses(value = {
             @ApiResponse(
@@ -189,26 +133,8 @@ public class ProofController {
                             )
                     )
             ),
-            @ApiResponse(
-                    responseCode = "401",
-                    description = "Unauthorized",
-                    content = @Content(
-                            mediaType = MediaType.APPLICATION_JSON_VALUE,
-                            schema = @Schema(
-                                    implementation = Exception.class
-                            )
-                    )
-            ),
-            @ApiResponse(
-                    responseCode = "404",
-                    description = "Not found",
-                    content = @Content(
-                            mediaType = MediaType.APPLICATION_JSON_VALUE,
-                            schema = @Schema(
-                                    implementation = Exception.class
-                            )
-                    )
-            )
+            @ApiResponse(responseCode = "401", description = "Unauthorized"),
+            @ApiResponse(responseCode = "404", description = "Not found")
     })
     @PatchMapping("/talents/{talent-id}/proofs/{proof-id}")
     @PreAuthorize("hasRole('TALENT')")
@@ -232,36 +158,9 @@ public class ProofController {
                             )
                     )
             ),
-            @ApiResponse(
-                    responseCode = "400",
-                    description = "Bad Request",
-                    content = @Content(
-                            mediaType = MediaType.APPLICATION_JSON_VALUE,
-                            schema = @Schema(
-                                    implementation = Exception.class
-                            )
-                    )
-            ),
-            @ApiResponse(
-                    responseCode = "401",
-                    description = "Unauthorized",
-                    content = @Content(
-                            mediaType = MediaType.APPLICATION_JSON_VALUE,
-                            schema = @Schema(
-                                    implementation = Exception.class
-                            )
-                    )
-            ),
-            @ApiResponse(
-                    responseCode = "404",
-                    description = "Not found",
-                    content = @Content(
-                            mediaType = MediaType.APPLICATION_JSON_VALUE,
-                            schema = @Schema(
-                                    implementation = Exception.class
-                            )
-                    )
-            )
+            @ApiResponse(responseCode = "400", description = "Bad Request"),
+            @ApiResponse(responseCode = "401", description = "Unauthorized"),
+            @ApiResponse(responseCode = "404", description = "Not found")
     })
     @GetMapping("/talents/{talent-id}/proofs")
     public ProofPagePagination getTalentProofs(@PathVariable("talent-id") long talentId,
@@ -286,38 +185,11 @@ public class ProofController {
                             )
                     )
             ),
-            @ApiResponse(
-                    responseCode = "400",
-                    description = "Bad Request",
-                    content = @Content(
-                            mediaType = MediaType.APPLICATION_JSON_VALUE,
-                            schema = @Schema(
-                                    implementation = Exception.class
-                            )
-                    )
-            ),
-            @ApiResponse(
-                    responseCode = "401",
-                    description = "Unauthorized",
-                    content = @Content(
-                            mediaType = MediaType.APPLICATION_JSON_VALUE,
-                            schema = @Schema(
-                                    implementation = Exception.class
-                            )
-                    )
-            ),
-            @ApiResponse(
-                    responseCode = "404",
-                    description = "Not found",
-                    content = @Content(
-                            mediaType = MediaType.APPLICATION_JSON_VALUE,
-                            schema = @Schema(
-                                    implementation = Exception.class
-                            )
-                    )
-            )
+            @ApiResponse(responseCode = "400", description = "Bad Request"),
+            @ApiResponse(responseCode = "401", description = "Unauthorized"),
+            @ApiResponse(responseCode = "404", description = "Not found")
     })
-    @PreAuthorize("hasRole('TALENT')")
+//    @PreAuthorize("hasRole('TALENT')")
     @GetMapping("/proofs/{proof-id}")
     public ProofFullInfo getFullProof(@PathVariable("proof-id") long proofId,
                                          Authentication auth) {

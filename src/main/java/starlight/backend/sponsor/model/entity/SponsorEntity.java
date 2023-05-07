@@ -8,13 +8,11 @@ import lombok.*;
 import org.hibernate.validator.constraints.URL;
 import org.springframework.validation.annotation.Validated;
 import starlight.backend.kudos.model.entity.KudosEntity;
+import starlight.backend.sponsor.model.enums.SponsorStatus;
 
 import java.time.Instant;
-import java.time.LocalDate;
 import java.util.Collection;
 import java.util.List;
-import java.util.Date;
-import java.util.Set;
 
 import static jakarta.persistence.GenerationType.IDENTITY;
 
@@ -42,6 +40,7 @@ public class SponsorEntity {
     private Integer unusedKudos;
     private String activationCode;
     private Instant expiryDate;
+    private SponsorStatus status;
     @ElementCollection(fetch = FetchType.EAGER)
     private Collection<String> authorities;
     @OneToMany(mappedBy = "owner")

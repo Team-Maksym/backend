@@ -67,6 +67,7 @@ class SecurityConfiguration {
                 .requestMatchers(POST, "/api/v1/talents/login").permitAll()
                 .requestMatchers(POST, "/api/v1/sponsors/login").permitAll()
                 .requestMatchers(antMatcher("/api/v1/proofs/**")).permitAll()
+                .requestMatchers("/api/v1/sponsors/recovery-account").permitAll()
                 /////////////////////////Another///////////////////////////////////////////////////
                 .anyRequest().authenticated()
         );

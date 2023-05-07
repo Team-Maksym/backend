@@ -15,7 +15,6 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import starlight.backend.exception.EmailAlreadyOccupiedException;
 import starlight.backend.talent.model.request.TalentUpdateRequest;
 import starlight.backend.talent.model.response.TalentFullInfo;
 import starlight.backend.talent.model.response.TalentPagePagination;
@@ -45,16 +44,7 @@ public class TalentController {
                             )
                     )
             ),
-            @ApiResponse(
-                    responseCode = "404",
-                    description = "Not found",
-                    content = @Content(
-                            mediaType = MediaType.APPLICATION_JSON_VALUE,
-                            schema = @Schema(
-                                    implementation = Exception.class
-                            )
-                    )
-            )
+            @ApiResponse(responseCode = "404", description = "Not found")
     })
     @GetMapping("/talents")
     public TalentPagePagination pagination(@RequestParam(defaultValue = "0") @Min(0) int page,
@@ -78,27 +68,10 @@ public class TalentController {
                             )
                     )
             ),
-            @ApiResponse(
-                    responseCode = "401",
-                    description = "Unauthorized",
-                    content = @Content(
-                            mediaType = MediaType.APPLICATION_JSON_VALUE,
-                            schema = @Schema(
-                                    implementation = Exception.class
-                            )
-                    )
-            ),
-            @ApiResponse(
-                    responseCode = "404",
-                    description = "Not found",
-                    content = @Content(
-                            mediaType = MediaType.APPLICATION_JSON_VALUE,
-                            schema = @Schema(
-                                    implementation = Exception.class
-                            )
-                    )
-            )
+            @ApiResponse(responseCode = "401", description = "Unauthorized"),
+            @ApiResponse(responseCode = "404", description = "Not found")
     })
+//    @PreAuthorize("hasRole('TALENT')")
     @GetMapping("/talents/{talent-id}")
     public TalentFullInfo searchTalentById(@PathVariable("talent-id") long talentId) {
         log.info("@GetMapping(\"/talents/{talent-id}\")");
@@ -117,56 +90,11 @@ public class TalentController {
                             )
                     )
             ),
-            @ApiResponse(
-                    responseCode = "400",
-                    description = "Bad request",
-                    content = @Content(
-                            mediaType = MediaType.APPLICATION_JSON_VALUE,
-                            schema = @Schema(
-                                    implementation = Exception.class
-                            )
-                    )
-            ),
-            @ApiResponse(
-                    responseCode = "401",
-                    description = "Unauthorized",
-                    content = @Content(
-                            mediaType = MediaType.APPLICATION_JSON_VALUE,
-                            schema = @Schema(
-                                    implementation = Exception.class
-                            )
-                    )
-            ),
-            @ApiResponse(
-                    responseCode = "403",
-                    description = "Forbidden",
-                    content = @Content(
-                            mediaType = MediaType.APPLICATION_JSON_VALUE,
-                            schema = @Schema(
-                                    implementation = Exception.class
-                            )
-                    )
-            ),
-            @ApiResponse(
-                    responseCode = "404",
-                    description = "Not found",
-                    content = @Content(
-                            mediaType = MediaType.APPLICATION_JSON_VALUE,
-                            schema = @Schema(
-                                    implementation = Exception.class
-                            )
-                    )
-            ),
-            @ApiResponse(
-                    responseCode = "409",
-                    description = "Conflict",
-                    content = @Content(
-                            mediaType = MediaType.APPLICATION_JSON_VALUE,
-                            schema = @Schema(
-                                    implementation = Exception.class
-                            )
-                    )
-            )
+            @ApiResponse(responseCode = "400", description = "Bad request"),
+            @ApiResponse(responseCode = "401", description = "Unauthorized"),
+            @ApiResponse(responseCode = "403", description = "Forbidden"),
+            @ApiResponse(responseCode = "404", description = "Not found"),
+            @ApiResponse(responseCode = "409", description = "Conflict")
     })
     @PreAuthorize("hasRole('TALENT')")
     @PatchMapping("/talents/{talent-id}")
@@ -189,36 +117,9 @@ public class TalentController {
                             )
                     )
             ),
-            @ApiResponse(
-                    responseCode = "401",
-                    description = "Unauthorized",
-                    content = @Content(
-                            mediaType = MediaType.APPLICATION_JSON_VALUE,
-                            schema = @Schema(
-                                    implementation = Exception.class
-                            )
-                    )
-            ),
-            @ApiResponse(
-                    responseCode = "403",
-                    description = "Forbidden",
-                    content = @Content(
-                            mediaType = MediaType.APPLICATION_JSON_VALUE,
-                            schema = @Schema(
-                                    implementation = Exception.class
-                            )
-                    )
-            ),
-            @ApiResponse(
-                    responseCode = "409",
-                    description = "Conflict",
-                    content = @Content(
-                            mediaType = MediaType.APPLICATION_JSON_VALUE,
-                            schema = @Schema(
-                                    implementation = EmailAlreadyOccupiedException.class
-                            )
-                    )
-            )
+            @ApiResponse(responseCode = "401", description = "Unauthorized"),
+            @ApiResponse(responseCode = "403", description = "Forbidden"),
+            @ApiResponse(responseCode = "409", description = "Conflict")
     })
     @PreAuthorize("hasRole('TALENT')")
     @DeleteMapping("/talents/{talent-id}")

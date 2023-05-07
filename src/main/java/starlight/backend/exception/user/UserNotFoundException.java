@@ -1,4 +1,4 @@
-package starlight.backend.exception;
+package starlight.backend.exception.user;
 
 public class UserNotFoundException extends RuntimeException {
     public UserNotFoundException(long id) {

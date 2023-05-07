@@ -6,12 +6,16 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
+import starlight.backend.email.model.EmailProps;
 import starlight.backend.security.model.response.SessionInfo;
 import starlight.backend.sponsor.model.request.SponsorUpdateRequest;
 import starlight.backend.sponsor.model.response.SponsorFullInfo;
@@ -25,6 +29,7 @@ import starlight.backend.sponsor.service.SponsorServiceInterface;
 @Tag(name = "Sponsor", description = "Sponsor related endpoints")
 public class SponsorController {
     private SponsorServiceInterface sponsorService;
+    private EmailProps emailProps;
 
     @Operation(
             summary = "Get unusable Sponsor's kudos",
@@ -40,22 +45,8 @@ public class SponsorController {
                                     schema = @Schema(implementation = SessionInfo.class)
                             )
                     ),
-                    @ApiResponse(
-                            responseCode = "401",
-                            description = "Unauthorized",
-                            content = @Content(
-                                    mediaType = "application/json",
-                                    schema = @Schema(implementation = SessionInfo.class)
-                            )
-                    ),
-                    @ApiResponse(
-                            responseCode = "404",
-                            description = "Not Found",
-                            content = @Content(
-                                    mediaType = "application/json",
-                                    schema = @Schema(implementation = SessionInfo.class)
-                            )
-                    )
+                    @ApiResponse(responseCode = "401", description = "Unauthorized"),
+                    @ApiResponse(responseCode = "404", description = "Not Found")
             }
     )
     @GetMapping("/sponsors/{sponsor-id}/kudos")
@@ -71,24 +62,9 @@ public class SponsorController {
             summary = "Get Sponsor full info",
             description = "Get Sponsor full info"
     )
-    @ApiResponses(
-            value = {
-                    @ApiResponse(
-                            responseCode = "401",
-                            description = "Unauthorized",
-                            content = @Content(
-                                    mediaType = "application/json",
-                                    schema = @Schema(implementation = Exception.class)
-                            )
-                    ),
-                    @ApiResponse(
-                            responseCode = "403",
-                            description = "Forbidden",
-                            content = @Content(
-                                    mediaType = "application/json",
-                                    schema = @Schema(implementation = Exception.class)
-                            )
-                    )
+    @ApiResponses(value = {
+                    @ApiResponse(responseCode = "401", description = "Unauthorized"),
+                    @ApiResponse(responseCode = "403", description = "Forbidden")
             }
     )
     @GetMapping("/sponsors/{sponsor-id}")
@@ -113,56 +89,11 @@ public class SponsorController {
                             )
                     )
             ),
-            @ApiResponse(
-                    responseCode = "400",
-                    description = "Bad request",
-                    content = @Content(
-                            mediaType = MediaType.APPLICATION_JSON_VALUE,
-                            schema = @Schema(
-                                    implementation = Exception.class
-                            )
-                    )
-            ),
-            @ApiResponse(
-                    responseCode = "401",
-                    description = "Unauthorized",
-                    content = @Content(
-                            mediaType = MediaType.APPLICATION_JSON_VALUE,
-                            schema = @Schema(
-                                    implementation = Exception.class
-                            )
-                    )
-            ),
-            @ApiResponse(
-                    responseCode = "403",
-                    description = "Forbidden",
-                    content = @Content(
-                            mediaType = MediaType.APPLICATION_JSON_VALUE,
-                            schema = @Schema(
-                                    implementation = Exception.class
-                            )
-                    )
-            ),
-            @ApiResponse(
-                    responseCode = "404",
-                    description = "Not found",
-                    content = @Content(
-                            mediaType = MediaType.APPLICATION_JSON_VALUE,
-                            schema = @Schema(
-                                    implementation = Exception.class
-                            )
-                    )
-            ),
-            @ApiResponse(
-                    responseCode = "409",
-                    description = "Conflict",
-                    content = @Content(
-                            mediaType = MediaType.APPLICATION_JSON_VALUE,
-                            schema = @Schema(
-                                    implementation = Exception.class
-                            )
-                    )
-            )
+            @ApiResponse(responseCode = "400", description = "Bad request"),
+            @ApiResponse(responseCode = "401", description = "Unauthorized"),
+            @ApiResponse(responseCode = "403", description = "Forbidden"),
+            @ApiResponse(responseCode = "404", description = "Not found"),
+            @ApiResponse(responseCode = "409", description = "Conflict")
     })
     @PreAuthorize("hasRole('SPONSOR')")
     @PatchMapping("/sponsors/{sponsor-id}")
@@ -172,4 +103,40 @@ public class SponsorController {
         log.info("@PatchMapping(\"/sponsors/{sponsor-id}\")");
         return sponsorService.updateSponsorProfile(sponsorId, sponsorUpdateRequest, auth);
     }
+
+    @Operation(
+            summary = "Delete sponsor",
+            description = "Deletes a sponsor by the specified identifier. Only users with the 'ROLE_SPONSOR' role can use this endpoint."
+    )
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Successful sponsor deletion"),
+            @ApiResponse(responseCode = "401", description = "Unauthorized"),
+            @ApiResponse(responseCode = "403", description = "Access denied"),
+            @ApiResponse(responseCode = "404", description = "Sponsor not found")
+    })
+    @PreAuthorize("hasRole('ROLE_SPONSOR')")
+    @PostMapping ("/sponsors/{sponsor-id}/delete")
+    @ResponseStatus(HttpStatus.OK)
+    public ResponseEntity<String> delete(@PathVariable("sponsor-id") long sponsorId,
+                                 Authentication auth,
+                                 HttpServletRequest request
+    ) {
+
+        log.info("@PostMapping(\"/sponsors/{sponsor-id}/delete\")");
+        sponsorService.deleteSponsor(sponsorId, auth, request);
+        return ResponseEntity.ok(
+                "Dear sponsor,\n" +
+                        "We are sorry to see you go.\n" +
+                        "Your sponsor profile has been deleted after 7 days!\n" +
+                        "You can use your account on this time.\n" +
+                        "If you want to restore your account, please check your email.\n" +
+                        "Thank you for your support\n" +
+                        "If you have any questions, please contact us at:\n" +
+                        emailProps.username() + "\n" +
+                        "We are looking forward to hearing from you.\n" +
+                        "Best regards,\n" +
+                        "Starlight Team\n"
+        );
+    }
+
 }

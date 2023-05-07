@@ -18,9 +18,10 @@ import starlight.backend.security.model.enums.Role;
 import starlight.backend.security.model.request.NewUser;
 import starlight.backend.security.model.response.SessionInfo;
 import starlight.backend.security.service.SecurityServiceInterface;
-import starlight.backend.sponsor.model.entity.SponsorEntity;
-import starlight.backend.user.model.entity.UserEntity;
 import starlight.backend.sponsor.SponsorRepository;
+import starlight.backend.sponsor.model.entity.SponsorEntity;
+import starlight.backend.sponsor.model.enums.SponsorStatus;
+import starlight.backend.user.model.entity.UserEntity;
 import starlight.backend.user.repository.UserRepository;
 
 import java.time.Instant;
@@ -97,6 +98,7 @@ public class SecurityServiceImpl implements SecurityServiceInterface {
                 .password(passwordEncoder.encode(newUser.password()))
                 .authorities(Collections.singleton(Role.SPONSOR.getAuthority()))
                 .unusedKudos(100) //TODO не хадкодить
+                .status(SponsorStatus.ACTIVE)
                 .build());
     }
 
