@@ -38,4 +38,3 @@ logs/life-log.log
 /sampleDB.mv.db
 /sampleDB.trace.db
 /logs/
-!/src/main/resources/application-docker.properties
