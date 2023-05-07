@@ -133,7 +133,7 @@
 		<plugins>
 <!--			ENV in build process-->
 <!--			TODO: COMMENT THIS BLOCK BEFORE PUSH YOUR CODE TO ORIGIN-->
-			
+
 <!--			<plugin>-->
 <!--				<groupId>org.apache.maven.plugins</groupId>-->
 <!--				<artifactId>maven-surefire-plugin</artifactId>-->
