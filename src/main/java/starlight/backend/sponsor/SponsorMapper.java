@@ -2,8 +2,8 @@ package starlight.backend.sponsor;
 
 import org.mapstruct.Mapper;
 import starlight.backend.kudos.model.entity.KudosEntity;
-import starlight.backend.sponsor.model.response.KudosWithProofId;
 import starlight.backend.sponsor.model.entity.SponsorEntity;
+import starlight.backend.sponsor.model.response.KudosWithProofId;
 import starlight.backend.sponsor.model.response.SponsorFullInfo;
 
 import static org.mapstruct.ReportingPolicy.IGNORE;

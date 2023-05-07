@@ -8,12 +8,10 @@ import lombok.*;
 import org.hibernate.validator.constraints.Length;
 import org.hibernate.validator.constraints.URL;
 import org.springframework.validation.annotation.Validated;
-import starlight.backend.kudos.model.entity.KudosEntity;
 import starlight.backend.proof.model.entity.ProofEntity;
 
 import java.time.LocalDate;
 import java.util.Collection;
-import java.util.Date;
 import java.util.Set;
 
 import static jakarta.persistence.GenerationType.IDENTITY;

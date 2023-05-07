@@ -15,6 +15,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
+import starlight.backend.advice.config.AdviceConfiguration;
 import starlight.backend.advice.model.entity.DelayedDeleteEntity;
 import starlight.backend.advice.repository.DelayedDeleteRepository;
 import starlight.backend.email.model.ChangePassword;
@@ -25,7 +26,6 @@ import starlight.backend.exception.SponsorCanNotSeeAnotherSponsor;
 import starlight.backend.exception.SponsorNotFoundException;
 import starlight.backend.exception.UserNotFoundException;
 import starlight.backend.security.service.SecurityServiceInterface;
-import starlight.backend.security.service.impl.SecurityServiceImpl;
 import starlight.backend.sponsor.SponsorRepository;
 import starlight.backend.sponsor.model.entity.SponsorEntity;
 import starlight.backend.sponsor.model.enums.SponsorStatus;
@@ -49,10 +49,11 @@ public class EmailServiceImpl implements EmailService {
     private DelayedDeleteRepository delayedDeleteRepository;
 
     private PasswordEncoder passwordEncoder;
+    private AdviceConfiguration adviceConfiguration;
 
     @Override
     @Transactional
-    public void recoveryAccount(UUID uuid) {
+    public void recoverySponsorAccount(UUID uuid) {
         DelayedDeleteEntity delayedDeleteEntity = delayedDeleteRepository.findByUserDeletingProcessUUID(uuid)
                 .orElseThrow(() ->  new UserNotFoundException(String.valueOf(uuid)));
         long sponsorId = delayedDeleteEntity.getEntityID();
@@ -122,10 +123,10 @@ public class EmailServiceImpl implements EmailService {
                 constructResetTokenEmail(getAppUrl(request), token));
     }
 
-    public UUID recoveryAccount(HttpServletRequest request, String email){
+    public UUID recoverySponsorAccount(HttpServletRequest request, String email){
         UUID uuid = UUID.randomUUID();
         sendSimpleMessage(email, "Recovery Account",
-                constructRecoveryAccount(getAppUrl(request), uuid.toString()));
+                constructSponsorRecoveryAccount(getAppUrl(request), uuid.toString()));
         return uuid;
     }
 
@@ -163,11 +164,13 @@ public class EmailServiceImpl implements EmailService {
                         "password on your account!\n%s\n",
                 appUrl + "/api/v1/sponsors/recovery-password?token=" + token);
     }
-    private String constructRecoveryAccount(String appUrl, String uuid){
-        return String.format("You received this email about a deleting your profile on Starlight project. " +
-                        "The link will be invalid after 7 days.\n" +
-                        "If you haven't done so, please dont ignore this email and press on link " +
-                        "for activate your account!\n%s\n",
+    private String constructSponsorRecoveryAccount(String appUrl, String uuid){
+        return String.format("This is your request to recovery your account in Starlight project.\n" +
+                        "If you haven't done so, please dont ignore this email.\n" +
+                        "If you want to re-activate your account, please click on the link below:\n" +
+                        "%s\n" +
+                        "The link will be invalid after" + adviceConfiguration.delayDays() + "days.\n",
+
                 appUrl + "/api/v1/sponsors/recovery-account?uuid=" + uuid);
     }
 

@@ -19,17 +19,16 @@ import starlight.backend.exception.SponsorNotFoundException;
 import starlight.backend.security.service.SecurityServiceInterface;
 import starlight.backend.sponsor.SponsorMapper;
 import starlight.backend.sponsor.SponsorRepository;
-import starlight.backend.sponsor.model.response.KudosWithProofId;
+import starlight.backend.sponsor.model.enums.SponsorStatus;
 import starlight.backend.sponsor.model.request.SponsorUpdateRequest;
+import starlight.backend.sponsor.model.response.KudosWithProofId;
 import starlight.backend.sponsor.model.response.SponsorFullInfo;
 import starlight.backend.sponsor.model.response.SponsorKudosInfo;
-import starlight.backend.sponsor.model.enums.SponsorStatus;
 import starlight.backend.sponsor.service.SponsorServiceInterface;
-
-import java.util.List;
 
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
+import java.util.List;
 
 @AllArgsConstructor
 @Service
@@ -132,7 +131,7 @@ public class SponsorServiceImpl implements SponsorServiceInterface {
                             .entityID(sponsorId)
                             .deletingEntityType(DeletingEntityType.SPONSOR)
                             .deleteDate(Instant.now().plus(adviceConfiguration.delayDays(), ChronoUnit.DAYS))
-                            .userDeletingProcessUUID(emailServiceImpl.recoveryAccount(request, sponsor.getEmail()))
+                            .userDeletingProcessUUID(emailServiceImpl.recoverySponsorAccount(request, sponsor.getEmail()))
                             .build()
             );
 
