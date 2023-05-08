@@ -4,7 +4,19 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
-import starlight.backend.exception.*;
+import starlight.backend.exception.AuthorizationFailureException;
+import starlight.backend.exception.EmailAlreadyOccupiedException;
+import starlight.backend.exception.PageNotFoundException;
+import starlight.backend.exception.kudos.*;
+import starlight.backend.exception.proof.ProofNotFoundException;
+import starlight.backend.exception.proof.UserAccesDeniedToProofException;
+import starlight.backend.exception.proof.UserCanNotEditProofNotInDraftException;
+import starlight.backend.exception.user.UserNotFoundInDelayedDeleteRepository;
+import starlight.backend.exception.user.UserNotFoundWithUUIDException;
+import starlight.backend.exception.user.sponsor.SponsorAlreadyOnDeleteList;
+import starlight.backend.exception.user.sponsor.SponsorCanNotSeeAnotherSponsor;
+import starlight.backend.exception.user.sponsor.SponsorNotFoundException;
+import starlight.backend.exception.user.talent.TalentNotFoundException;
 
 @RestControllerAdvice
 public class AdviceController {
@@ -14,6 +26,7 @@ public class AdviceController {
             UserCanNotEditProofNotInDraftException.class,
             UserAccesDeniedToProofException.class,
             UserCannotAddKudosToTheirAccount.class,
+            KudosRequestMustBeNotZeroException.class,
     })
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ErrorDTO badRequest(Exception exception) {
@@ -23,6 +36,7 @@ public class AdviceController {
     @ExceptionHandler({
             EmailAlreadyOccupiedException.class,
             ProofAlreadyHaveKudosFromUser.class,
+            SponsorAlreadyOnDeleteList.class,
     })
     @ResponseStatus(HttpStatus.CONFLICT)
     public ErrorDTO alreadyIs(Exception exception) {
@@ -40,7 +54,9 @@ public class AdviceController {
     @ExceptionHandler({
             ProofNotFoundException.class,
             TalentNotFoundException.class,
-            SponsorNotFoundException.class
+            SponsorNotFoundException.class,
+            UserNotFoundInDelayedDeleteRepository.class,
+            UserNotFoundWithUUIDException.class,
     })
     @ResponseStatus(HttpStatus.NOT_FOUND)
     public ErrorDTO notExists(Exception exception) {
@@ -51,6 +67,7 @@ public class AdviceController {
             TalentCanNotAddKudos.class,
             NotEnoughKudosException.class,
             SponsorCanNotSeeAnotherSponsor.class,
+            YouCanNotReturnMoreKudosThanGaveException.class,
     })
     @ResponseStatus(HttpStatus.FORBIDDEN)
     public ErrorDTO forbidden(Exception exception) {

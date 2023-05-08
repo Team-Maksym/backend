@@ -1,4 +1,4 @@
-package starlight.backend.exception;
+package starlight.backend.exception.user.talent;
 
 public class TalentNotFoundException extends RuntimeException{
     public TalentNotFoundException(long id) {

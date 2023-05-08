@@ -10,11 +10,14 @@ import jakarta.servlet.http.HttpServletRequest;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 import starlight.backend.email.model.ChangePassword;
 import starlight.backend.email.model.Email;
 import starlight.backend.email.service.EmailService;
+
+import java.util.UUID;
 
 @RestController
 @AllArgsConstructor
@@ -36,14 +39,7 @@ public class EmailController {
                             responseCode = "200",
                             description = "Success"
                     ),
-                    @ApiResponse(
-                            responseCode = "401",
-                            description = "Unauthorized",
-                            content = @Content(
-                                    mediaType = "application/json",
-                                    schema = @Schema(implementation = Exception.class)
-                            )
-                    )
+                    @ApiResponse(responseCode = "401", description = "Unauthorized")
             }
     )
     @PostMapping("/sponsors/{sponsor-id}/send")
@@ -65,14 +61,7 @@ public class EmailController {
                             responseCode = "200",
                             description = "Success"
                     ),
-                    @ApiResponse(
-                            responseCode = "401",
-                            description = "Unauthorized",
-                            content = @Content(
-                                    mediaType = "application/json",
-                                    schema = @Schema(implementation = Exception.class)
-                            )
-                    )
+                    @ApiResponse(responseCode = "401", description = "Unauthorized")
             }
     )
     @PostMapping("/sponsors/forgot-password")
@@ -93,14 +82,7 @@ public class EmailController {
                             responseCode = "201",
                             description = "CREATED"
                     ),
-                    @ApiResponse(
-                            responseCode = "404",
-                            description = "Unauthorized",
-                            content = @Content(
-                                    mediaType = "application/json",
-                                    schema = @Schema(implementation = Exception.class)
-                            )
-                    )
+                    @ApiResponse(responseCode = "404", description = "Unauthorized")
             }
     )
     @PostMapping("/sponsors/recovery-password")
@@ -109,5 +91,34 @@ public class EmailController {
                                  @RequestBody ChangePassword changePassword) {
         log.info("@PostMapping(\"/recovery-password\")");
         emailService.recoveryPassword(token, changePassword);
+    }
+
+
+    @Operation(
+            summary = "Recover account by UUID",
+            description = "Recover account by UUID",
+            tags = {"Email", "Sponsor"}
+    )
+    @ApiResponses(
+            value = {
+                    @ApiResponse(
+                            responseCode = "200",
+                            description = "Success",
+                            content = @Content(
+                                    mediaType = "application/json",
+                                    schema = @Schema(implementation = ResponseEntity.class)
+
+                            )
+                    ),
+
+                    @ApiResponse(responseCode = "400", description = "Bad request"),
+
+            }
+    )
+    @GetMapping("/sponsors/recovery-account")
+    public ResponseEntity<String> recoveryAccount(@RequestParam String uuid) throws Exception {
+        log.info("@PostMapping(\"/recovery-account\")");
+        emailService.recoverySponsorAccount(UUID.fromString(uuid));
+        return ResponseEntity.ok("Account recovered");
     }
 }
