@@ -8,7 +8,7 @@ import java.time.Instant;
 import java.util.LinkedList;
 
 @Builder
-public record ProofFullInfoV2(
+public record ProofFullInfoWithKudoses(
         long id,
         String title,
         String description,
@@ -18,6 +18,6 @@ public record ProofFullInfoV2(
         @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "UTC")
         Instant dateLastUpdated,
         Status status,
-        LinkedList<SponsorForProofShortInfo> sponsorForProofShortInfoList
+        LinkedList<SponsorOnProofShortInfo> sponsorOnProofShortInfoList
 ) {
 }

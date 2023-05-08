@@ -2,10 +2,12 @@ package starlight.backend.proof;
 
 import org.mapstruct.Mapper;
 import org.springframework.data.domain.Page;
+import starlight.backend.kudos.model.entity.KudosEntity;
 import starlight.backend.proof.model.entity.ProofEntity;
 import starlight.backend.proof.model.response.*;
 
 import java.util.LinkedList;
+import java.util.stream.Collectors;
 
 import static org.mapstruct.ReportingPolicy.IGNORE;
 
@@ -40,17 +42,19 @@ public interface ProofMapper {
                         .toList())
                 .build();
     }
-    default ProofPagePagination toProofPagePaginationWithProofFullInfoV2(Page<ProofEntity> proofs){
+
+    default ProofPagePagination toProofPagePaginationWithProofFullInfoWithKudoses(Page<ProofEntity> proofs) {
         return ProofPagePagination.builder()
                 .total(proofs.getTotalElements())
                 .data(proofs.getContent()
                         .stream()
-                        .map(this::toProofFullInfoV2)
+                        .map(this::toProofFullInfoWithKudoses)
                         .toList())
                 .build();
     }
-    default ProofFullInfoV2 toProofFullInfoV2(ProofEntity proof) {
-        return ProofFullInfoV2.builder()
+
+    default ProofFullInfoWithKudoses toProofFullInfoWithKudoses(ProofEntity proof) {
+        return ProofFullInfoWithKudoses.builder()
                 .id(proof.getProofId())
                 .title(proof.getTitle())
                 .link(proof.getLink())
@@ -58,11 +62,19 @@ public interface ProofMapper {
                 .dateCreated(proof.getDateCreated())
                 .dateLastUpdated(proof.getDateLastUpdated())
                 .description(proof.getDescription())
-                .sponsorForProofShortInfoList(
-                        new LinkedList<>(
-                                SponsorForProofShortInfo.listBuilder(proof)
-                        )
+                .sponsorOnProofShortInfoList(proof.getKudos()
+                        .stream()
+                        .map(this::toSponsorOnProofShortInfo)
+                        .collect(Collectors.toCollection(LinkedList::new))
                 )
+                .build();
+    }
+
+    default SponsorOnProofShortInfo toSponsorOnProofShortInfo(KudosEntity kudosEntity) {
+        return SponsorOnProofShortInfo.builder()
+                .sponsorName(kudosEntity.getOwner().getFullName())
+                .sponsorAvatarUrl(kudosEntity.getOwner().getAvatar())
+                .countKudos(kudosEntity.getCountKudos())
                 .build();
     }
 

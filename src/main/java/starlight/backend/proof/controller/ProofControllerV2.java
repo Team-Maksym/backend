@@ -55,6 +55,6 @@ public class ProofControllerV2 {
                                                @RequestParam(defaultValue = "true") boolean sort,
                                                @RequestParam(defaultValue = "ALL") String status) {
         log.info("@GetMapping(\"/talents/{talent-id}/proofs\")");
-        return proofService.getTalentAllProofs(auth, talentId, page, size, sort, status);
+        return proofService.getTalentAllProofsWithKudoses(auth, talentId, page, size, sort, status);
     }
 }
