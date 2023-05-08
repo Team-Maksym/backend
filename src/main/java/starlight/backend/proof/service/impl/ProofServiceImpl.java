@@ -175,6 +175,20 @@ public class ProofServiceImpl implements ProofServiceInterface {
     }
 
     @Override
+    @Transactional(readOnly = true)
+    public ProofPagePagination getTalentAllProofsV2(Authentication auth, long talentId,
+                                                    int page, int size, boolean sort, String status) {
+        if (securityService.checkingLoggedAndToken(talentId, auth)) {
+            Page<ProofEntity> pageRequest = getPaginationForTheTalent(talentId, page, size, sort, status);
+            return mapper.toProofPagePaginationWithProofFullInfoV2(pageRequest);
+        }
+        var pageRequest = getPaginationForTheTalent(talentId, page,
+                size, sort, Status.PUBLISHED.name());
+
+        return mapper.toProofPagePaginationWithProofFullInfo(pageRequest);
+    }
+
+    @Override
     public ProofFullInfo getProofFullInfo(Authentication auth, long proofId) {
         if (!repository.existsByProofId(proofId)) {
             throw new ProofNotFoundException(proofId);
