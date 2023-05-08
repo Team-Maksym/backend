@@ -66,3 +66,7 @@ databaseChangeLog:
   - changeSet:
       id: 10
       author: serhii
+
+  - changeSet:
+      id: 11
+      author: serhii

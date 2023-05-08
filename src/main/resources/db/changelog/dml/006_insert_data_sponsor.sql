@@ -9,3 +9,6 @@ INSERT INTO sponsor_entity_authorities (sponsor_entity_sponsor_id,authorities)
 VALUES (1,'ROLE_SPONSOR');
 INSERT INTO sponsor_entity_authorities (sponsor_entity_sponsor_id,authorities)
 VALUES (2,'ROLE_SPONSOR');
+
+-- changeset serhii:11
+UPDATE sponsor_entity SET status = 'ACTIVE';
