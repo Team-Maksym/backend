@@ -17,8 +17,8 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.web.server.ResponseStatusException;
-import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import starlight.backend.exception.PageNotFoundException;
+import starlight.backend.proof.controller.ProofControllerV1;
 import starlight.backend.proof.model.enums.Status;
 import starlight.backend.proof.model.request.ProofAddRequest;
 import starlight.backend.proof.model.response.ProofFullInfo;
@@ -28,7 +28,6 @@ import starlight.backend.proof.service.impl.ProofServiceImpl;
 
 import java.net.URI;
 import java.time.Instant;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -43,9 +42,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 
 @ExtendWith(MockitoExtension.class)
-@WebMvcTest(controllers = ProofController.class)
+@WebMvcTest(controllers = ProofControllerV1.class)
 @AutoConfigureMockMvc(addFilters = false)
-class ProofControllerTest {
+class ProofControllerV1Test {
     @MockBean
     private ProofServiceImpl service;
     @MockBean

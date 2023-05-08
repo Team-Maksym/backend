@@ -14,10 +14,10 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import starlight.backend.exception.PageNotFoundException;
-import starlight.backend.exception.user.talent.TalentNotFoundException;
 import starlight.backend.exception.proof.ProofNotFoundException;
 import starlight.backend.exception.proof.UserAccesDeniedToProofException;
 import starlight.backend.exception.proof.UserCanNotEditProofNotInDraftException;
+import starlight.backend.exception.user.talent.TalentNotFoundException;
 import starlight.backend.kudos.model.entity.KudosEntity;
 import starlight.backend.kudos.repository.KudosRepository;
 import starlight.backend.proof.ProofMapper;
@@ -172,6 +172,20 @@ public class ProofServiceImpl implements ProofServiceInterface {
                 :
                 repository.findByUser_UserIdAndStatus(talentId, Status.valueOf(status),
                         PageRequest.of(page, size, doSort(sort, DATA_CREATED)));
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public ProofPagePagination getTalentAllProofsWithKudoses(Authentication auth, long talentId,
+                                                             int page, int size, boolean sort, String status) {
+        if (securityService.checkingLoggedAndToken(talentId, auth)) {
+            Page<ProofEntity> pageRequest = getPaginationForTheTalent(talentId, page, size, sort, status);
+            return mapper.toProofPagePaginationWithProofFullInfoWithKudoses(pageRequest);
+        }
+        var pageRequest = getPaginationForTheTalent(talentId, page,
+                size, sort, Status.PUBLISHED.name());
+
+        return mapper.toProofPagePaginationWithProofFullInfoWithKudoses(pageRequest);
     }
 
     @Override
