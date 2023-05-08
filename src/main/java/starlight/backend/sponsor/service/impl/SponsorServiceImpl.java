@@ -83,9 +83,9 @@ public class SponsorServiceImpl implements SponsorServiceInterface {
     }
 
     @Override
-    public SponsorFullInfo updateSponsorProfile(long sponsorId, SponsorUpdateRequest sponsorUpdateRequest, Authentication auth) {
+    public SponsorFullInfo updateSponsorProfile(long sponsorId,SponsorUpdateRequest sponsorUpdateRequest, Authentication auth) {
         if (!serviceService.checkingLoggedAndToken(sponsorId, auth)) {
-            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "you cannot change another talent");
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "you cannot change another sponsor");
         }
         return sponsorRepository.findById(sponsorId).map(sponsor -> {
                     sponsor.setAvatar(validationField(
@@ -101,6 +101,7 @@ public class SponsorServiceImpl implements SponsorServiceInterface {
                             sponsorUpdateRequest.unusedKudos() == 0 ?
                                     sponsor.getUnusedKudos() :
                                     sponsorUpdateRequest.unusedKudos());
+                    sponsorRepository.save(sponsor);
                     return sponsorMapper.toSponsorFullInfo(sponsor);
                 })
                 .orElseThrow(() -> new SponsorNotFoundException(sponsorId));

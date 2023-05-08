@@ -97,7 +97,7 @@ public class SponsorController {
     })
     @PreAuthorize("hasRole('SPONSOR')")
     @PatchMapping("/sponsors/{sponsor-id}")
-    public SponsorFullInfo updateTalentFullInfo(@PathVariable("sponsor-id") long sponsorId,
+    public SponsorFullInfo updateSponsorFullInfo(@PathVariable("sponsor-id") long sponsorId,
                                                @RequestBody SponsorUpdateRequest sponsorUpdateRequest,
                                                Authentication auth) {
         log.info("@PatchMapping(\"/sponsors/{sponsor-id}\")");
