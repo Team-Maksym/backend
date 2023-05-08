@@ -3,6 +3,7 @@ package starlight.backend.sponsor.model.request;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.Pattern;
+import jakarta.validation.constraints.Positive;
 import lombok.Builder;
 import org.hibernate.validator.constraints.Length;
 import org.hibernate.validator.constraints.URL;
@@ -16,6 +17,7 @@ public record SponsorUpdateRequest(
         @URL
         String avatar,
         String company,
+        @Positive
         @Min(0)
         @JsonProperty("unused_kudos")
         int unusedKudos

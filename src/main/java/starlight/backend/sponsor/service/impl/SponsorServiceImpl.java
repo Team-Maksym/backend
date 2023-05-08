@@ -19,6 +19,7 @@ import starlight.backend.exception.user.sponsor.SponsorNotFoundException;
 import starlight.backend.security.service.SecurityServiceInterface;
 import starlight.backend.sponsor.SponsorMapper;
 import starlight.backend.sponsor.SponsorRepository;
+import starlight.backend.sponsor.model.entity.SponsorEntity;
 import starlight.backend.sponsor.model.enums.SponsorStatus;
 import starlight.backend.sponsor.model.request.SponsorUpdateRequest;
 import starlight.backend.sponsor.model.response.KudosWithProofId;
@@ -42,6 +43,7 @@ public class SponsorServiceImpl implements SponsorServiceInterface {
     private SecurityServiceInterface serviceService;
     private SponsorMapper sponsorMapper;
     private EmailServiceImpl emailServiceImpl;
+
     @Override
     public SponsorKudosInfo getUnusableKudos(long sponsorId, Authentication auth) {
         isItMyAccount(sponsorId, auth);
@@ -83,7 +85,7 @@ public class SponsorServiceImpl implements SponsorServiceInterface {
     }
 
     @Override
-    public SponsorFullInfo updateSponsorProfile(long sponsorId,SponsorUpdateRequest sponsorUpdateRequest, Authentication auth) {
+    public SponsorFullInfo updateSponsorProfile(long sponsorId, SponsorUpdateRequest sponsorUpdateRequest, Authentication auth) {
         if (!serviceService.checkingLoggedAndToken(sponsorId, auth)) {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "you cannot change another sponsor");
         }
@@ -97,14 +99,19 @@ public class SponsorServiceImpl implements SponsorServiceInterface {
                     sponsor.setFullName(validationField(
                             sponsorUpdateRequest.fullName(),
                             sponsor.getFullName()));
-                    sponsor.setUnusedKudos(
-                            sponsorUpdateRequest.unusedKudos() == 0 ?
-                                    sponsor.getUnusedKudos() :
-                                    sponsorUpdateRequest.unusedKudos());
+                    sponsor.setUnusedKudos(addKudos(sponsor, sponsorUpdateRequest.unusedKudos()));
                     sponsorRepository.save(sponsor);
                     return sponsorMapper.toSponsorFullInfo(sponsor);
                 })
                 .orElseThrow(() -> new SponsorNotFoundException(sponsorId));
+    }
+
+    private int addKudos(SponsorEntity sponsor, int unusedKudos) {
+        if (unusedKudos <= 0) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "you can't reduce the number of kudos");
+        }
+        sponsor.setUnusedKudos(unusedKudos + sponsor.getUnusedKudos());
+        return sponsor.getUnusedKudos();
     }
 
     private String validationField(String newParam, String lastParam) {
@@ -124,7 +131,7 @@ public class SponsorServiceImpl implements SponsorServiceInterface {
         }
 
         sponsorRepository.findById(sponsorId).ifPresent(sponsor -> {
-            if (delayDeleteRepository.existsByEntityID(sponsorId)){
+            if (delayDeleteRepository.existsByEntityID(sponsorId)) {
                 throw new SponsorAlreadyOnDeleteList(sponsorId);
             }
             delayDeleteRepository.save(
