@@ -131,12 +131,12 @@ public class SponsorServiceImpl implements SponsorServiceInterface {
         }
 
         sponsorRepository.findById(sponsorId).ifPresent(sponsor -> {
-            if (delayDeleteRepository.existsByEntityID(sponsorId)) {
-                throw new SponsorAlreadyOnDeleteList(sponsorId);
+            if (delayDeleteRepository.existsByEntityId(sponsor.getSponsorId())) {
+                throw new SponsorAlreadyOnDeleteList(sponsor.getSponsorId());
             }
             delayDeleteRepository.save(
                     DelayedDeleteEntity.builder()
-                            .entityID(sponsorId)
+                            .entityId(sponsor.getSponsorId())
                             .deletingEntityType(DeletingEntityType.SPONSOR)
                             .deleteDate(Instant.now().plus(adviceConfiguration.delayDays(), ChronoUnit.DAYS))
                             .userDeletingProcessUUID(emailServiceImpl.recoverySponsorAccount(request, sponsor.getEmail()))

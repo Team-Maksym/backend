@@ -12,3 +12,6 @@ VALUES (2,'ROLE_SPONSOR');
 
 -- changeset serhii:11
 UPDATE sponsor_entity SET status = 'ACTIVE';
+
+-- changeset serhii:12
+UPDATE delayed_delete_entity SET deleting_entity_type = 'SPONSOR';

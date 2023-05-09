@@ -11,6 +11,6 @@ import java.util.UUID;
 public interface DelayDeleteRepository extends JpaRepository<DelayedDeleteEntity, Long> {
     Optional<DelayedDeleteEntity> findByUserDeletingProcessUUID(UUID userDeletingProcessUUID);
 
-    boolean existsByEntityID(Long entityID);
+    boolean existsByEntityId(Long entityID);
     
 }

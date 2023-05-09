@@ -149,3 +149,6 @@ CREATE TABLE delayed_delete_entity
 ALTER TABLE sponsor_entity ADD COLUMN IF NOT EXISTS status VARCHAR(255) DEFAULT 'ACTIVE';
 
 ALTER TABLE kudos_entity ALTER COLUMN sponsor_id DROP NOT NULL;
+
+-- changeset serhii:12
+ALTER TABLE delayed_delete_entity ALTER COLUMN deleting_entity_type TYPE VARCHAR(255);
