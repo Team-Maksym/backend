@@ -139,7 +139,7 @@ public class SponsorServiceImpl implements SponsorServiceInterface {
                             .entityId(sponsor.getSponsorId())
                             .deletingEntityType(DeletingEntityType.SPONSOR)
                             .deleteDate(Instant.now().plus(adviceConfiguration.delayDays(), ChronoUnit.DAYS))
-                            .userDeletingProcessUUID(emailServiceImpl.recoverySponsorAccount(request, sponsor.getEmail()))
+                            .userDeletingProcessUuid(emailServiceImpl.recoverySponsorAccount(request, sponsor.getEmail()))
                             .build()
             );
 

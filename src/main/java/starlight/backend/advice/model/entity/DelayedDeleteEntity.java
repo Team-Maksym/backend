@@ -25,7 +25,7 @@ public class DelayedDeleteEntity {
     @NotNull
     private Long entityId;
     @NotNull
-    private UUID userDeletingProcessUUID;
+    private UUID userDeletingProcessUuid;
     @NotNull
     private Instant deleteDate;
     @Enumerated(EnumType.STRING)

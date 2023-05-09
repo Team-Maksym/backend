@@ -54,7 +54,7 @@ public class EmailServiceImpl implements EmailService {
     @Override
     @Transactional
     public void recoverySponsorAccount(UUID uuid) {
-        DelayedDeleteEntity delayedDeleteEntity = delayDeleteRepository.findByUserDeletingProcessUUID(uuid)
+        DelayedDeleteEntity delayedDeleteEntity = delayDeleteRepository.findByUserDeletingProcessUuid(uuid)
 
                 .orElseThrow(() ->  new UserNotFoundWithUUIDException(String.valueOf(uuid)));
 
