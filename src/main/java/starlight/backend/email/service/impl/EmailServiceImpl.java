@@ -58,7 +58,7 @@ public class EmailServiceImpl implements EmailService {
 
                 .orElseThrow(() ->  new UserNotFoundWithUUIDException(String.valueOf(uuid)));
 
-        long sponsorId = delayedDeleteEntity.getEntityID();
+        long sponsorId = delayedDeleteEntity.getEntityId();
         SponsorEntity sponsor = sponsorRepository.findById(sponsorId)
                 .orElseThrow(() -> new SponsorNotFoundException(sponsorId));
         sponsor.setStatus(SponsorStatus.ACTIVE);

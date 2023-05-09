@@ -70,3 +70,7 @@ databaseChangeLog:
   - changeSet:
       id: 11
       author: serhii
+
+  - changeSet:
+      id: 12
+      author: serhii

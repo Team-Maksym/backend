@@ -1,8 +1,6 @@
 package starlight.backend.advice.model.entity;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
 import org.springframework.validation.annotation.Validated;
@@ -23,14 +21,14 @@ import static jakarta.persistence.GenerationType.IDENTITY;
 public class DelayedDeleteEntity {
     @Id
     @GeneratedValue(strategy = IDENTITY)
-    private Long ID;
+    private Long Id;
     @NotNull
-    private Long entityID;
+    private Long entityId;
     @NotNull
     private UUID userDeletingProcessUUID;
     @NotNull
     private Instant deleteDate;
-    @NotNull
+    @Enumerated(EnumType.STRING)
     private DeletingEntityType deletingEntityType;
 
 }

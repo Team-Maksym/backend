@@ -29,7 +29,7 @@ public class AdviceServiceImpl {
                 continue;
             }
             //Тут можно имплементировать распределение логики на удаления аккаунтов с разными ролями в системе
-            var accountEntityID = account.getEntityID();
+            var accountEntityID = account.getEntityId();
             if (sponsorRepository.findBySponsorId(accountEntityID).isEmpty()){
                 //Если спонсора уже нету в системе, то удаляем из DelayDeleteRepository
                 delayDeleteRepository.deleteById(accountEntityID);
