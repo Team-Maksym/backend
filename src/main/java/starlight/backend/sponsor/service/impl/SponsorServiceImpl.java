@@ -110,7 +110,11 @@ public class SponsorServiceImpl implements SponsorServiceInterface {
         if (unusedKudos <= 0) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "you can't reduce the number of kudos");
         }
-        sponsor.setUnusedKudos(unusedKudos + sponsor.getUnusedKudos());
+        var countKudos = unusedKudos + sponsor.getUnusedKudos();
+        if(countKudos>=100000){
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "you can't add more 100 000 kudos");
+        }
+        sponsor.setUnusedKudos(countKudos);
         return sponsor.getUnusedKudos();
     }
 
