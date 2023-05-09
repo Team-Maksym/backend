@@ -146,11 +146,8 @@ public class SponsorServiceImpl implements SponsorServiceInterface {
                             .userDeletingProcessUuid(emailServiceImpl.recoverySponsorAccount(request, sponsor.getEmail()))
                             .build()
             );
-
-
             sponsor.setStatus(SponsorStatus.DELETING);
             sponsorRepository.save(sponsor);
-
         });
     }
 }

@@ -105,15 +105,16 @@ public class SecurityServiceImpl implements SecurityServiceInterface {
     @Override
     @Transactional(readOnly = true)
     public String getJWTToken(UserDetailsImpl authentication, long id) {
-        var now = Instant.now();
-        var claims = JwtClaimsSet.builder()
-                .issuer("self")
-                .issuedAt(now)
-                .expiresAt(now.plus(180, MINUTES))
-                .subject(String.valueOf(id))
-                .claim("scope", createScope(authentication))
-                .build();
-        return jwtEncoder.encode(JwtEncoderParameters.from(claims)).getTokenValue();
+            var now = Instant.now();
+            var claims = JwtClaimsSet.builder()
+                    .issuer("self")
+                    .issuedAt(now)
+                    .expiresAt(now.plus(180, MINUTES))
+                    .subject(String.valueOf(id))
+                    .claim("scope", createScope(authentication))
+                    .claim("status", authentication.getStatus())
+                    .build();
+            return jwtEncoder.encode(JwtEncoderParameters.from(claims)).getTokenValue();
     }
 
     @Override
