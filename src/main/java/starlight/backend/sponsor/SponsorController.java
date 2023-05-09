@@ -135,7 +135,7 @@ public class SponsorController {
                         emailProps.username() + "\n" +
                         "We are looking forward to hearing from you.\n" +
                         "Best regards,\n" +
-                        "Starlight Team\n"
+                        "Starlight Team"
         );
     }
 
