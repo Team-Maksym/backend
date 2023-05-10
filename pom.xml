@@ -142,7 +142,7 @@
 <!--					<systemPropertyVariables>-->
 <!--						<DB_LOGIN>postgres</DB_LOGIN>-->
 <!--						<DB_PASSWORD>123456</DB_PASSWORD>-->
-<!--						<DB_URL>lion6477-docker-desktop:8083/postgres</DB_URL>-->
+<!--						<DB_URL>localhost:8083/test</DB_URL>-->
 <!--					</systemPropertyVariables>-->
 <!--				</configuration>-->
 <!--			</plugin>-->
