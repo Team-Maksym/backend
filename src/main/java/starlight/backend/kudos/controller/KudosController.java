@@ -85,7 +85,6 @@ public class KudosController {
                                           Authentication auth
     ) {
         log.info("@PostMapping(\"/proofs/{proof-id}/kudos\")");
-
         log.info("Getting proof-id = {}", proofId);
         return kudosService.addKudosOnProof(proofId, kudos, auth);
     }

@@ -125,11 +125,9 @@ public class EmailServiceImpl implements EmailService {
                 constructResetTokenEmail(getAppUrl(request), token));
     }
 
-    public UUID recoverySponsorAccount(HttpServletRequest request, String email){
-        UUID uuid = UUID.randomUUID();
+    public void sendRecoveryMessageSponsorAccount(String email, UUID uuid){
         sendSimpleMessage(email, "Recovery Account",
-                constructSponsorRecoveryAccount(getAppUrl(request), uuid.toString()));
-        return uuid;
+                constructSponsorRecoveryAccount(uuid.toString()));
     }
 
     @Override
@@ -166,14 +164,14 @@ public class EmailServiceImpl implements EmailService {
                         "password on your account!\n%s\n",
                 appUrl + "/api/v1/sponsors/recovery-password?token=" + token);
     }
-    private String constructSponsorRecoveryAccount(String appUrl, String uuid){
+    private String constructSponsorRecoveryAccount(String uuid){
         return String.format("This is your request to recovery your account in Starlight project.\n" +
                         "If you haven't done so, please dont ignore this email.\n" +
-                        "If you want to re-activate your account, please click on the link below:\n" +
+                        "If you want to reactivate your account, please click on the link below:\n" +
                         "%s\n" +
-                        "The link will be invalid after" + adviceConfiguration.delayDays() + "days.\n",
+                        "The link will be invalid after " + adviceConfiguration.delayDays() + " days.\n",
 
-                appUrl + "/api/v1/sponsors/recovery-account?uuid=" + uuid);
+                "http://dev.starlight.pepega.cloud/recovery?uuid=" + uuid);
     }
 
     private String getAppUrl(HttpServletRequest request) {

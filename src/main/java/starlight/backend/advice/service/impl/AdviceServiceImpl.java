@@ -6,20 +6,24 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import starlight.backend.advice.repository.DelayDeleteRepository;
+import starlight.backend.advice.service.AdviceService;
+import starlight.backend.exception.user.UserNotFoundException;
 import starlight.backend.exception.user.sponsor.SponsorNotFoundException;
 import starlight.backend.sponsor.SponsorRepository;
 
 import java.time.Instant;
+import java.util.UUID;
 
 @Service
 @AllArgsConstructor
 @Slf4j
 @Transactional
-public class AdviceServiceImpl {
+public class AdviceServiceImpl implements AdviceService {
     private DelayDeleteRepository delayDeleteRepository;
     private SponsorRepository sponsorRepository;
 
-    @Scheduled(cron = "**0 0 * * ***") // 24 hours
+    @Override
+    @Scheduled(cron = "0 12 * * *") // 12:00 every day UTC
     public void deleteAccounts() {
         var accounts = delayDeleteRepository.findAll();
 
@@ -53,5 +57,13 @@ public class AdviceServiceImpl {
             sponsorRepository.deleteById(accountEntityID);
             delayDeleteRepository.deleteById(accountEntityID);
         }
+    }
+
+    @Override
+    public UUID getUUID(long entityId) {
+        if (!delayDeleteRepository.existsByEntityId(entityId)){
+            throw new UserNotFoundException(entityId);
+        }
+        return delayDeleteRepository.findByEntityId(entityId).orElseThrow(() -> new UserNotFoundException(entityId)).getUserDeletingProcessUuid();
     }
 }
