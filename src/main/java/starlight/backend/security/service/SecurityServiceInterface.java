@@ -15,6 +15,8 @@ public interface SecurityServiceInterface {
     default boolean checkingLoggedAndToken(long userId, Authentication auth) {
         return Objects.equals(auth.getName(), String.valueOf(userId));
     }
+
+    boolean isSponsorActive (Authentication auth);
     String getJWTToken(UserDetailsImpl authentication, long id);
     String createScope(UserDetailsImpl authentication);
 

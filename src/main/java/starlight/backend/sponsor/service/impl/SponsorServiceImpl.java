@@ -13,6 +13,7 @@ import starlight.backend.advice.model.entity.DelayedDeleteEntity;
 import starlight.backend.advice.model.enums.DeletingEntityType;
 import starlight.backend.advice.repository.DelayDeleteRepository;
 import starlight.backend.email.service.impl.EmailServiceImpl;
+import starlight.backend.exception.YouAreInDeletingProcess;
 import starlight.backend.exception.user.sponsor.SponsorAlreadyOnDeleteList;
 import starlight.backend.exception.user.sponsor.SponsorCanNotSeeAnotherSponsor;
 import starlight.backend.exception.user.sponsor.SponsorNotFoundException;
@@ -86,6 +87,9 @@ public class SponsorServiceImpl implements SponsorServiceInterface {
 
     @Override
     public SponsorFullInfo updateSponsorProfile(long sponsorId, SponsorUpdateRequest sponsorUpdateRequest, Authentication auth) {
+        if (!securityService.isSponsorActive(auth)) {
+            throw new YouAreInDeletingProcess();
+        }
         if (!serviceService.checkingLoggedAndToken(sponsorId, auth)) {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "you cannot change another sponsor");
         }
