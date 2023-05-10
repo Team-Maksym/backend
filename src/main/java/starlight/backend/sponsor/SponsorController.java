@@ -14,10 +14,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
-import starlight.backend.advice.repository.DelayDeleteRepository;
-import starlight.backend.advice.service.AdviceService;
 import starlight.backend.email.model.EmailProps;
-import starlight.backend.email.service.EmailService;
 import starlight.backend.security.model.response.SessionInfo;
 import starlight.backend.sponsor.model.request.SponsorUpdateRequest;
 import starlight.backend.sponsor.model.response.SponsorFullInfo;
@@ -32,9 +29,6 @@ import starlight.backend.sponsor.service.SponsorServiceInterface;
 public class SponsorController {
     private SponsorServiceInterface sponsorService;
     private EmailProps emailProps;
-    private EmailService emailService;
-    private DelayDeleteRepository delayDeleteRepository;
-    private AdviceService adviceService;
 
     @Operation(
             summary = "Get unusable Sponsor's kudos",
@@ -55,11 +49,9 @@ public class SponsorController {
             }
     )
     @GetMapping("/sponsors/{sponsor-id}/kudos")
-    public SponsorKudosInfo register(@PathVariable("sponsor-id") long sponsorId,
-                                     Authentication auth) {
-
+    public SponsorKudosInfo getUnusableKudosForSponsor(@PathVariable("sponsor-id") long sponsorId,
+                                             Authentication auth) {
         log.info("@GetMapping(\"/sponsors/{sponsor-id}/kudos\")");
-
         return sponsorService.getUnusableKudos(sponsorId, auth);
     }
 
@@ -68,17 +60,15 @@ public class SponsorController {
             description = "Get Sponsor full info"
     )
     @ApiResponses(value = {
-                    @ApiResponse(responseCode = "401", description = "Unauthorized"),
-                    @ApiResponse(responseCode = "403", description = "Forbidden")
-            }
+            @ApiResponse(responseCode = "401", description = "Unauthorized"),
+            @ApiResponse(responseCode = "403", description = "Forbidden")
+    }
     )
     @GetMapping("/sponsors/{sponsor-id}")
     @PreAuthorize("hasRole('SPONSOR')")
     public SponsorFullInfo sponsorFullInfo(@PathVariable("sponsor-id") long sponsorId,
                                            Authentication auth) {
-
         log.info("@GetMapping(\"/sponsors/{sponsor-id}\")");
-
         return sponsorService.getSponsorFullInfo(sponsorId, auth);
     }
 
@@ -119,14 +109,11 @@ public class SponsorController {
             @ApiResponse(responseCode = "403", description = "Access denied"),
             @ApiResponse(responseCode = "404", description = "Sponsor not found")
     })
-    @Tag(name = "Delete",  description = "Delete sponsor")
+    @Tag(name = "Delete", description = "Delete sponsor")
     @PreAuthorize("hasRole('ROLE_SPONSOR')")
-    @DeleteMapping ("/sponsors/{sponsor-id}")
+    @DeleteMapping("/sponsors/{sponsor-id}")
     @ResponseStatus(HttpStatus.OK)
-    public ResponseEntity<String> delete(@PathVariable("sponsor-id") long sponsorId,
-                                 Authentication auth
-    ) {
-
+    public ResponseEntity<String> delete(@PathVariable("sponsor-id") long sponsorId, Authentication auth) {
         log.info("@DeleteMapping(\"/sponsors/{sponsor-id}\")");
         sponsorService.deleteSponsor(sponsorId, auth);
         return ResponseEntity.ok(
@@ -159,7 +146,7 @@ public class SponsorController {
     @ResponseStatus(HttpStatus.OK)
     @PostMapping("/sponsors/{sponsor-id}/send-recovery-account-email")
     public ResponseEntity<String> sendEmailForRecoverySponsorAccount(@PathVariable("sponsor-id") long sponsorId,
-                          Authentication auth) {
+                                                                     Authentication auth) {
         log.info("@PostMapping(\"/sponsors/{sponsor-id}/send-recovery-account-email\")");
         return sponsorService.sendEmailForRecoverySponsorAccount(sponsorId, auth);
     }
