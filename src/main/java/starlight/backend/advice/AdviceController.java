@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import starlight.backend.exception.AuthorizationFailureException;
 import starlight.backend.exception.EmailAlreadyOccupiedException;
 import starlight.backend.exception.PageNotFoundException;
+import starlight.backend.exception.YouAreInDeletingProcess;
 import starlight.backend.exception.kudos.*;
 import starlight.backend.exception.proof.ProofNotFoundException;
 import starlight.backend.exception.proof.UserAccesDeniedToProofException;
@@ -68,6 +69,7 @@ public class AdviceController {
             NotEnoughKudosException.class,
             SponsorCanNotSeeAnotherSponsor.class,
             YouCanNotReturnMoreKudosThanGaveException.class,
+            YouAreInDeletingProcess.class,
     })
     @ResponseStatus(HttpStatus.FORBIDDEN)
     public ErrorDTO forbidden(Exception exception) {

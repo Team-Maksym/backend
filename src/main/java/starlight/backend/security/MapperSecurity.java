@@ -27,6 +27,7 @@ public interface MapperSecurity {
         return new UserDetailsImpl(
                 sponsor.getEmail(),
                 sponsor.getPassword(),
-                Role.SPONSOR);
+                Role.SPONSOR,
+                sponsor.getStatus());
     }
 }

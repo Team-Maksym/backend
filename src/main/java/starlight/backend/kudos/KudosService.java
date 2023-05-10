@@ -2,11 +2,13 @@ package starlight.backend.kudos;
 
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springdoc.core.service.SecurityService;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import starlight.backend.exception.AuthorizationFailureException;
+import starlight.backend.exception.YouAreInDeletingProcess;
 import starlight.backend.exception.user.UserNotFoundException;
 import starlight.backend.exception.kudos.KudosRequestMustBeNotZeroException;
 import starlight.backend.exception.kudos.NotEnoughKudosException;
@@ -19,6 +21,7 @@ import starlight.backend.kudos.repository.KudosRepository;
 import starlight.backend.proof.ProofRepository;
 import starlight.backend.proof.model.entity.ProofEntity;
 import starlight.backend.security.model.enums.Role;
+import starlight.backend.security.service.SecurityServiceInterface;
 import starlight.backend.sponsor.SponsorRepository;
 import starlight.backend.sponsor.model.entity.SponsorEntity;
 import starlight.backend.user.model.entity.UserEntity;
@@ -36,6 +39,7 @@ public class KudosService {
     private ProofRepository proofRepository;
     private UserRepository userRepository;
     private SponsorRepository sponsorRepository;
+    private SecurityServiceInterface securityService;
 
     private boolean isProofAlreadyHaveKudosFromUser(long proofId, Authentication auth) {
         var proof = proofRepository.findById(proofId)
@@ -62,7 +66,8 @@ public class KudosService {
         log.info("countKudos = {}", countKudos);
         if (auth != null){
             for (GrantedAuthority grantedAuthority : auth.getAuthorities()) {
-                if (grantedAuthority.getAuthority().equals(Role.SPONSOR.getAuthority())) {
+                if (grantedAuthority.getAuthority().equals(Role.SPONSOR.getAuthority()) &&
+                        securityService.isSponsorActive(auth)) {
                     log.info("Is Sponsor = {}", grantedAuthority.getAuthority().equals(Role.SPONSOR.getAuthority()));
                     var kudosFromMeList = kudos.stream()
                             .filter(k -> k.getOwner().getSponsorId().toString().equals(auth.getName()))
@@ -84,6 +89,9 @@ public class KudosService {
 
 
     public KudosEntity addKudosOnProof(long proofId, int kudosRequest, Authentication auth) {
+        if (!securityService.isSponsorActive(auth)) {
+            throw new YouAreInDeletingProcess();
+        }
         if (auth == null) {
             throw new AuthorizationFailureException();
         }

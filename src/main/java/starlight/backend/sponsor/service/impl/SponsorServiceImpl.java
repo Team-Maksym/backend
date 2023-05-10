@@ -13,6 +13,7 @@ import starlight.backend.advice.model.entity.DelayedDeleteEntity;
 import starlight.backend.advice.model.enums.DeletingEntityType;
 import starlight.backend.advice.repository.DelayDeleteRepository;
 import starlight.backend.email.service.impl.EmailServiceImpl;
+import starlight.backend.exception.YouAreInDeletingProcess;
 import starlight.backend.exception.user.sponsor.SponsorAlreadyOnDeleteList;
 import starlight.backend.exception.user.sponsor.SponsorCanNotSeeAnotherSponsor;
 import starlight.backend.exception.user.sponsor.SponsorNotFoundException;
@@ -86,6 +87,9 @@ public class SponsorServiceImpl implements SponsorServiceInterface {
 
     @Override
     public SponsorFullInfo updateSponsorProfile(long sponsorId, SponsorUpdateRequest sponsorUpdateRequest, Authentication auth) {
+        if (!securityService.isSponsorActive(auth)) {
+            throw new YouAreInDeletingProcess();
+        }
         if (!serviceService.checkingLoggedAndToken(sponsorId, auth)) {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "you cannot change another sponsor");
         }
@@ -110,7 +114,11 @@ public class SponsorServiceImpl implements SponsorServiceInterface {
         if (unusedKudos <= 0) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "you can't reduce the number of kudos");
         }
-        sponsor.setUnusedKudos(unusedKudos + sponsor.getUnusedKudos());
+        var countKudos = unusedKudos + sponsor.getUnusedKudos();
+        if(countKudos>=100000){
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "you can't add more 100 000 kudos");
+        }
+        sponsor.setUnusedKudos(countKudos);
         return sponsor.getUnusedKudos();
     }
 
@@ -142,11 +150,8 @@ public class SponsorServiceImpl implements SponsorServiceInterface {
                             .userDeletingProcessUuid(emailServiceImpl.recoverySponsorAccount(request, sponsor.getEmail()))
                             .build()
             );
-
-
             sponsor.setStatus(SponsorStatus.DELETING);
             sponsorRepository.save(sponsor);
-
         });
     }
 }

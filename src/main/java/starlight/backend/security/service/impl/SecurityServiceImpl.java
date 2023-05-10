@@ -12,6 +12,8 @@ import org.springframework.security.oauth2.jwt.JwtEncoderParameters;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import starlight.backend.exception.EmailAlreadyOccupiedException;
+import starlight.backend.exception.user.sponsor.SponsorNotFoundException;
+import starlight.backend.exception.user.talent.TalentNotFoundException;
 import starlight.backend.security.MapperSecurity;
 import starlight.backend.security.model.UserDetailsImpl;
 import starlight.backend.security.model.enums.Role;
@@ -28,6 +30,7 @@ import java.time.Instant;
 import java.util.Collections;
 import java.util.stream.Collectors;
 
+import static java.lang.Long.parseLong;
 import static java.time.temporal.ChronoUnit.MINUTES;
 
 @AllArgsConstructor
@@ -46,6 +49,18 @@ public class SecurityServiceImpl implements SecurityServiceInterface {
                 .orElseThrow(() -> new UsernameNotFoundException(auth.getName() + " not found user by email"));
         var token = getJWTToken(mapperSecurity.toUserDetailsImpl(user), user.getUserId());
         return mapperSecurity.toSessionInfo(token);
+    }
+
+    @Override
+    public boolean isSponsorActive(Authentication auth) {
+        for (GrantedAuthority grantedAuthority : auth.getAuthorities()) {
+            if (grantedAuthority.getAuthority().equals(Role.SPONSOR.getAuthority())) {
+                var sponsor = sponsorRepository.findById(Long.valueOf(auth.getName()))
+                        .orElseThrow(() -> new SponsorNotFoundException(Long.valueOf(auth.getName())));
+                return sponsor.getStatus().equals(SponsorStatus.ACTIVE);
+            }
+        }
+        return true;
     }
 
     @Override
@@ -105,15 +120,16 @@ public class SecurityServiceImpl implements SecurityServiceInterface {
     @Override
     @Transactional(readOnly = true)
     public String getJWTToken(UserDetailsImpl authentication, long id) {
-        var now = Instant.now();
-        var claims = JwtClaimsSet.builder()
-                .issuer("self")
-                .issuedAt(now)
-                .expiresAt(now.plus(180, MINUTES))
-                .subject(String.valueOf(id))
-                .claim("scope", createScope(authentication))
-                .build();
-        return jwtEncoder.encode(JwtEncoderParameters.from(claims)).getTokenValue();
+            var now = Instant.now();
+            var claims = JwtClaimsSet.builder()
+                    .issuer("self")
+                    .issuedAt(now)
+                    .expiresAt(now.plus(180, MINUTES))
+                    .subject(String.valueOf(id))
+                    .claim("scope", createScope(authentication))
+                    .claim("status", authentication.getStatus())
+                    .build();
+            return jwtEncoder.encode(JwtEncoderParameters.from(claims)).getTokenValue();
     }
 
     @Override
