@@ -6,7 +6,6 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import jakarta.servlet.http.HttpServletRequest;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -15,7 +14,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
+import starlight.backend.advice.repository.DelayDeleteRepository;
+import starlight.backend.advice.service.AdviceService;
 import starlight.backend.email.model.EmailProps;
+import starlight.backend.email.service.EmailService;
 import starlight.backend.security.model.response.SessionInfo;
 import starlight.backend.sponsor.model.request.SponsorUpdateRequest;
 import starlight.backend.sponsor.model.response.SponsorFullInfo;
@@ -30,6 +32,9 @@ import starlight.backend.sponsor.service.SponsorServiceInterface;
 public class SponsorController {
     private SponsorServiceInterface sponsorService;
     private EmailProps emailProps;
+    private EmailService emailService;
+    private DelayDeleteRepository delayDeleteRepository;
+    private AdviceService adviceService;
 
     @Operation(
             summary = "Get unusable Sponsor's kudos",
@@ -114,22 +119,22 @@ public class SponsorController {
             @ApiResponse(responseCode = "403", description = "Access denied"),
             @ApiResponse(responseCode = "404", description = "Sponsor not found")
     })
+    @Tag(name = "Delete",  description = "Delete sponsor")
     @PreAuthorize("hasRole('ROLE_SPONSOR')")
-    @PostMapping ("/sponsors/{sponsor-id}/delete")
+    @DeleteMapping ("/sponsors/{sponsor-id}")
     @ResponseStatus(HttpStatus.OK)
     public ResponseEntity<String> delete(@PathVariable("sponsor-id") long sponsorId,
-                                 Authentication auth,
-                                 HttpServletRequest request
+                                 Authentication auth
     ) {
 
-        log.info("@PostMapping(\"/sponsors/{sponsor-id}/delete\")");
-        sponsorService.deleteSponsor(sponsorId, auth, request);
+        log.info("@DeleteMapping(\"/sponsors/{sponsor-id}\")");
+        sponsorService.deleteSponsor(sponsorId, auth);
         return ResponseEntity.ok(
                 "Dear sponsor,\n" +
                         "We are sorry to see you go.\n" +
                         "Your sponsor profile has been deleted after 7 days!\n" +
-                        "You can use your account on this time.\n" +
-                        "If you want to restore your account, please check your email.\n" +
+                        "If you want to restore your account, " +
+                        "please sign in and send recovery request.\n" +
                         "Thank you for your support\n" +
                         "If you have any questions, please contact us at:\n" +
                         emailProps.username() + "\n" +
@@ -139,4 +144,23 @@ public class SponsorController {
         );
     }
 
+    @Operation(
+            summary = "Send email for recovery sponsor account",
+            description = "Send email for recovery sponsor account"
+    )
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Successful sponsor deletion"),
+            @ApiResponse(responseCode = "401", description = "Unauthorized"),
+            @ApiResponse(responseCode = "404", description = "Sponsor not found")
+    }
+    )
+    @Tag(name = "Delete")
+    @PreAuthorize("hasRole('ROLE_SPONSOR')")
+    @ResponseStatus(HttpStatus.OK)
+    @PostMapping("/sponsors/{sponsor-id}/send-recovery-account-email")
+    public ResponseEntity<String> sendEmailForRecoverySponsorAccount(@PathVariable("sponsor-id") long sponsorId,
+                          Authentication auth) {
+        log.info("@PostMapping(\"/sponsors/{sponsor-id}/send-recovery-account-email\")");
+        return sponsorService.sendEmailForRecoverySponsorAccount(sponsorId, auth);
+    }
 }

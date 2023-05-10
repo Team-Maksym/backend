@@ -1,9 +1,9 @@
 package starlight.backend.sponsor.service.impl;
 
-import jakarta.servlet.http.HttpServletRequest;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -12,7 +12,8 @@ import starlight.backend.advice.config.AdviceConfiguration;
 import starlight.backend.advice.model.entity.DelayedDeleteEntity;
 import starlight.backend.advice.model.enums.DeletingEntityType;
 import starlight.backend.advice.repository.DelayDeleteRepository;
-import starlight.backend.email.service.impl.EmailServiceImpl;
+import starlight.backend.advice.service.AdviceService;
+import starlight.backend.email.service.EmailService;
 import starlight.backend.exception.YouAreInDeletingProcess;
 import starlight.backend.exception.user.sponsor.SponsorAlreadyOnDeleteList;
 import starlight.backend.exception.user.sponsor.SponsorCanNotSeeAnotherSponsor;
@@ -31,6 +32,7 @@ import starlight.backend.sponsor.service.SponsorServiceInterface;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
+import java.util.UUID;
 
 @AllArgsConstructor
 @Service
@@ -43,7 +45,9 @@ public class SponsorServiceImpl implements SponsorServiceInterface {
     private AdviceConfiguration adviceConfiguration;
     private SecurityServiceInterface serviceService;
     private SponsorMapper sponsorMapper;
-    private EmailServiceImpl emailServiceImpl;
+    private EmailService emailService;
+    private AdviceService adviceService;
+
 
     @Override
     public SponsorKudosInfo getUnusableKudos(long sponsorId, Authentication auth) {
@@ -130,7 +134,7 @@ public class SponsorServiceImpl implements SponsorServiceInterface {
 
     @Override
     @Transactional
-    public void deleteSponsor(long sponsorId, Authentication auth, HttpServletRequest request) {
+    public void deleteSponsor(long sponsorId, Authentication auth) {
         if (!sponsorRepository.existsBySponsorId(sponsorId)) {
             throw new SponsorNotFoundException(sponsorId);
         }
@@ -147,11 +151,35 @@ public class SponsorServiceImpl implements SponsorServiceInterface {
                             .entityId(sponsor.getSponsorId())
                             .deletingEntityType(DeletingEntityType.SPONSOR)
                             .deleteDate(Instant.now().plus(adviceConfiguration.delayDays(), ChronoUnit.DAYS))
-                            .userDeletingProcessUuid(emailServiceImpl.recoverySponsorAccount(request, sponsor.getEmail()))
+                            .userDeletingProcessUuid(UUID.randomUUID())
                             .build()
             );
             sponsor.setStatus(SponsorStatus.DELETING);
             sponsorRepository.save(sponsor);
         });
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public String getSponsorMail(long sponsorId, Authentication auth) {
+        if (!serviceService.checkingLoggedAndToken(sponsorId, auth)) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "you cannot get another sponsor");
+        }
+        if (!sponsorRepository.existsBySponsorId(sponsorId)) {
+            throw new SponsorNotFoundException(sponsorId);
+        }
+        return sponsorRepository.findById(sponsorId)
+                .map(SponsorEntity::getEmail)
+                .orElseThrow(() -> new SponsorNotFoundException(sponsorId));
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public ResponseEntity<String> sendEmailForRecoverySponsorAccount(long sponsorId, Authentication auth) {
+        String email = getSponsorMail(sponsorId, auth);
+        emailService.sendRecoveryMessageSponsorAccount(email, adviceService.getUUID(sponsorId));
+        log.info("Email sent to sponsor {}", email);
+        return ResponseEntity.ok("Email sent to " + email);
+
     }
 }

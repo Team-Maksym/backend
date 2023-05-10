@@ -20,4 +20,5 @@ public interface EmailService {
     void recoveryPassword(String token, ChangePassword changePassword);
 
     void recoverySponsorAccount(UUID uuid) throws Exception;
+    void sendRecoveryMessageSponsorAccount(String email, UUID uuid);
 }
