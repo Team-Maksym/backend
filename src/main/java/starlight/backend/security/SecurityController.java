@@ -75,9 +75,7 @@ public class SecurityController {
     @PostMapping("/talents")
     @ResponseStatus(HttpStatus.CREATED)
     public SessionInfo register(@Valid @RequestBody NewUser newUser) {
-
         log.info("@PostMapping(\"/talents\")");
-
         return service.register(newUser);
     }
     @Operation(
@@ -129,9 +127,7 @@ public class SecurityController {
     @PostMapping("/sponsors")
     @ResponseStatus(HttpStatus.CREATED)
     public SessionInfo registerSponsor(@Valid @RequestBody NewUser newUser) {
-
         log.info("@PostMapping(\"/sponsors\")");
-
         return service.registerSponsor(newUser);
     }
 }

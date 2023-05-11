@@ -113,7 +113,7 @@ public class SponsorController {
     @PreAuthorize("hasRole('ROLE_SPONSOR')")
     @DeleteMapping("/sponsors/{sponsor-id}")
     @ResponseStatus(HttpStatus.OK)
-    public ResponseEntity<String> delete(@PathVariable("sponsor-id") long sponsorId, Authentication auth) {
+    public ResponseEntity<String> deleteSponsor(@PathVariable("sponsor-id") long sponsorId, Authentication auth) {
         log.info("@DeleteMapping(\"/sponsors/{sponsor-id}\")");
         sponsorService.deleteSponsor(sponsorId, auth);
         return ResponseEntity.ok(

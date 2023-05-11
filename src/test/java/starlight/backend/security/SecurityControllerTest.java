@@ -1,5 +1,6 @@
 package starlight.backend.security;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -58,7 +59,7 @@ class SecurityControllerTest {
                 .build();
     }
 
-    @DisplayName("JUnit test for login")
+    @DisplayName("JUnit test for login talents")
     @Test
     void login() throws Exception {
         //Given
@@ -76,7 +77,7 @@ class SecurityControllerTest {
                 .andExpect(status().isOk());
     }
 
-    @DisplayName("JUnit test for register method")
+    @DisplayName("JUnit test for register method talents")
     @Test
     void register() throws Exception {
         //Given
@@ -86,6 +87,42 @@ class SecurityControllerTest {
         //When //Then
         mockMvc.perform(
                         post("/api/v1/talents")
+                                .content(objectMapper.writeValueAsString(newUser))
+                                .contentType(MediaType.APPLICATION_JSON))
+                .andDo(print())
+                .andExpect(status().isCreated())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$").isNotEmpty())
+                .andExpect(jsonPath("$.token").value(sessionInfo.token()));
+    }
+    @DisplayName("JUnit test for login Sponsor")
+    @Test
+    void loginSponsor() throws Exception {
+        //Given
+        SessionInfo sessionInfo = SessionInfo.builder().build();
+        when(service.loginSponsor(auth)).thenReturn(sessionInfo);
+        String username = auth.getName();
+        String password = user.getPassword();
+        String base64Credentials = new String(Base64.getEncoder()
+                .encode((username + ":" + password).getBytes()));
+
+        //When //Then
+        mockMvc.perform(post("/api/v1/sponsors/login")
+                        .header(HttpHeaders.AUTHORIZATION, "Basic " + base64Credentials))
+                .andDo(print())
+                .andExpect(status().isOk());
+    }
+
+    @DisplayName("JUnit test for register method Sponsor")
+    @Test
+    void registerSponsor() throws Exception {
+        //Given
+        SessionInfo sessionInfo = SessionInfo.builder().build();
+        when(service.registerSponsor(newUser)).thenReturn(sessionInfo);
+
+        //When //Then
+        mockMvc.perform(
+                        post("/api/v1/sponsors")
                                 .content(objectMapper.writeValueAsString(newUser))
                                 .contentType(MediaType.APPLICATION_JSON))
                 .andDo(print())
