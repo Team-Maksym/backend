@@ -63,7 +63,6 @@ public class EmailServiceImpl implements EmailService {
         
         sponsor.setStatus(SponsorStatus.ACTIVE);
         sponsorRepository.save(sponsor);
-//         delayedDeleteEntity.setDeleteDate(null);
         delayDeleteRepository.delete(delayedDeleteEntity);
     }
 
