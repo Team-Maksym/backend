@@ -11,7 +11,6 @@ import jakarta.validation.constraints.Positive;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -46,7 +45,6 @@ public class ProofControllerV2 {
             @ApiResponse(responseCode = "401", description = "Unauthorized"),
             @ApiResponse(responseCode = "404", description = "Not found")
     })
-    @PreAuthorize("hasRole('ROLE_TALENT')")
     @GetMapping("/talents/{talent-id}/proofs")
     public ProofPagePagination getTalentProofs(@PathVariable("talent-id") long talentId,
                                                Authentication auth,
