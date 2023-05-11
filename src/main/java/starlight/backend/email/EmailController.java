@@ -97,7 +97,7 @@ public class EmailController {
     @Operation(
             summary = "Recover account by UUID",
             description = "Recover account by UUID",
-            tags = {"Email", "Sponsor"}
+            tags = {"Email", "Sponsor", "Delete"}
     )
     @ApiResponses(
             value = {

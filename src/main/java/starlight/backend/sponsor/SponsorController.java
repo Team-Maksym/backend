@@ -101,7 +101,8 @@ public class SponsorController {
 
     @Operation(
             summary = "Delete sponsor",
-            description = "Deletes a sponsor by the specified identifier. Only users with the 'ROLE_SPONSOR' role can use this endpoint."
+            description = "Deletes a sponsor by the specified identifier. Only users with the 'ROLE_SPONSOR' role can use this endpoint.",
+            tags = {"Sponsor", "Delete"}
     )
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Successful sponsor deletion"),
