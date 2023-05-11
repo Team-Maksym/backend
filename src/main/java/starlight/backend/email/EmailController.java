@@ -115,9 +115,9 @@ public class EmailController {
 
             }
     )
-    @PostMapping("/sponsors/recovery-account")
+    @GetMapping("/sponsors/recovery-account")
     public ResponseEntity<String> recoveryAccount(@RequestParam String uuid) throws Exception {
-        log.info("@PostMapping(\"/recovery-account\")");
+        log.info("@GetMapping(\"/recovery-account\")");
         emailService.recoverySponsorAccount(UUID.fromString(uuid));
         return ResponseEntity.ok("Account recovered, please sign in again");
     }
