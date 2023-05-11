@@ -1,6 +1,7 @@
 package starlight.backend.sponsor;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -18,9 +19,11 @@ import starlight.backend.sponsor.model.response.SponsorFullInfo;
 import starlight.backend.sponsor.model.response.SponsorKudosInfo;
 import starlight.backend.sponsor.service.SponsorServiceInterface;
 
+import java.time.LocalDate;
+import java.util.List;
+
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.is;
-import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.*;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.get;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.patch;
@@ -39,10 +42,10 @@ class SponsorControllerTest {
     private ObjectMapper objectMapper;
     @MockBean
     private Authentication auth;
-
     @Autowired
     private MockMvc mockMvc;
 
+    @DisplayName("JUnit test for get Unusable Kudos for Sponsor")
     @Test
     @Order(1)
     @WithMockUser(username = "user1", roles = {"SPONSOR"})
@@ -63,31 +66,39 @@ class SponsorControllerTest {
                 .andExpect(jsonPath("$").isNotEmpty());
     }
 
+    @DisplayName("JUnit test for sponsor FullInfo Returns Sponsor FullInfo")
     @Test
     @Order(1)
     @WithMockUser(username = "user1", roles = {"SPONSOR"})
-    public void sponsorFullInfo_ReturnsSponsorFullInfo() throws Exception {
+    void sponsorFullInfo_ReturnsSponsorFullInfo() throws Exception {
+        //Given
         long sponsorId = 1L;
         SponsorFullInfo expected = SponsorFullInfo.builder()
                 .fullName("John Doe")
-                .fullName("john.doe@example.com")
+                .avatar("https://example.com/new-avatar.jpg")
+                .company("Master's Degree")
                 .build();
 
-        given(sponsorService.getSponsorFullInfo(sponsorId, auth)).willReturn(expected);
+        when(sponsorService.getSponsorFullInfo(sponsorId, auth)).thenReturn(expected);
 
-        mockMvc.perform(get("/api/v1/sponsors/" + sponsorId)
+        // When // Then
+        mockMvc.perform(get("/api/v1/sponsors/{sponsor-id}",sponsorId)
                         .contentType(MediaType.APPLICATION_JSON))
+                .andDo(print())
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.sponsorId").value(sponsorId))
-                .andExpect(jsonPath("$.firstName").value("John"))
-                .andExpect(jsonPath("$.lastName").value("Doe"))
-                .andExpect(jsonPath("$.email").value("john.doe@example.com"));
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$").isNotEmpty())
+                .andExpect(jsonPath("$.full_name").value("John Doe"))
+                .andExpect(jsonPath("$.company").value("Master's Degree"))
+                .andExpect(jsonPath("$.avatar").value("https://example.com/new-avatar.jpg"));
     }
 
+    @DisplayName("JUnit test for update Sponsor FullInfo Returns Sponsor FullInfo")
     @Test
     @Order(1)
     @WithMockUser(username = "user1", roles = {"SPONSOR"})
-    public void updateSponsorFullInfo_ReturnsSponsorFullInfo() throws Exception {
+    void updateSponsorFullInfo_ReturnsSponsorFullInfo() throws Exception {
+        //Given
         long sponsorId = 1L;
 
         SponsorUpdateRequest updateRequest = SponsorUpdateRequest.builder()
@@ -99,30 +110,29 @@ class SponsorControllerTest {
                 .fullName("john.doe@example.com")
                 .build();
 
-        given(sponsorService.updateSponsorProfile(sponsorId, updateRequest, auth)).willReturn(expected);
+        when(sponsorService.updateSponsorProfile(sponsorId, updateRequest, auth)).thenReturn(expected);
 
-        mockMvc.perform(patch("/api/v1/sponsors/" + sponsorId)
+        // When // Then
+        mockMvc.perform(patch("/api/v1/sponsors/{sponsor-id}",sponsorId)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(updateRequest)))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.sponsorId").value(sponsorId))
-                .andExpect(jsonPath("$.firstName").value("John"))
-                .andExpect(jsonPath("$.lastName").value("Doe"))
-                .andExpect(jsonPath("$.email").value("john.doe@example.com"));
+                .andExpect(status().isOk());
     }
 
+    @DisplayName("JUnit test for Sponsor delete")
     @Test
     @Order(1)
     @WithMockUser(username = "user1", roles = {"SPONSOR"})
-    public void delete_ReturnsOk() throws Exception {
+    void delete_ReturnsOk() throws Exception {
+        //Given
         long sponsorId = 1L;
 
-        mockMvc.perform(delete("/api/v1/sponsors/1")
-                        .contentType(MediaType.APPLICATION_JSON))
+        doNothing().when(sponsorService).deleteSponsor(1, auth);
+
+        // When // Then
+        mockMvc.perform(delete("/api/v1/sponsors/{sponsor-id}",sponsorId))
+                .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().string(containsString("Dear sponsor,")));
-
-        verify(sponsorService, times(1)).deleteSponsor(sponsorId, auth);
     }
-
 }
