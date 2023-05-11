@@ -55,17 +55,13 @@ public class EmailServiceImpl implements EmailService {
     @Transactional
     public void recoverySponsorAccount(UUID uuid) {
         DelayedDeleteEntity delayedDeleteEntity = delayDeleteRepository.findByUserDeletingProcessUuid(uuid)
-
                 .orElseThrow(() ->  new UserNotFoundWithUUIDException(String.valueOf(uuid)));
-
         long sponsorId = delayedDeleteEntity.getEntityId();
         SponsorEntity sponsor = sponsorRepository.findById(sponsorId)
                 .orElseThrow(() -> new SponsorNotFoundException(sponsorId));
         sponsor.setStatus(SponsorStatus.ACTIVE);
         sponsorRepository.save(sponsor);
-//        delayedDeleteEntity.setDeleteDate(null);
         delayDeleteRepository.delete(delayedDeleteEntity);
-
     }
 
     @Override
@@ -95,22 +91,18 @@ public class EmailServiceImpl implements EmailService {
     @Override
     public void sendMessageWithAttachment(String to, String subject, String text, String pathToAttachment) {
         MimeMessage message = emailSender.createMimeMessage();
-
         MimeMessageHelper helper;
         try {
             helper = new MimeMessageHelper(message, true);
-
             helper.setFrom(emailProps.username());
             helper.setTo(to);
             helper.setSubject(subject);
             helper.setText(text);
-
             FileSystemResource file = new FileSystemResource(new File(pathToAttachment));
             helper.addAttachment(Objects.requireNonNull(file.getFilename()), file);
         } catch (MessagingException e) {
             throw new RuntimeException(e);
         }
-
         emailSender.send(message);
     }
 
@@ -170,7 +162,6 @@ public class EmailServiceImpl implements EmailService {
                         "If you want to reactivate your account, please click on the link below:\n" +
                         "%s\n" +
                         "The link will be invalid after " + adviceConfiguration.delayDays() + " days.\n",
-
                 "http://dev.starlight.pepega.cloud/recovery?uuid=" + uuid);
     }
 

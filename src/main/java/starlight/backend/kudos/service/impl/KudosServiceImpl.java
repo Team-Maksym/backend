@@ -1,23 +1,23 @@
-package starlight.backend.kudos;
+package starlight.backend.kudos.service.impl;
 
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springdoc.core.service.SecurityService;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import starlight.backend.exception.AuthorizationFailureException;
 import starlight.backend.exception.YouAreInDeletingProcess;
-import starlight.backend.exception.user.UserNotFoundException;
 import starlight.backend.exception.kudos.KudosRequestMustBeNotZeroException;
 import starlight.backend.exception.kudos.NotEnoughKudosException;
 import starlight.backend.exception.kudos.TalentCanNotAddKudos;
 import starlight.backend.exception.kudos.YouCanNotReturnMoreKudosThanGaveException;
 import starlight.backend.exception.proof.ProofNotFoundException;
+import starlight.backend.exception.user.UserNotFoundException;
 import starlight.backend.kudos.model.entity.KudosEntity;
 import starlight.backend.kudos.model.response.KudosOnProof;
 import starlight.backend.kudos.repository.KudosRepository;
+import starlight.backend.kudos.service.KudosServiceInterface;
 import starlight.backend.proof.ProofRepository;
 import starlight.backend.proof.model.entity.ProofEntity;
 import starlight.backend.security.model.enums.Role;
@@ -34,7 +34,7 @@ import java.util.stream.Collectors;
 @AllArgsConstructor
 @Slf4j
 @Transactional
-public class KudosService {
+public class KudosServiceImpl implements KudosServiceInterface {
     private KudosRepository kudosRepository;
     private ProofRepository proofRepository;
     private UserRepository userRepository;
@@ -53,7 +53,7 @@ public class KudosService {
                 .toList();
         return !kudosList.isEmpty();
     }
-
+    @Override
     @Transactional(readOnly = true)
     public KudosOnProof getKudosOnProof(long proofId, Authentication auth) {
         var proof = proofRepository.findById(proofId)
@@ -64,7 +64,7 @@ public class KudosService {
                 .mapToInt(KudosEntity::getCountKudos)
                 .sum();
         log.info("countKudos = {}", countKudos);
-        if (auth != null){
+        if (auth != null) {
             for (GrantedAuthority grantedAuthority : auth.getAuthorities()) {
                 if (grantedAuthority.getAuthority().equals(Role.SPONSOR.getAuthority()) &&
                         securityService.isSponsorActive(auth)) {
@@ -87,7 +87,7 @@ public class KudosService {
         return new KudosOnProof(countKudos, 0, false);
     }
 
-
+    @Override
     public KudosEntity addKudosOnProof(long proofId, int kudosRequest, Authentication auth) {
         if (!securityService.isSponsorActive(auth)) {
             throw new YouAreInDeletingProcess();
@@ -100,7 +100,7 @@ public class KudosService {
                 throw new TalentCanNotAddKudos();
             }
         }
-        if (kudosRequest == 0){
+        if (kudosRequest == 0) {
             throw new KudosRequestMustBeNotZeroException();
         }
         var proof = proofRepository.findById(proofId)
@@ -124,8 +124,8 @@ public class KudosService {
         });
     }
 
-    private KudosEntity updateSponsorKudosField (ProofEntity proof, UserEntity follower, SponsorEntity owner,
-                                                 int kudosRequest, long proofId) {
+    private KudosEntity updateSponsorKudosField(ProofEntity proof, UserEntity follower, SponsorEntity owner,
+                                                int kudosRequest, long proofId) {
         if (proof.getKudos().stream()
                 .filter(kudos1 -> kudos1.getOwner().getSponsorId().equals(owner.getSponsorId()))
                 .collect(Collectors.toSet()).isEmpty()) {

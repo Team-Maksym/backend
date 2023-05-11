@@ -14,7 +14,8 @@ import org.springframework.security.core.Authentication;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import starlight.backend.exception.proof.ProofNotFoundException;
-import starlight.backend.kudos.KudosService;
+import starlight.backend.kudos.service.KudosServiceInterface;
+import starlight.backend.kudos.service.impl.KudosServiceImpl;
 import starlight.backend.kudos.model.entity.KudosEntity;
 import starlight.backend.kudos.model.response.KudosOnProof;
 
@@ -25,7 +26,7 @@ import starlight.backend.kudos.model.response.KudosOnProof;
 @Tag(name = "Kudos", description = "Kudos API")
 @RestController
 public class KudosController {
-    KudosService kudosService;
+    private KudosServiceInterface kudosService;
 
     @Operation(
             summary = "Get all kudos on proof",
@@ -82,8 +83,7 @@ public class KudosController {
     @ResponseStatus(HttpStatus.CREATED)
     public KudosEntity addKudos(@PathVariable("proof-id") long proofId,
                                           @RequestParam int kudos,
-                                          Authentication auth
-    ) {
+                                          Authentication auth) {
         log.info("@PostMapping(\"/proofs/{proof-id}/kudos\")");
         log.info("Getting proof-id = {}", proofId);
         return kudosService.addKudosOnProof(proofId, kudos, auth);

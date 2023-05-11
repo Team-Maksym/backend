@@ -15,15 +15,15 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.web.server.ResponseStatusException;
-import starlight.backend.kudos.KudosService;
 import starlight.backend.kudos.model.entity.KudosEntity;
 import starlight.backend.kudos.model.response.KudosOnProof;
+import starlight.backend.kudos.service.KudosServiceInterface;
 
 import static org.mockito.Mockito.when;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.get;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @ExtendWith(MockitoExtension.class)
 @WebMvcTest(controllers = KudosController.class)
@@ -35,7 +35,7 @@ class KudosControllerTest {
     @MockBean
     private Authentication auth;
     @MockBean
-    private KudosService kudosService;
+    private KudosServiceInterface kudosService;
 
     @DisplayName("JUnit test for getKudosOnProofShouldReturnKudosOnProof")
     @Test
@@ -54,7 +54,6 @@ class KudosControllerTest {
                 /*.andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$").isNotEmpty())
                 .andExpect(jsonPath("$").value(kudosOnProof));
-
                  */
     }
 
@@ -77,7 +76,6 @@ class KudosControllerTest {
                /* .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$").isNotEmpty())
                 .andExpect(jsonPath("$").value(kudosEntity));
-
                 */
     }
 
