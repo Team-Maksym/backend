@@ -56,9 +56,11 @@ public class EmailServiceImpl implements EmailService {
     public void recoverySponsorAccount(UUID uuid) {
         DelayedDeleteEntity delayedDeleteEntity = delayDeleteRepository.findByUserDeletingProcessUuid(uuid)
                 .orElseThrow(() ->  new UserNotFoundWithUUIDException(String.valueOf(uuid)));
+        
         long sponsorId = delayedDeleteEntity.getEntityId();
         SponsorEntity sponsor = sponsorRepository.findById(sponsorId)
                 .orElseThrow(() -> new SponsorNotFoundException(sponsorId));
+        
         sponsor.setStatus(SponsorStatus.ACTIVE);
         sponsorRepository.save(sponsor);
         delayDeleteRepository.delete(delayedDeleteEntity);
