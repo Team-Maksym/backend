@@ -13,7 +13,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import starlight.backend.exception.EmailAlreadyOccupiedException;
 import starlight.backend.exception.user.sponsor.SponsorNotFoundException;
-import starlight.backend.exception.user.talent.TalentNotFoundException;
 import starlight.backend.security.MapperSecurity;
 import starlight.backend.security.model.UserDetailsImpl;
 import starlight.backend.security.model.enums.Role;
@@ -30,7 +29,6 @@ import java.time.Instant;
 import java.util.Collections;
 import java.util.stream.Collectors;
 
-import static java.lang.Long.parseLong;
 import static java.time.temporal.ChronoUnit.MINUTES;
 
 @AllArgsConstructor
