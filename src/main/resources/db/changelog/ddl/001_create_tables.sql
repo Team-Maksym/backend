@@ -170,3 +170,6 @@ CREATE TABLE skill_entity
     skill    VARCHAR(255) NULL,
     CONSTRAINT pk_skillentity PRIMARY KEY (skill_id)
 );
+
+-- changeset kate:14
+ALTER TABLE skill_entity ADD COLUMN IF NOT EXISTS category VARCHAR(255) NULL;

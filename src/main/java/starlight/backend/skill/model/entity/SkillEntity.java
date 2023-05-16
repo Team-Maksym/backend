@@ -27,6 +27,7 @@ public class SkillEntity {
     private Long skillId;
 
     private String skill;
+    private String category;
 
     @ManyToMany(mappedBy = "skills")
     @JsonBackReference
