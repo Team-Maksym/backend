@@ -4,8 +4,13 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
-import starlight.backend.exception.*;
+import starlight.backend.exception.AuthorizationFailureException;
+import starlight.backend.exception.EmailAlreadyOccupiedException;
+import starlight.backend.exception.PageNotFoundException;
+import starlight.backend.exception.YouAreInDeletingProcess;
 import starlight.backend.exception.proof.ProofNotFoundException;
+import starlight.backend.exception.proof.UserAccesDeniedToProofException;
+import starlight.backend.exception.proof.UserCanNotEditProofNotInDraftException;
 import starlight.backend.exception.user.UserNotFoundInDelayedDeleteRepository;
 import starlight.backend.exception.user.UserNotFoundWithUUIDException;
 import starlight.backend.exception.user.talent.TalentNotFoundException;
@@ -25,7 +30,6 @@ public class AdviceController {
 
     @ExceptionHandler({
             EmailAlreadyOccupiedException.class,
-            TalentAlreadyOccupiedException.class,
     })
     @ResponseStatus(HttpStatus.CONFLICT)
     public ErrorDTO alreadyIs(Exception exception) {

@@ -29,6 +29,7 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+
 @AllArgsConstructor
 @Service
 @Transactional
@@ -58,4 +59,81 @@ public class SkillServiceImpl implements SkillServiceInterface {
         return skillMapper.toSkillListWithPagination(sortedSkills, skillRepository.count());
     }
 
+    @Override
+    public ProofWithSkills addSkillInYourProof(long talentId, long proofId,
+                                               Authentication auth, AddSkill skills) {
+        if (!securityService.checkingLoggedAndToken(talentId, auth)) {
+            throw new UserAccesDeniedToProofException();
+        }
+        if (!proofRepository.existsByUser_UserIdAndProofId(talentId, proofId)) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "don`t have that talent");
+        }
+        var proof = proofRepository.findById(proofId)
+                .orElseThrow(() -> new ProofNotFoundException(proofId));
+        if (!proof.getStatus().equals(Status.DRAFT)) {
+            throw new UserCanNotEditProofNotInDraftException();
+        } else {
+            proof.setSkills(existsSkill(
+                    proof.getSkills(),
+                    skills.skills()));
+            proofRepository.save(proof);
+        }
+        return skillMapper.toProofWithSkills(proof);
+    }
+
+    @Override
+    public SkillList getListSkillsOfProof(long proofId) {
+        var proof = proofRepository.findById(proofId)
+                .orElseThrow(() -> new ProofNotFoundException(proofId));
+        return skillMapper.toSkillList(proof.getSkills().stream().toList());
+    }
+
+    private Set<SkillEntity> existsSkill(Set<SkillEntity> proofSkill,
+                                         List<String> skills) {
+        if (skills != null && !skills.isEmpty()) {
+            Set<SkillEntity> newSkills = skills.stream()
+                    .map(skill -> {
+                        if (skill != null) {
+                            return skillValidation(skill);
+                        }
+                        return null;
+                    })
+                    .filter(Objects::nonNull)
+                    .collect(Collectors.toSet());
+            newSkills.addAll(proofSkill);
+            return newSkills;
+        }
+        return proofSkill;
+    }
+
+    private SkillEntity skillValidation(String skill) {
+        SkillEntity skillEntity;
+        if (skillRepository.existsBySkillIgnoreCase(skill)) {
+            skillEntity = skillRepository.findBySkillIgnoreCase(skill);
+        } else {
+            skillEntity = new SkillEntity(skill);
+        }
+        return skillEntity;
+    }
+
+    @Override
+    public void deleteSkill(long talentId, long proofId, long skillId, Authentication auth) {
+        if (!securityService.checkingLoggedAndToken(talentId, auth)) {
+            throw new UserAccesDeniedToProofException();
+        }
+        if (!skillRepository.existsBySkillIdAndProofs_ProofIdAndProofs_User_UserId(skillId, proofId, talentId)) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "don`t found skill by talentId and proofId!");
+        }
+        var skill = skillRepository.findBySkillIdAndProofs_ProofIdAndProofs_User_UserId(skillId, proofId, talentId);
+        var proof = proofRepository.findById(proofId)
+                .orElseThrow(() -> new ProofNotFoundException(proofId));
+        if (skill.getProofs().size() == 1) {
+            skill.setProofs(null);
+            proof.getSkills().remove(skill);
+            skillRepository.delete(skill);
+        } else {
+            proof.getSkills().remove(skill);
+        }
+    }
 }
+
