@@ -20,7 +20,6 @@ public interface ProofMapper {
                 .status(proof.getStatus())
                 .build();
     }
-
     default ProofPagePagination toProofPagePagination(Page<ProofEntity> proofs) {
         return ProofPagePagination.builder()
                 .total(proofs.getTotalElements())

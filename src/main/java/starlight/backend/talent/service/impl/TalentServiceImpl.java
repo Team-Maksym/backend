@@ -12,7 +12,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 import starlight.backend.exception.PageNotFoundException;
-import starlight.backend.exception.TalentNotFoundException;
+import starlight.backend.exception.user.UserNotFoundException;
+import starlight.backend.exception.user.talent.TalentNotFoundException;
+import starlight.backend.proof.ProofRepository;
+import starlight.backend.proof.model.entity.ProofEntity;
 import starlight.backend.security.service.SecurityServiceInterface;
 import starlight.backend.talent.MapperTalent;
 import starlight.backend.talent.model.request.TalentUpdateRequest;
@@ -35,16 +38,15 @@ import java.util.stream.Collectors;
 @Transactional
 public class TalentServiceImpl implements TalentServiceInterface {
     private MapperTalent mapper;
-    private UserRepository repository;
+    private UserRepository userRepository;
     private PositionRepository positionRepository;
     private SecurityServiceInterface securityService;
+    private ProofRepository proofRepository;
     private PasswordEncoder passwordEncoder;
-    @PersistenceContext
-    private EntityManager em;
 
     @Override
     public TalentPagePagination talentPagination(int page, int size) {
-        var pageRequest = repository.findAll(
+        var pageRequest = userRepository.findAll(
                 PageRequest.of(page, size, Sort.by("userId").descending())
         );
         if (page >= pageRequest.getTotalPages())
@@ -53,19 +55,18 @@ public class TalentServiceImpl implements TalentServiceInterface {
     }
 
     @Override
-    public Optional<TalentFullInfo> talentFullInfo(long id) {
-        return Optional.of(repository.findById(id)
+    public TalentFullInfo talentFullInfo(long id) {
+        return userRepository.findById(id)
                 .map(mapper::toTalentFullInfo)
-                .orElseThrow(() -> new TalentNotFoundException(id)));
+                .orElseThrow(() -> new TalentNotFoundException(id));
     }
-
 
     @Override
     public TalentFullInfo updateTalentProfile(long id, TalentUpdateRequest talentUpdateRequest, Authentication auth) {
         if (!securityService.checkingLoggedAndToken(id, auth)) {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "you cannot change another talent");
         }
-        return repository.findById(id).map(talent -> {
+        return userRepository.findById(id).map(talent -> {
             talent.setFullName(validationField(
                     talentUpdateRequest.fullName(),
                     talent.getFullName()));
@@ -89,7 +90,7 @@ public class TalentServiceImpl implements TalentServiceInterface {
             talent.setPositions(validationPosition(
                     talent.getPositions(),
                     talentUpdateRequest.positions()));
-            repository.save(talent);
+            userRepository.save(talent);
             return mapper.toTalentFullInfo(talent);
         }).orElseThrow(() -> new TalentNotFoundException(id));
     }
@@ -121,7 +122,6 @@ public class TalentServiceImpl implements TalentServiceInterface {
             return !newPosition.isEmpty() ? newPosition : talentPositions;
         }
         return talentPositions;
-
     }
 
     @Override
@@ -129,8 +129,17 @@ public class TalentServiceImpl implements TalentServiceInterface {
         if (!securityService.checkingLoggedAndToken(talentId, auth)) {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "you cannot delete another talent");
         }
-        UserEntity user = em.find(UserEntity.class, talentId);
+        UserEntity user = userRepository.findById(talentId)
+                .orElseThrow(() -> new UserNotFoundException(talentId));
         user.setPositions(null);
-        em.remove(user);
+        user.getAuthorities().clear();
+        if (!user.getProofs().isEmpty()) {
+            for (ProofEntity proof : proofRepository.findByUser_UserId(talentId)) {
+                proof.setUser(null);
+                proofRepository.deleteById(proof.getProofId());
+            }
+        }
+        user.getProofs().clear();
+        userRepository.deleteById(user.getUserId());
     }
 }

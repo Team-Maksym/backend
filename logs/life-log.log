@@ -277,3 +277,879 @@
 2023-04-18T18:50:26.872+02:00  INFO 27164 --- [SpringApplicationShutdownHook] j.LocalContainerEntityManagerFactoryBean : Closing JPA EntityManagerFactory for persistence unit 'default'
 2023-04-18T18:50:26.877+02:00  INFO 27164 --- [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown initiated...
 2023-04-18T18:50:26.882+02:00  INFO 27164 --- [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown completed.
+2023-05-16T14:52:37.549+03:00  INFO 12044 --- [restartedMain] starlight.backend.StarlightApplication   : Starting StarlightApplication using Java 19.0.2 with PID 12044 (C:\Users\User\Desktop\backend\target\classes started by User in C:\Users\User\Desktop\backend)
+2023-05-16T14:52:37.552+03:00  INFO 12044 --- [restartedMain] starlight.backend.StarlightApplication   : The following 1 profile is active: "dev"
+2023-05-16T14:52:37.684+03:00  INFO 12044 --- [restartedMain] .e.DevToolsPropertyDefaultsPostProcessor : Devtools property defaults active! Set 'spring.devtools.add-properties' to 'false' to disable
+2023-05-16T14:52:37.685+03:00  INFO 12044 --- [restartedMain] .e.DevToolsPropertyDefaultsPostProcessor : For additional web related logging consider setting the 'logging.level.web' property to 'DEBUG'
+2023-05-16T14:52:40.135+03:00  INFO 12044 --- [restartedMain] .s.d.r.c.RepositoryConfigurationDelegate : Multiple Spring Data modules found, entering strict repository configuration mode
+2023-05-16T14:52:40.137+03:00  INFO 12044 --- [restartedMain] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JDBC repositories in DEFAULT mode.
+2023-05-16T14:52:40.186+03:00  INFO 12044 --- [restartedMain] .RepositoryConfigurationExtensionSupport : Spring Data JDBC - Could not safely identify store assignment for repository candidate interface starlight.backend.proof.ProofRepository; If you want this repository to be a JDBC repository, consider annotating your entities with one of these annotations: org.springframework.data.relational.core.mapping.Table.
+2023-05-16T14:52:40.188+03:00  INFO 12044 --- [restartedMain] .RepositoryConfigurationExtensionSupport : Spring Data JDBC - Could not safely identify store assignment for repository candidate interface starlight.backend.user.repository.PositionRepository; If you want this repository to be a JDBC repository, consider annotating your entities with one of these annotations: org.springframework.data.relational.core.mapping.Table.
+2023-05-16T14:52:40.189+03:00  INFO 12044 --- [restartedMain] .RepositoryConfigurationExtensionSupport : Spring Data JDBC - Could not safely identify store assignment for repository candidate interface starlight.backend.user.repository.UserRepository; If you want this repository to be a JDBC repository, consider annotating your entities with one of these annotations: org.springframework.data.relational.core.mapping.Table.
+2023-05-16T14:52:40.191+03:00  INFO 12044 --- [restartedMain] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 48 ms. Found 0 JDBC repository interfaces.
+2023-05-16T14:52:40.204+03:00  INFO 12044 --- [restartedMain] .s.d.r.c.RepositoryConfigurationDelegate : Multiple Spring Data modules found, entering strict repository configuration mode
+2023-05-16T14:52:40.205+03:00  INFO 12044 --- [restartedMain] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2023-05-16T14:52:40.260+03:00  INFO 12044 --- [restartedMain] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 50 ms. Found 3 JPA repository interfaces.
+2023-05-16T14:52:41.287+03:00  INFO 12044 --- [restartedMain] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port(s): 8082 (http)
+2023-05-16T14:52:41.303+03:00  INFO 12044 --- [restartedMain] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2023-05-16T14:52:41.304+03:00  INFO 12044 --- [restartedMain] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/10.1.5]
+2023-05-16T14:52:41.388+03:00  INFO 12044 --- [restartedMain] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
+2023-05-16T14:52:41.389+03:00  INFO 12044 --- [restartedMain] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 3703 ms
+2023-05-16T14:52:41.567+03:00  INFO 12044 --- [restartedMain] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2023-05-16T14:52:41.830+03:00  INFO 12044 --- [restartedMain] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection conn0: url=jdbc:h2:mem:/sampleDB user=SA
+2023-05-16T14:52:41.833+03:00  INFO 12044 --- [restartedMain] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2023-05-16T14:52:41.847+03:00  INFO 12044 --- [restartedMain] o.s.b.a.h2.H2ConsoleAutoConfiguration    : H2 console available at '/h2'. Database available at 'jdbc:h2:mem:/sampleDB'
+2023-05-16T14:52:42.132+03:00  INFO 12044 --- [restartedMain] liquibase.database                       : Set default schema name to PUBLIC
+2023-05-16T14:52:42.333+03:00  INFO 12044 --- [restartedMain] liquibase.lockservice                    : Successfully acquired change log lock
+2023-05-16T14:52:42.708+03:00  INFO 12044 --- [restartedMain] liquibase.changelog                      : Creating database history table with name: PUBLIC.DATABASECHANGELOG
+2023-05-16T14:52:42.713+03:00  INFO 12044 --- [restartedMain] liquibase.changelog                      : Reading from PUBLIC.DATABASECHANGELOG
+2023-05-16T14:52:42.781+03:00  INFO 12044 --- [restartedMain] liquibase.changelog                      : ChangeSet classpath:/db/changelog/db.changelog-master.yaml::1::kate ran successfully in 0ms
+2023-05-16T14:52:42.830+03:00  INFO 12044 --- [restartedMain] liquibase.changelog                      : Custom SQL executed
+2023-05-16T14:52:42.831+03:00  INFO 12044 --- [restartedMain] liquibase.changelog                      : ChangeSet db/changelog/ddl/001_create_tables.sql::1::kate ran successfully in 44ms
+2023-05-16T14:52:42.840+03:00  INFO 12044 --- [restartedMain] liquibase.changelog                      : Custom SQL executed
+2023-05-16T14:52:42.841+03:00  INFO 12044 --- [restartedMain] liquibase.changelog                      : ChangeSet db/changelog/ddl/001_create_tables.sql::2::kate ran successfully in 8ms
+2023-05-16T14:52:42.867+03:00  INFO 12044 --- [restartedMain] liquibase.changelog                      : Custom SQL executed
+2023-05-16T14:52:42.869+03:00  INFO 12044 --- [restartedMain] liquibase.changelog                      : ChangeSet db/changelog/dml/001_insert_data_user.sql::inset-user-01::kate ran successfully in 25ms
+2023-05-16T14:52:42.888+03:00  INFO 12044 --- [restartedMain] liquibase.changelog                      : Custom SQL executed
+2023-05-16T14:52:42.889+03:00  INFO 12044 --- [restartedMain] liquibase.changelog                      : ChangeSet db/changelog/dml/002_insert_data_auth.sql::create-multiple-tables::kate ran successfully in 16ms
+2023-05-16T14:52:42.919+03:00  INFO 12044 --- [restartedMain] liquibase.changelog                      : Custom SQL executed
+2023-05-16T14:52:42.921+03:00  INFO 12044 --- [restartedMain] liquibase.changelog                      : ChangeSet db/changelog/dml/003_insert_data_position.sql::inset-position-01::kate ran successfully in 30ms
+2023-05-16T14:52:42.927+03:00  INFO 12044 --- [restartedMain] liquibase.changelog                      : ChangeSet classpath:/db/changelog/db.changelog-master.yaml::2::kate ran successfully in 0ms
+2023-05-16T14:52:42.970+03:00  INFO 12044 --- [restartedMain] liquibase.changelog                      : Custom SQL executed
+2023-05-16T14:52:42.978+03:00  INFO 12044 --- [restartedMain] liquibase.changelog                      : ChangeSet db/changelog/dml/004_insert_data_proof.sql::inset-proof-01::kate ran successfully in 48ms
+2023-05-16T14:52:42.987+03:00  INFO 12044 --- [restartedMain] liquibase.lockservice                    : Successfully released change log lock
+2023-05-16T14:52:43.100+03:00  INFO 12044 --- [restartedMain] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [name: default]
+2023-05-16T14:52:43.177+03:00  INFO 12044 --- [restartedMain] org.hibernate.Version                    : HHH000412: Hibernate ORM core version 6.1.7.Final
+2023-05-16T14:52:43.565+03:00  INFO 12044 --- [restartedMain] SQL dialect                              : HHH000400: Using dialect: org.hibernate.dialect.PostgreSQLDialect
+2023-05-16T14:52:44.938+03:00  INFO 12044 --- [restartedMain] o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000490: Using JtaPlatform implementation: [org.hibernate.engine.transaction.jta.platform.internal.NoJtaPlatform]
+2023-05-16T14:52:44.951+03:00  INFO 12044 --- [restartedMain] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2023-05-16T14:52:47.370+03:00  WARN 12044 --- [restartedMain] JpaBaseConfiguration$JpaWebConfiguration : spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2023-05-16T14:52:47.983+03:00  INFO 12044 --- [restartedMain] o.s.b.a.e.web.EndpointLinksResolver      : Exposing 4 endpoint(s) beneath base path '/actuator'
+2023-05-16T14:52:48.122+03:00  INFO 12044 --- [restartedMain] o.s.s.web.DefaultSecurityFilterChain     : Will secure any request with [org.springframework.security.web.session.DisableEncodeUrlFilter@fb44b67, org.springframework.security.web.context.request.async.WebAsyncManagerIntegrationFilter@65d83a1b, org.springframework.security.web.context.SecurityContextHolderFilter@1ca8f306, org.springframework.security.web.header.HeaderWriterFilter@6f990364, org.springframework.web.filter.CorsFilter@6a26208a, org.springframework.security.web.authentication.logout.LogoutFilter@3a230af1, org.springframework.security.oauth2.server.resource.web.authentication.BearerTokenAuthenticationFilter@570b0f4d, org.springframework.security.web.authentication.www.BasicAuthenticationFilter@3ae09cb3, org.springframework.security.web.savedrequest.RequestCacheAwareFilter@1e1ed497, org.springframework.security.web.servletapi.SecurityContextHolderAwareRequestFilter@5ead1e41, org.springframework.security.web.authentication.AnonymousAuthenticationFilter@78945a49, org.springframework.security.web.session.SessionManagementFilter@14dfba2b, org.springframework.security.web.access.ExceptionTranslationFilter@5b0fa0ae, org.springframework.security.web.access.intercept.AuthorizationFilter@6e83e6c5]
+2023-05-16T14:52:48.797+03:00  INFO 12044 --- [restartedMain] o.s.b.d.a.OptionalLiveReloadServer       : LiveReload server is running on port 35729
+2023-05-16T14:52:48.930+03:00  INFO 12044 --- [restartedMain] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port(s): 8082 (http) with context path ''
+2023-05-16T14:52:48.954+03:00  INFO 12044 --- [restartedMain] starlight.backend.StarlightApplication   : Started StarlightApplication in 12.229 seconds (process running for 13.847)
+2023-05-16T14:53:36.491+03:00  INFO 12044 --- [SpringApplicationShutdownHook] j.LocalContainerEntityManagerFactoryBean : Closing JPA EntityManagerFactory for persistence unit 'default'
+2023-05-16T14:53:36.875+03:00  WARN 12044 --- [SpringApplicationShutdownHook] o.s.b.f.support.DisposableBeanAdapter    : Invocation of destroy method failed on bean with name 'inMemoryDatabaseShutdownExecutor': org.h2.jdbc.JdbcSQLNonTransientConnectionException: База данных уже закрыта (чтобы отключить автоматическое закрытие базы данных при останове JVM, добавьте ";DB_CLOSE_ON_EXIT=FALSE" в URL)
+Database is already closed (to disable automatic closing at VM shutdown, add ";DB_CLOSE_ON_EXIT=FALSE" to the db URL) [90121-214]
+2023-05-16T14:53:36.877+03:00  INFO 12044 --- [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown initiated...
+2023-05-16T14:53:37.037+03:00  INFO 12044 --- [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown completed.
+2023-05-16T15:31:17.840+03:00  INFO 6324 --- [restartedMain] starlight.backend.StarlightApplication   : Starting StarlightApplication using Java 19.0.2 with PID 6324 (C:\Users\User\Desktop\backend\target\classes started by User in C:\Users\User\Desktop\backend)
+2023-05-16T15:31:17.844+03:00  INFO 6324 --- [restartedMain] starlight.backend.StarlightApplication   : The following 1 profile is active: "dev"
+2023-05-16T15:31:17.972+03:00  INFO 6324 --- [restartedMain] .e.DevToolsPropertyDefaultsPostProcessor : Devtools property defaults active! Set 'spring.devtools.add-properties' to 'false' to disable
+2023-05-16T15:31:17.972+03:00  INFO 6324 --- [restartedMain] .e.DevToolsPropertyDefaultsPostProcessor : For additional web related logging consider setting the 'logging.level.web' property to 'DEBUG'
+2023-05-16T15:31:20.978+03:00  INFO 6324 --- [restartedMain] .s.d.r.c.RepositoryConfigurationDelegate : Multiple Spring Data modules found, entering strict repository configuration mode
+2023-05-16T15:31:20.981+03:00  INFO 6324 --- [restartedMain] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JDBC repositories in DEFAULT mode.
+2023-05-16T15:31:21.045+03:00  INFO 6324 --- [restartedMain] .RepositoryConfigurationExtensionSupport : Spring Data JDBC - Could not safely identify store assignment for repository candidate interface starlight.backend.proof.ProofRepository; If you want this repository to be a JDBC repository, consider annotating your entities with one of these annotations: org.springframework.data.relational.core.mapping.Table.
+2023-05-16T15:31:21.047+03:00  INFO 6324 --- [restartedMain] .RepositoryConfigurationExtensionSupport : Spring Data JDBC - Could not safely identify store assignment for repository candidate interface starlight.backend.skill.repository.SkillRepository; If you want this repository to be a JDBC repository, consider annotating your entities with one of these annotations: org.springframework.data.relational.core.mapping.Table.
+2023-05-16T15:31:21.049+03:00  INFO 6324 --- [restartedMain] .RepositoryConfigurationExtensionSupport : Spring Data JDBC - Could not safely identify store assignment for repository candidate interface starlight.backend.user.repository.PositionRepository; If you want this repository to be a JDBC repository, consider annotating your entities with one of these annotations: org.springframework.data.relational.core.mapping.Table.
+2023-05-16T15:31:21.050+03:00  INFO 6324 --- [restartedMain] .RepositoryConfigurationExtensionSupport : Spring Data JDBC - Could not safely identify store assignment for repository candidate interface starlight.backend.user.repository.UserRepository; If you want this repository to be a JDBC repository, consider annotating your entities with one of these annotations: org.springframework.data.relational.core.mapping.Table.
+2023-05-16T15:31:21.051+03:00  INFO 6324 --- [restartedMain] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 64 ms. Found 0 JDBC repository interfaces.
+2023-05-16T15:31:21.067+03:00  INFO 6324 --- [restartedMain] .s.d.r.c.RepositoryConfigurationDelegate : Multiple Spring Data modules found, entering strict repository configuration mode
+2023-05-16T15:31:21.069+03:00  INFO 6324 --- [restartedMain] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2023-05-16T15:31:21.145+03:00  INFO 6324 --- [restartedMain] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 69 ms. Found 4 JPA repository interfaces.
+2023-05-16T15:31:22.246+03:00  INFO 6324 --- [restartedMain] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port(s): 8082 (http)
+2023-05-16T15:31:22.262+03:00  INFO 6324 --- [restartedMain] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2023-05-16T15:31:22.263+03:00  INFO 6324 --- [restartedMain] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/10.1.5]
+2023-05-16T15:31:22.365+03:00  INFO 6324 --- [restartedMain] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
+2023-05-16T15:31:22.366+03:00  INFO 6324 --- [restartedMain] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 4393 ms
+2023-05-16T15:31:22.578+03:00  INFO 6324 --- [restartedMain] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2023-05-16T15:31:22.944+03:00  INFO 6324 --- [restartedMain] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection conn0: url=jdbc:h2:file:./sampleDB user=
+2023-05-16T15:31:22.946+03:00  INFO 6324 --- [restartedMain] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2023-05-16T15:31:22.964+03:00  INFO 6324 --- [restartedMain] o.s.b.a.h2.H2ConsoleAutoConfiguration    : H2 console available at '/h2'. Database available at 'jdbc:h2:file:./sampleDB'
+2023-05-16T15:31:23.282+03:00  INFO 6324 --- [restartedMain] liquibase.database                       : Set default schema name to PUBLIC
+2023-05-16T15:31:23.531+03:00  INFO 6324 --- [restartedMain] liquibase.lockservice                    : Successfully acquired change log lock
+2023-05-16T15:31:24.048+03:00  INFO 6324 --- [restartedMain] liquibase.changelog                      : Creating database history table with name: PUBLIC.DATABASECHANGELOG
+2023-05-16T15:31:24.053+03:00  INFO 6324 --- [restartedMain] liquibase.changelog                      : Reading from PUBLIC.DATABASECHANGELOG
+2023-05-16T15:31:24.128+03:00  INFO 6324 --- [restartedMain] liquibase.changelog                      : ChangeSet classpath:/db/changelog/db.changelog-master.yaml::1::kate ran successfully in 0ms
+2023-05-16T15:31:24.175+03:00  INFO 6324 --- [restartedMain] liquibase.changelog                      : Custom SQL executed
+2023-05-16T15:31:24.176+03:00  INFO 6324 --- [restartedMain] liquibase.changelog                      : ChangeSet db/changelog/ddl/001_create_tables.sql::1::kate ran successfully in 41ms
+2023-05-16T15:31:24.185+03:00  INFO 6324 --- [restartedMain] liquibase.changelog                      : Custom SQL executed
+2023-05-16T15:31:24.186+03:00  INFO 6324 --- [restartedMain] liquibase.changelog                      : ChangeSet db/changelog/ddl/001_create_tables.sql::2::kate ran successfully in 8ms
+2023-05-16T15:31:24.198+03:00  INFO 6324 --- [restartedMain] liquibase.changelog                      : Custom SQL executed
+2023-05-16T15:31:24.199+03:00  INFO 6324 --- [restartedMain] liquibase.changelog                      : ChangeSet db/changelog/ddl/001_create_tables.sql::3::sasha ran successfully in 9ms
+2023-05-16T15:31:24.205+03:00  INFO 6324 --- [restartedMain] liquibase.changelog                      : Custom SQL executed
+2023-05-16T15:31:24.205+03:00  INFO 6324 --- [restartedMain] liquibase.changelog                      : ChangeSet db/changelog/ddl/001_create_tables.sql::5::kate ran successfully in 4ms
+2023-05-16T15:31:24.231+03:00  INFO 6324 --- [restartedMain] liquibase.changelog                      : Custom SQL executed
+2023-05-16T15:31:24.233+03:00  INFO 6324 --- [restartedMain] liquibase.changelog                      : ChangeSet db/changelog/ddl/001_create_tables.sql::6::kate ran successfully in 26ms
+2023-05-16T15:31:24.239+03:00  INFO 6324 --- [restartedMain] liquibase.changelog                      : Custom SQL executed
+2023-05-16T15:31:24.240+03:00  INFO 6324 --- [restartedMain] liquibase.changelog                      : ChangeSet db/changelog/ddl/001_create_tables.sql::7::sasha ran successfully in 4ms
+2023-05-16T15:31:24.254+03:00  INFO 6324 --- [restartedMain] liquibase.changelog                      : Custom SQL executed
+2023-05-16T15:31:24.255+03:00  INFO 6324 --- [restartedMain] liquibase.changelog                      : ChangeSet db/changelog/ddl/001_create_tables.sql::8::kate ran successfully in 12ms
+2023-05-16T15:31:24.279+03:00  INFO 6324 --- [restartedMain] liquibase.changelog                      : Custom SQL executed
+2023-05-16T15:31:24.279+03:00  INFO 6324 --- [restartedMain] liquibase.changelog                      : ChangeSet db/changelog/ddl/001_create_tables.sql::9::serhii ran successfully in 16ms
+2023-05-16T15:31:24.322+03:00  INFO 6324 --- [restartedMain] liquibase.changelog                      : Custom SQL executed
+2023-05-16T15:31:24.325+03:00  INFO 6324 --- [restartedMain] liquibase.changelog                      : ChangeSet db/changelog/ddl/001_create_tables.sql::12::serhii ran successfully in 19ms
+2023-05-16T15:31:24.339+03:00  INFO 6324 --- [restartedMain] liquibase.changelog                      : Custom SQL executed
+2023-05-16T15:31:24.340+03:00  INFO 6324 --- [restartedMain] liquibase.changelog                      : ChangeSet db/changelog/ddl/001_create_tables.sql::13::kate ran successfully in 9ms
+2023-05-16T15:31:24.405+03:00  INFO 6324 --- [restartedMain] liquibase.changelog                      : Custom SQL executed
+2023-05-16T15:31:24.407+03:00  INFO 6324 --- [restartedMain] liquibase.changelog                      : ChangeSet db/changelog/dml/001_insert_data_user.sql::inset-user-01::kate ran successfully in 59ms
+2023-05-16T15:31:24.428+03:00  INFO 6324 --- [restartedMain] liquibase.changelog                      : Custom SQL executed
+2023-05-16T15:31:24.429+03:00  INFO 6324 --- [restartedMain] liquibase.changelog                      : ChangeSet db/changelog/dml/002_insert_data_auth.sql::create-multiple-tables::kate ran successfully in 19ms
+2023-05-16T15:31:24.449+03:00  INFO 6324 --- [restartedMain] liquibase.changelog                      : Custom SQL executed
+2023-05-16T15:31:24.450+03:00  INFO 6324 --- [restartedMain] liquibase.changelog                      : ChangeSet db/changelog/dml/003_insert_data_position.sql::inset-position-01::kate ran successfully in 18ms
+2023-05-16T15:31:24.452+03:00  INFO 6324 --- [restartedMain] liquibase.changelog                      : ChangeSet classpath:/db/changelog/db.changelog-master.yaml::2::kate ran successfully in 0ms
+2023-05-16T15:31:24.492+03:00  INFO 6324 --- [restartedMain] liquibase.changelog                      : Custom SQL executed
+2023-05-16T15:31:24.493+03:00  INFO 6324 --- [restartedMain] liquibase.changelog                      : ChangeSet db/changelog/dml/004_insert_data_proof.sql::inset-proof-01::kate ran successfully in 40ms
+2023-05-16T15:31:24.497+03:00  INFO 6324 --- [restartedMain] liquibase.changelog                      : ChangeSet classpath:/db/changelog/db.changelog-master.yaml::3::sasha ran successfully in 0ms
+2023-05-16T15:31:24.500+03:00  INFO 6324 --- [restartedMain] liquibase.changelog                      : ChangeSet classpath:/db/changelog/db.changelog-master.yaml::4::kate ran successfully in 0ms
+2023-05-16T15:31:24.503+03:00  INFO 6324 --- [restartedMain] liquibase.changelog                      : ChangeSet classpath:/db/changelog/db.changelog-master.yaml::5::kate ran successfully in 0ms
+2023-05-16T15:31:24.506+03:00  INFO 6324 --- [restartedMain] liquibase.changelog                      : ChangeSet classpath:/db/changelog/db.changelog-master.yaml::6::kate ran successfully in 0ms
+2023-05-16T15:31:24.516+03:00  INFO 6324 --- [restartedMain] liquibase.changelog                      : Custom SQL executed
+2023-05-16T15:31:24.516+03:00  INFO 6324 --- [restartedMain] liquibase.changelog                      : ChangeSet db/changelog/dml/006_insert_data_sponsor.sql::inset-sponsor-06::kate ran successfully in 7ms
+2023-05-16T15:31:24.521+03:00  INFO 6324 --- [restartedMain] liquibase.changelog                      : Custom SQL executed
+2023-05-16T15:31:24.528+03:00  INFO 6324 --- [restartedMain] liquibase.changelog                      : ChangeSet db/changelog/dml/006_insert_data_sponsor.sql::11::serhii ran successfully in 9ms
+2023-05-16T15:31:24.536+03:00  INFO 6324 --- [restartedMain] liquibase.changelog                      : Custom SQL executed
+2023-05-16T15:31:24.536+03:00  INFO 6324 --- [restartedMain] liquibase.changelog                      : ChangeSet db/changelog/dml/006_insert_data_sponsor.sql::12::serhii ran successfully in 4ms
+2023-05-16T15:31:24.543+03:00  INFO 6324 --- [restartedMain] liquibase.changelog                      : ChangeSet classpath:/db/changelog/db.changelog-master.yaml::7::sasha ran successfully in 0ms
+2023-05-16T15:31:24.557+03:00  INFO 6324 --- [restartedMain] liquibase.changelog                      : Custom SQL executed
+2023-05-16T15:31:24.559+03:00  INFO 6324 --- [restartedMain] liquibase.changelog                      : ChangeSet db/changelog/dml/007_insert_data_kudos_updated.sql::inset-kudos-07::sasha ran successfully in 12ms
+2023-05-16T15:31:24.571+03:00  INFO 6324 --- [restartedMain] liquibase.changelog                      : Custom SQL executed
+2023-05-16T15:31:24.572+03:00  INFO 6324 --- [restartedMain] liquibase.changelog                      : ChangeSet db/changelog/dml/007_insert_data_kudos_updated.sql::9::sasha ran successfully in 10ms
+2023-05-16T15:31:24.576+03:00  INFO 6324 --- [restartedMain] liquibase.changelog                      : ChangeSet classpath:/db/changelog/db.changelog-master.yaml::8::kate ran successfully in 1ms
+2023-05-16T15:31:24.578+03:00  INFO 6324 --- [restartedMain] liquibase.changelog                      : ChangeSet classpath:/db/changelog/db.changelog-master.yaml::9::sasha ran successfully in 0ms
+2023-05-16T15:31:24.581+03:00  INFO 6324 --- [restartedMain] liquibase.changelog                      : ChangeSet classpath:/db/changelog/db.changelog-master.yaml::10::serhii ran successfully in 0ms
+2023-05-16T15:31:24.583+03:00  INFO 6324 --- [restartedMain] liquibase.changelog                      : ChangeSet classpath:/db/changelog/db.changelog-master.yaml::11::serhii ran successfully in 0ms
+2023-05-16T15:31:24.585+03:00  INFO 6324 --- [restartedMain] liquibase.changelog                      : ChangeSet classpath:/db/changelog/db.changelog-master.yaml::12::serhii ran successfully in 0ms
+2023-05-16T15:31:24.587+03:00  INFO 6324 --- [restartedMain] liquibase.changelog                      : ChangeSet classpath:/db/changelog/db.changelog-master.yaml::13::kate ran successfully in 0ms
+2023-05-16T15:31:24.645+03:00  INFO 6324 --- [restartedMain] liquibase.changelog                      : Custom SQL executed
+2023-05-16T15:31:24.647+03:00  INFO 6324 --- [restartedMain] liquibase.changelog                      : ChangeSet db/changelog/dml/008_insert_data_skill.sql::create-multiple-tables-skill::kate ran successfully in 54ms
+2023-05-16T15:31:24.650+03:00  INFO 6324 --- [restartedMain] liquibase.changelog                      : ChangeSet classpath:/db/changelog/db.changelog-master.yaml::14::kate ran successfully in 1ms
+2023-05-16T15:31:24.652+03:00  INFO 6324 --- [restartedMain] liquibase.lockservice                    : Successfully released change log lock
+2023-05-16T15:31:24.819+03:00  INFO 6324 --- [restartedMain] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [name: default]
+2023-05-16T15:31:24.903+03:00  INFO 6324 --- [restartedMain] org.hibernate.Version                    : HHH000412: Hibernate ORM core version 6.1.7.Final
+2023-05-16T15:31:25.329+03:00  INFO 6324 --- [restartedMain] SQL dialect                              : HHH000400: Using dialect: org.hibernate.dialect.PostgreSQLDialect
+2023-05-16T15:31:26.709+03:00  INFO 6324 --- [restartedMain] o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000490: Using JtaPlatform implementation: [org.hibernate.engine.transaction.jta.platform.internal.NoJtaPlatform]
+2023-05-16T15:31:26.725+03:00  INFO 6324 --- [restartedMain] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2023-05-16T15:31:29.357+03:00  INFO 6324 --- [restartedMain] o.s.b.a.e.web.EndpointLinksResolver      : Exposing 4 endpoint(s) beneath base path '/actuator'
+2023-05-16T15:31:29.547+03:00  INFO 6324 --- [restartedMain] o.s.s.web.DefaultSecurityFilterChain     : Will secure any request with [org.springframework.security.web.session.DisableEncodeUrlFilter@78942a12, org.springframework.security.web.context.request.async.WebAsyncManagerIntegrationFilter@466c7aad, org.springframework.security.web.context.SecurityContextHolderFilter@2ee3d6f6, org.springframework.security.web.header.HeaderWriterFilter@26802606, org.springframework.web.filter.CorsFilter@6ad00811, org.springframework.security.web.authentication.logout.LogoutFilter@4681640c, org.springframework.security.oauth2.server.resource.web.authentication.BearerTokenAuthenticationFilter@984a28b, org.springframework.security.web.authentication.www.BasicAuthenticationFilter@30e42a07, org.springframework.security.web.savedrequest.RequestCacheAwareFilter@216d109a, org.springframework.security.web.servletapi.SecurityContextHolderAwareRequestFilter@caac3f8, org.springframework.security.web.authentication.AnonymousAuthenticationFilter@9f5380b, org.springframework.security.web.session.SessionManagementFilter@67dff001, org.springframework.security.web.access.ExceptionTranslationFilter@2d306255, org.springframework.security.web.access.intercept.AuthorizationFilter@73b001d9]
+2023-05-16T15:31:30.404+03:00  INFO 6324 --- [restartedMain] o.s.b.d.a.OptionalLiveReloadServer       : LiveReload server is running on port 35729
+2023-05-16T15:31:30.552+03:00  INFO 6324 --- [restartedMain] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port(s): 8082 (http) with context path ''
+2023-05-16T15:31:30.578+03:00  INFO 6324 --- [restartedMain] starlight.backend.StarlightApplication   : Started StarlightApplication in 13.595 seconds (process running for 15.085)
+2023-05-16T15:31:42.028+03:00  INFO 6324 --- [http-nio-8082-exec-2] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring DispatcherServlet 'dispatcherServlet'
+2023-05-16T15:31:42.029+03:00  INFO 6324 --- [http-nio-8082-exec-2] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
+2023-05-16T15:31:42.032+03:00  INFO 6324 --- [http-nio-8082-exec-2] o.s.web.servlet.DispatcherServlet        : Completed initialization in 3 ms
+2023-05-16T15:31:42.341+03:00  INFO 6324 --- [http-nio-8082-exec-2] s.backend.security.SecurityController    : @PostMapping("/talents")
+2023-05-16T15:33:22.487+03:00  INFO 6324 --- [SpringApplicationShutdownHook] j.LocalContainerEntityManagerFactoryBean : Closing JPA EntityManagerFactory for persistence unit 'default'
+2023-05-16T15:33:22.498+03:00  INFO 6324 --- [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown initiated...
+2023-05-16T15:33:22.503+03:00  INFO 6324 --- [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown completed.
+2023-05-16T15:33:58.208+03:00  INFO 8160 --- [restartedMain] starlight.backend.StarlightApplication   : Starting StarlightApplication using Java 19.0.2 with PID 8160 (C:\Users\User\Desktop\backend\target\classes started by User in C:\Users\User\Desktop\backend)
+2023-05-16T15:33:58.211+03:00  INFO 8160 --- [restartedMain] starlight.backend.StarlightApplication   : The following 1 profile is active: "dev"
+2023-05-16T15:33:58.333+03:00  INFO 8160 --- [restartedMain] .e.DevToolsPropertyDefaultsPostProcessor : Devtools property defaults active! Set 'spring.devtools.add-properties' to 'false' to disable
+2023-05-16T15:33:58.334+03:00  INFO 8160 --- [restartedMain] .e.DevToolsPropertyDefaultsPostProcessor : For additional web related logging consider setting the 'logging.level.web' property to 'DEBUG'
+2023-05-16T15:34:01.238+03:00  INFO 8160 --- [restartedMain] .s.d.r.c.RepositoryConfigurationDelegate : Multiple Spring Data modules found, entering strict repository configuration mode
+2023-05-16T15:34:01.240+03:00  INFO 8160 --- [restartedMain] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JDBC repositories in DEFAULT mode.
+2023-05-16T15:34:01.300+03:00  INFO 8160 --- [restartedMain] .RepositoryConfigurationExtensionSupport : Spring Data JDBC - Could not safely identify store assignment for repository candidate interface starlight.backend.proof.ProofRepository; If you want this repository to be a JDBC repository, consider annotating your entities with one of these annotations: org.springframework.data.relational.core.mapping.Table.
+2023-05-16T15:34:01.302+03:00  INFO 8160 --- [restartedMain] .RepositoryConfigurationExtensionSupport : Spring Data JDBC - Could not safely identify store assignment for repository candidate interface starlight.backend.skill.repository.SkillRepository; If you want this repository to be a JDBC repository, consider annotating your entities with one of these annotations: org.springframework.data.relational.core.mapping.Table.
+2023-05-16T15:34:01.305+03:00  INFO 8160 --- [restartedMain] .RepositoryConfigurationExtensionSupport : Spring Data JDBC - Could not safely identify store assignment for repository candidate interface starlight.backend.user.repository.PositionRepository; If you want this repository to be a JDBC repository, consider annotating your entities with one of these annotations: org.springframework.data.relational.core.mapping.Table.
+2023-05-16T15:34:01.307+03:00  INFO 8160 --- [restartedMain] .RepositoryConfigurationExtensionSupport : Spring Data JDBC - Could not safely identify store assignment for repository candidate interface starlight.backend.user.repository.UserRepository; If you want this repository to be a JDBC repository, consider annotating your entities with one of these annotations: org.springframework.data.relational.core.mapping.Table.
+2023-05-16T15:34:01.308+03:00  INFO 8160 --- [restartedMain] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 62 ms. Found 0 JDBC repository interfaces.
+2023-05-16T15:34:01.326+03:00  INFO 8160 --- [restartedMain] .s.d.r.c.RepositoryConfigurationDelegate : Multiple Spring Data modules found, entering strict repository configuration mode
+2023-05-16T15:34:01.327+03:00  INFO 8160 --- [restartedMain] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2023-05-16T15:34:01.400+03:00  INFO 8160 --- [restartedMain] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 67 ms. Found 4 JPA repository interfaces.
+2023-05-16T15:34:02.581+03:00  INFO 8160 --- [restartedMain] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port(s): 8082 (http)
+2023-05-16T15:34:02.597+03:00  INFO 8160 --- [restartedMain] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2023-05-16T15:34:02.598+03:00  INFO 8160 --- [restartedMain] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/10.1.5]
+2023-05-16T15:34:02.703+03:00  INFO 8160 --- [restartedMain] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
+2023-05-16T15:34:02.704+03:00  INFO 8160 --- [restartedMain] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 4368 ms
+2023-05-16T15:34:02.922+03:00  INFO 8160 --- [restartedMain] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2023-05-16T15:34:03.315+03:00  INFO 8160 --- [restartedMain] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection conn0: url=jdbc:h2:file:./sampleDB user=
+2023-05-16T15:34:03.318+03:00  INFO 8160 --- [restartedMain] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2023-05-16T15:34:03.335+03:00  INFO 8160 --- [restartedMain] o.s.b.a.h2.H2ConsoleAutoConfiguration    : H2 console available at '/h2'. Database available at 'jdbc:h2:file:./sampleDB'
+2023-05-16T15:34:03.681+03:00  INFO 8160 --- [restartedMain] liquibase.database                       : Set default schema name to PUBLIC
+2023-05-16T15:34:03.916+03:00  INFO 8160 --- [restartedMain] liquibase.lockservice                    : Successfully acquired change log lock
+2023-05-16T15:34:04.470+03:00  INFO 8160 --- [restartedMain] liquibase.changelog                      : Reading from PUBLIC.DATABASECHANGELOG
+2023-05-16T15:34:04.589+03:00  INFO 8160 --- [restartedMain] liquibase.lockservice                    : Successfully released change log lock
+2023-05-16T15:34:04.591+03:00  WARN 8160 --- [restartedMain] ConfigServletWebServerApplicationContext : Exception encountered during context initialization - cancelling refresh attempt: org.springframework.beans.factory.BeanCreationException: Error creating bean with name 'liquibase' defined in class path resource [org/springframework/boot/autoconfigure/liquibase/LiquibaseAutoConfiguration$LiquibaseConfiguration.class]: liquibase.exception.MigrationFailedException: Migration failed for changeset db/changelog/ddl/001_create_tables.sql::14::kate:
+     Reason: liquibase.exception.DatabaseException: Синтаксическая ошибка в выражении SQL "CREATE OR REPLACE FUNCTION save_skill()\000a    RETURNS TRIGGER AS [*]$$\000aBEGIN\000a    INSERT INTO delete_skill VALUES (OLD.skill_id, OLD.skill, CURRENT_DATE);\000a    RETURN OLD;\000aEND"
+Syntax error in SQL statement "CREATE OR REPLACE FUNCTION save_skill()\000a    RETURNS TRIGGER AS [*]$$\000aBEGIN\000a    INSERT INTO delete_skill VALUES (OLD.skill_id, OLD.skill, CURRENT_DATE);\000a    RETURN OLD;\000aEND"; SQL statement:
+CREATE OR REPLACE FUNCTION save_skill()
+    RETURNS TRIGGER AS $$
+BEGIN
+    INSERT INTO delete_skill VALUES (OLD.skill_id, OLD.skill, CURRENT_DATE);
+    RETURN OLD;
+END [42000-214] [Failed SQL: (42000) CREATE OR REPLACE FUNCTION save_skill()
+    RETURNS TRIGGER AS $$
+BEGIN
+    INSERT INTO delete_skill VALUES (OLD.skill_id, OLD.skill, CURRENT_DATE);
+    RETURN OLD;
+END]
+2023-05-16T15:34:04.593+03:00  INFO 8160 --- [restartedMain] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown initiated...
+2023-05-16T15:34:04.676+03:00  INFO 8160 --- [restartedMain] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown completed.
+2023-05-16T15:34:04.680+03:00  INFO 8160 --- [restartedMain] o.apache.catalina.core.StandardService   : Stopping service [Tomcat]
+2023-05-16T15:34:04.715+03:00  INFO 8160 --- [restartedMain] .s.b.a.l.ConditionEvaluationReportLogger : 
+
+Error starting ApplicationContext. To display the condition evaluation report re-run your application with 'debug' enabled.
+2023-05-16T15:34:04.762+03:00 ERROR 8160 --- [restartedMain] o.s.boot.SpringApplication               : Application run failed
+
+org.springframework.beans.factory.BeanCreationException: Error creating bean with name 'liquibase' defined in class path resource [org/springframework/boot/autoconfigure/liquibase/LiquibaseAutoConfiguration$LiquibaseConfiguration.class]: liquibase.exception.MigrationFailedException: Migration failed for changeset db/changelog/ddl/001_create_tables.sql::14::kate:
+     Reason: liquibase.exception.DatabaseException: Синтаксическая ошибка в выражении SQL "CREATE OR REPLACE FUNCTION save_skill()\000a    RETURNS TRIGGER AS [*]$$\000aBEGIN\000a    INSERT INTO delete_skill VALUES (OLD.skill_id, OLD.skill, CURRENT_DATE);\000a    RETURN OLD;\000aEND"
+Syntax error in SQL statement "CREATE OR REPLACE FUNCTION save_skill()\000a    RETURNS TRIGGER AS [*]$$\000aBEGIN\000a    INSERT INTO delete_skill VALUES (OLD.skill_id, OLD.skill, CURRENT_DATE);\000a    RETURN OLD;\000aEND"; SQL statement:
+CREATE OR REPLACE FUNCTION save_skill()
+    RETURNS TRIGGER AS $$
+BEGIN
+    INSERT INTO delete_skill VALUES (OLD.skill_id, OLD.skill, CURRENT_DATE);
+    RETURN OLD;
+END [42000-214] [Failed SQL: (42000) CREATE OR REPLACE FUNCTION save_skill()
+    RETURNS TRIGGER AS $$
+BEGIN
+    INSERT INTO delete_skill VALUES (OLD.skill_id, OLD.skill, CURRENT_DATE);
+    RETURN OLD;
+END]
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.initializeBean(AbstractAutowireCapableBeanFactory.java:1762) ~[spring-beans-6.0.6.jar:6.0.6]
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.doCreateBean(AbstractAutowireCapableBeanFactory.java:599) ~[spring-beans-6.0.6.jar:6.0.6]
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.createBean(AbstractAutowireCapableBeanFactory.java:521) ~[spring-beans-6.0.6.jar:6.0.6]
+	at org.springframework.beans.factory.support.AbstractBeanFactory.lambda$doGetBean$0(AbstractBeanFactory.java:326) ~[spring-beans-6.0.6.jar:6.0.6]
+	at org.springframework.beans.factory.support.DefaultSingletonBeanRegistry.getSingleton(DefaultSingletonBeanRegistry.java:234) ~[spring-beans-6.0.6.jar:6.0.6]
+	at org.springframework.beans.factory.support.AbstractBeanFactory.doGetBean(AbstractBeanFactory.java:324) ~[spring-beans-6.0.6.jar:6.0.6]
+	at org.springframework.beans.factory.support.AbstractBeanFactory.getBean(AbstractBeanFactory.java:200) ~[spring-beans-6.0.6.jar:6.0.6]
+	at org.springframework.beans.factory.support.AbstractBeanFactory.doGetBean(AbstractBeanFactory.java:313) ~[spring-beans-6.0.6.jar:6.0.6]
+	at org.springframework.beans.factory.support.AbstractBeanFactory.getBean(AbstractBeanFactory.java:200) ~[spring-beans-6.0.6.jar:6.0.6]
+	at org.springframework.context.support.AbstractApplicationContext.getBean(AbstractApplicationContext.java:1132) ~[spring-context-6.0.6.jar:6.0.6]
+	at org.springframework.context.support.AbstractApplicationContext.finishBeanFactoryInitialization(AbstractApplicationContext.java:907) ~[spring-context-6.0.6.jar:6.0.6]
+	at org.springframework.context.support.AbstractApplicationContext.refresh(AbstractApplicationContext.java:584) ~[spring-context-6.0.6.jar:6.0.6]
+	at org.springframework.boot.web.servlet.context.ServletWebServerApplicationContext.refresh(ServletWebServerApplicationContext.java:146) ~[spring-boot-3.0.4.jar:3.0.4]
+	at org.springframework.boot.SpringApplication.refresh(SpringApplication.java:732) ~[spring-boot-3.0.4.jar:3.0.4]
+	at org.springframework.boot.SpringApplication.refreshContext(SpringApplication.java:434) ~[spring-boot-3.0.4.jar:3.0.4]
+	at org.springframework.boot.SpringApplication.run(SpringApplication.java:310) ~[spring-boot-3.0.4.jar:3.0.4]
+	at org.springframework.boot.SpringApplication.run(SpringApplication.java:1304) ~[spring-boot-3.0.4.jar:3.0.4]
+	at org.springframework.boot.SpringApplication.run(SpringApplication.java:1293) ~[spring-boot-3.0.4.jar:3.0.4]
+	at starlight.backend.StarlightApplication.main(StarlightApplication.java:12) ~[classes/:na]
+	at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java:104) ~[na:na]
+	at java.base/java.lang.reflect.Method.invoke(Method.java:578) ~[na:na]
+	at org.springframework.boot.devtools.restart.RestartLauncher.run(RestartLauncher.java:49) ~[spring-boot-devtools-3.0.4.jar:3.0.4]
+Caused by: liquibase.exception.LiquibaseException: liquibase.exception.MigrationFailedException: Migration failed for changeset db/changelog/ddl/001_create_tables.sql::14::kate:
+     Reason: liquibase.exception.DatabaseException: Синтаксическая ошибка в выражении SQL "CREATE OR REPLACE FUNCTION save_skill()\000a    RETURNS TRIGGER AS [*]$$\000aBEGIN\000a    INSERT INTO delete_skill VALUES (OLD.skill_id, OLD.skill, CURRENT_DATE);\000a    RETURN OLD;\000aEND"
+Syntax error in SQL statement "CREATE OR REPLACE FUNCTION save_skill()\000a    RETURNS TRIGGER AS [*]$$\000aBEGIN\000a    INSERT INTO delete_skill VALUES (OLD.skill_id, OLD.skill, CURRENT_DATE);\000a    RETURN OLD;\000aEND"; SQL statement:
+CREATE OR REPLACE FUNCTION save_skill()
+    RETURNS TRIGGER AS $$
+BEGIN
+    INSERT INTO delete_skill VALUES (OLD.skill_id, OLD.skill, CURRENT_DATE);
+    RETURN OLD;
+END [42000-214] [Failed SQL: (42000) CREATE OR REPLACE FUNCTION save_skill()
+    RETURNS TRIGGER AS $$
+BEGIN
+    INSERT INTO delete_skill VALUES (OLD.skill_id, OLD.skill, CURRENT_DATE);
+    RETURN OLD;
+END]
+	at liquibase.changelog.ChangeLogIterator.run(ChangeLogIterator.java:126) ~[liquibase-core-4.17.2.jar:na]
+	at liquibase.Liquibase.lambda$null$0(Liquibase.java:291) ~[liquibase-core-4.17.2.jar:na]
+	at liquibase.Scope.lambda$child$0(Scope.java:180) ~[liquibase-core-4.17.2.jar:na]
+	at liquibase.Scope.child(Scope.java:189) ~[liquibase-core-4.17.2.jar:na]
+	at liquibase.Scope.child(Scope.java:179) ~[liquibase-core-4.17.2.jar:na]
+	at liquibase.Scope.child(Scope.java:158) ~[liquibase-core-4.17.2.jar:na]
+	at liquibase.Scope.child(Scope.java:243) ~[liquibase-core-4.17.2.jar:na]
+	at liquibase.Liquibase.lambda$update$1(Liquibase.java:290) ~[liquibase-core-4.17.2.jar:na]
+	at liquibase.Scope.lambda$child$0(Scope.java:180) ~[liquibase-core-4.17.2.jar:na]
+	at liquibase.Scope.child(Scope.java:189) ~[liquibase-core-4.17.2.jar:na]
+	at liquibase.Scope.child(Scope.java:179) ~[liquibase-core-4.17.2.jar:na]
+	at liquibase.Scope.child(Scope.java:158) ~[liquibase-core-4.17.2.jar:na]
+	at liquibase.Liquibase.runInScope(Liquibase.java:2447) ~[liquibase-core-4.17.2.jar:na]
+	at liquibase.Liquibase.update(Liquibase.java:236) ~[liquibase-core-4.17.2.jar:na]
+	at liquibase.Liquibase.update(Liquibase.java:221) ~[liquibase-core-4.17.2.jar:na]
+	at liquibase.integration.spring.SpringLiquibase.performUpdate(SpringLiquibase.java:328) ~[liquibase-core-4.17.2.jar:na]
+	at liquibase.integration.spring.SpringLiquibase.afterPropertiesSet(SpringLiquibase.java:283) ~[liquibase-core-4.17.2.jar:na]
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.invokeInitMethods(AbstractAutowireCapableBeanFactory.java:1808) ~[spring-beans-6.0.6.jar:6.0.6]
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.initializeBean(AbstractAutowireCapableBeanFactory.java:1758) ~[spring-beans-6.0.6.jar:6.0.6]
+	... 21 common frames omitted
+Caused by: liquibase.exception.MigrationFailedException: Migration failed for changeset db/changelog/ddl/001_create_tables.sql::14::kate:
+     Reason: liquibase.exception.DatabaseException: Синтаксическая ошибка в выражении SQL "CREATE OR REPLACE FUNCTION save_skill()\000a    RETURNS TRIGGER AS [*]$$\000aBEGIN\000a    INSERT INTO delete_skill VALUES (OLD.skill_id, OLD.skill, CURRENT_DATE);\000a    RETURN OLD;\000aEND"
+Syntax error in SQL statement "CREATE OR REPLACE FUNCTION save_skill()\000a    RETURNS TRIGGER AS [*]$$\000aBEGIN\000a    INSERT INTO delete_skill VALUES (OLD.skill_id, OLD.skill, CURRENT_DATE);\000a    RETURN OLD;\000aEND"; SQL statement:
+CREATE OR REPLACE FUNCTION save_skill()
+    RETURNS TRIGGER AS $$
+BEGIN
+    INSERT INTO delete_skill VALUES (OLD.skill_id, OLD.skill, CURRENT_DATE);
+    RETURN OLD;
+END [42000-214] [Failed SQL: (42000) CREATE OR REPLACE FUNCTION save_skill()
+    RETURNS TRIGGER AS $$
+BEGIN
+    INSERT INTO delete_skill VALUES (OLD.skill_id, OLD.skill, CURRENT_DATE);
+    RETURN OLD;
+END]
+	at liquibase.changelog.ChangeSet.execute(ChangeSet.java:714) ~[liquibase-core-4.17.2.jar:na]
+	at liquibase.changelog.visitor.UpdateVisitor.visit(UpdateVisitor.java:56) ~[liquibase-core-4.17.2.jar:na]
+	at liquibase.changelog.ChangeLogIterator$2.lambda$null$0(ChangeLogIterator.java:113) ~[liquibase-core-4.17.2.jar:na]
+	at liquibase.Scope.lambda$child$0(Scope.java:180) ~[liquibase-core-4.17.2.jar:na]
+	at liquibase.Scope.child(Scope.java:189) ~[liquibase-core-4.17.2.jar:na]
+	at liquibase.Scope.child(Scope.java:179) ~[liquibase-core-4.17.2.jar:na]
+	at liquibase.Scope.child(Scope.java:158) ~[liquibase-core-4.17.2.jar:na]
+	at liquibase.changelog.ChangeLogIterator$2.lambda$run$1(ChangeLogIterator.java:112) ~[liquibase-core-4.17.2.jar:na]
+	at liquibase.Scope.lambda$child$0(Scope.java:180) ~[liquibase-core-4.17.2.jar:na]
+	at liquibase.Scope.child(Scope.java:189) ~[liquibase-core-4.17.2.jar:na]
+	at liquibase.Scope.child(Scope.java:179) ~[liquibase-core-4.17.2.jar:na]
+	at liquibase.Scope.child(Scope.java:158) ~[liquibase-core-4.17.2.jar:na]
+	at liquibase.Scope.child(Scope.java:243) ~[liquibase-core-4.17.2.jar:na]
+	at liquibase.changelog.ChangeLogIterator$2.run(ChangeLogIterator.java:93) ~[liquibase-core-4.17.2.jar:na]
+	at liquibase.Scope.lambda$child$0(Scope.java:180) ~[liquibase-core-4.17.2.jar:na]
+	at liquibase.Scope.child(Scope.java:189) ~[liquibase-core-4.17.2.jar:na]
+	at liquibase.Scope.child(Scope.java:179) ~[liquibase-core-4.17.2.jar:na]
+	at liquibase.Scope.child(Scope.java:158) ~[liquibase-core-4.17.2.jar:na]
+	at liquibase.Scope.child(Scope.java:243) ~[liquibase-core-4.17.2.jar:na]
+	at liquibase.Scope.child(Scope.java:247) ~[liquibase-core-4.17.2.jar:na]
+	at liquibase.changelog.ChangeLogIterator.run(ChangeLogIterator.java:65) ~[liquibase-core-4.17.2.jar:na]
+	... 39 common frames omitted
+Caused by: liquibase.exception.DatabaseException: Синтаксическая ошибка в выражении SQL "CREATE OR REPLACE FUNCTION save_skill()\000a    RETURNS TRIGGER AS [*]$$\000aBEGIN\000a    INSERT INTO delete_skill VALUES (OLD.skill_id, OLD.skill, CURRENT_DATE);\000a    RETURN OLD;\000aEND"
+Syntax error in SQL statement "CREATE OR REPLACE FUNCTION save_skill()\000a    RETURNS TRIGGER AS [*]$$\000aBEGIN\000a    INSERT INTO delete_skill VALUES (OLD.skill_id, OLD.skill, CURRENT_DATE);\000a    RETURN OLD;\000aEND"; SQL statement:
+CREATE OR REPLACE FUNCTION save_skill()
+    RETURNS TRIGGER AS $$
+BEGIN
+    INSERT INTO delete_skill VALUES (OLD.skill_id, OLD.skill, CURRENT_DATE);
+    RETURN OLD;
+END [42000-214] [Failed SQL: (42000) CREATE OR REPLACE FUNCTION save_skill()
+    RETURNS TRIGGER AS $$
+BEGIN
+    INSERT INTO delete_skill VALUES (OLD.skill_id, OLD.skill, CURRENT_DATE);
+    RETURN OLD;
+END]
+	at liquibase.executor.jvm.JdbcExecutor$ExecuteStatementCallback.doInStatement(JdbcExecutor.java:447) ~[liquibase-core-4.17.2.jar:na]
+	at liquibase.executor.jvm.JdbcExecutor.execute(JdbcExecutor.java:78) ~[liquibase-core-4.17.2.jar:na]
+	at liquibase.executor.jvm.JdbcExecutor.execute(JdbcExecutor.java:161) ~[liquibase-core-4.17.2.jar:na]
+	at liquibase.database.AbstractJdbcDatabase.execute(AbstractJdbcDatabase.java:1270) ~[liquibase-core-4.17.2.jar:na]
+	at liquibase.database.AbstractJdbcDatabase.executeStatements(AbstractJdbcDatabase.java:1252) ~[liquibase-core-4.17.2.jar:na]
+	at liquibase.changelog.ChangeSet.execute(ChangeSet.java:679) ~[liquibase-core-4.17.2.jar:na]
+	... 59 common frames omitted
+Caused by: org.h2.jdbc.JdbcSQLSyntaxErrorException: Синтаксическая ошибка в выражении SQL "CREATE OR REPLACE FUNCTION save_skill()\000a    RETURNS TRIGGER AS [*]$$\000aBEGIN\000a    INSERT INTO delete_skill VALUES (OLD.skill_id, OLD.skill, CURRENT_DATE);\000a    RETURN OLD;\000aEND"
+Syntax error in SQL statement "CREATE OR REPLACE FUNCTION save_skill()\000a    RETURNS TRIGGER AS [*]$$\000aBEGIN\000a    INSERT INTO delete_skill VALUES (OLD.skill_id, OLD.skill, CURRENT_DATE);\000a    RETURN OLD;\000aEND"; SQL statement:
+CREATE OR REPLACE FUNCTION save_skill()
+    RETURNS TRIGGER AS $$
+BEGIN
+    INSERT INTO delete_skill VALUES (OLD.skill_id, OLD.skill, CURRENT_DATE);
+    RETURN OLD;
+END [42000-214]
+	at org.h2.message.DbException.getJdbcSQLException(DbException.java:502) ~[h2-2.1.214.jar:2.1.214]
+	at org.h2.message.DbException.getJdbcSQLException(DbException.java:477) ~[h2-2.1.214.jar:2.1.214]
+	at org.h2.message.DbException.get(DbException.java:223) ~[h2-2.1.214.jar:2.1.214]
+	at org.h2.message.DbException.get(DbException.java:199) ~[h2-2.1.214.jar:2.1.214]
+	at org.h2.message.DbException.getSyntaxError(DbException.java:247) ~[h2-2.1.214.jar:2.1.214]
+	at org.h2.command.Tokenizer.tokenize(Tokenizer.java:202) ~[h2-2.1.214.jar:2.1.214]
+	at org.h2.command.Parser.initialize(Parser.java:5877) ~[h2-2.1.214.jar:2.1.214]
+	at org.h2.command.Parser.parse(Parser.java:657) ~[h2-2.1.214.jar:2.1.214]
+	at org.h2.command.Parser.prepareCommand(Parser.java:569) ~[h2-2.1.214.jar:2.1.214]
+	at org.h2.engine.SessionLocal.prepareLocal(SessionLocal.java:631) ~[h2-2.1.214.jar:2.1.214]
+	at org.h2.engine.SessionLocal.prepareCommand(SessionLocal.java:554) ~[h2-2.1.214.jar:2.1.214]
+	at org.h2.jdbc.JdbcConnection.prepareCommand(JdbcConnection.java:1116) ~[h2-2.1.214.jar:2.1.214]
+	at org.h2.jdbc.JdbcStatement.executeInternal(JdbcStatement.java:237) ~[h2-2.1.214.jar:2.1.214]
+	at org.h2.jdbc.JdbcStatement.execute(JdbcStatement.java:223) ~[h2-2.1.214.jar:2.1.214]
+	at com.zaxxer.hikari.pool.ProxyStatement.execute(ProxyStatement.java:94) ~[HikariCP-5.0.1.jar:na]
+	at com.zaxxer.hikari.pool.HikariProxyStatement.execute(HikariProxyStatement.java) ~[HikariCP-5.0.1.jar:na]
+	at liquibase.executor.jvm.JdbcExecutor$ExecuteStatementCallback.doInStatement(JdbcExecutor.java:443) ~[liquibase-core-4.17.2.jar:na]
+	... 64 common frames omitted
+
+2023-05-16T15:35:07.278+03:00  INFO 12520 --- [restartedMain] starlight.backend.StarlightApplication   : Starting StarlightApplication using Java 19.0.2 with PID 12520 (C:\Users\User\Desktop\backend\target\classes started by User in C:\Users\User\Desktop\backend)
+2023-05-16T15:35:07.283+03:00  INFO 12520 --- [restartedMain] starlight.backend.StarlightApplication   : The following 1 profile is active: "dev"
+2023-05-16T15:35:07.390+03:00  INFO 12520 --- [restartedMain] .e.DevToolsPropertyDefaultsPostProcessor : Devtools property defaults active! Set 'spring.devtools.add-properties' to 'false' to disable
+2023-05-16T15:35:07.390+03:00  INFO 12520 --- [restartedMain] .e.DevToolsPropertyDefaultsPostProcessor : For additional web related logging consider setting the 'logging.level.web' property to 'DEBUG'
+2023-05-16T15:35:10.633+03:00  INFO 12520 --- [restartedMain] .s.d.r.c.RepositoryConfigurationDelegate : Multiple Spring Data modules found, entering strict repository configuration mode
+2023-05-16T15:35:10.639+03:00  INFO 12520 --- [restartedMain] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JDBC repositories in DEFAULT mode.
+2023-05-16T15:35:10.731+03:00  INFO 12520 --- [restartedMain] .RepositoryConfigurationExtensionSupport : Spring Data JDBC - Could not safely identify store assignment for repository candidate interface starlight.backend.proof.ProofRepository; If you want this repository to be a JDBC repository, consider annotating your entities with one of these annotations: org.springframework.data.relational.core.mapping.Table.
+2023-05-16T15:35:10.734+03:00  INFO 12520 --- [restartedMain] .RepositoryConfigurationExtensionSupport : Spring Data JDBC - Could not safely identify store assignment for repository candidate interface starlight.backend.skill.repository.SkillRepository; If you want this repository to be a JDBC repository, consider annotating your entities with one of these annotations: org.springframework.data.relational.core.mapping.Table.
+2023-05-16T15:35:10.737+03:00  INFO 12520 --- [restartedMain] .RepositoryConfigurationExtensionSupport : Spring Data JDBC - Could not safely identify store assignment for repository candidate interface starlight.backend.user.repository.PositionRepository; If you want this repository to be a JDBC repository, consider annotating your entities with one of these annotations: org.springframework.data.relational.core.mapping.Table.
+2023-05-16T15:35:10.738+03:00  INFO 12520 --- [restartedMain] .RepositoryConfigurationExtensionSupport : Spring Data JDBC - Could not safely identify store assignment for repository candidate interface starlight.backend.user.repository.UserRepository; If you want this repository to be a JDBC repository, consider annotating your entities with one of these annotations: org.springframework.data.relational.core.mapping.Table.
+2023-05-16T15:35:10.740+03:00  INFO 12520 --- [restartedMain] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 92 ms. Found 0 JDBC repository interfaces.
+2023-05-16T15:35:10.759+03:00  INFO 12520 --- [restartedMain] .s.d.r.c.RepositoryConfigurationDelegate : Multiple Spring Data modules found, entering strict repository configuration mode
+2023-05-16T15:35:10.761+03:00  INFO 12520 --- [restartedMain] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2023-05-16T15:35:10.883+03:00  INFO 12520 --- [restartedMain] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 114 ms. Found 4 JPA repository interfaces.
+2023-05-16T15:35:12.042+03:00  INFO 12520 --- [restartedMain] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port(s): 8082 (http)
+2023-05-16T15:35:12.055+03:00  INFO 12520 --- [restartedMain] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2023-05-16T15:35:12.056+03:00  INFO 12520 --- [restartedMain] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/10.1.5]
+2023-05-16T15:35:12.145+03:00  INFO 12520 --- [restartedMain] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
+2023-05-16T15:35:12.146+03:00  INFO 12520 --- [restartedMain] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 4754 ms
+2023-05-16T15:35:12.327+03:00  INFO 12520 --- [restartedMain] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2023-05-16T15:35:12.671+03:00  INFO 12520 --- [restartedMain] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection conn0: url=jdbc:h2:file:./sampleDB user=
+2023-05-16T15:35:12.672+03:00  INFO 12520 --- [restartedMain] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2023-05-16T15:35:12.686+03:00  INFO 12520 --- [restartedMain] o.s.b.a.h2.H2ConsoleAutoConfiguration    : H2 console available at '/h2'. Database available at 'jdbc:h2:file:./sampleDB'
+2023-05-16T15:35:12.964+03:00  INFO 12520 --- [restartedMain] liquibase.database                       : Set default schema name to PUBLIC
+2023-05-16T15:35:13.198+03:00  INFO 12520 --- [restartedMain] liquibase.lockservice                    : Successfully acquired change log lock
+2023-05-16T15:35:13.737+03:00  INFO 12520 --- [restartedMain] liquibase.changelog                      : Reading from PUBLIC.DATABASECHANGELOG
+2023-05-16T15:35:13.826+03:00  INFO 12520 --- [restartedMain] liquibase.changelog                      : Custom SQL executed
+2023-05-16T15:35:13.827+03:00  INFO 12520 --- [restartedMain] liquibase.changelog                      : ChangeSet db/changelog/dml/001_insert_data_user.sql::4::kate ran successfully in 16ms
+2023-05-16T15:35:13.839+03:00  INFO 12520 --- [restartedMain] liquibase.changelog                      : Custom SQL executed
+2023-05-16T15:35:13.840+03:00  INFO 12520 --- [restartedMain] liquibase.changelog                      : ChangeSet db/changelog/dml/001_insert_data_user.sql::8::kate ran successfully in 4ms
+2023-05-16T15:35:13.844+03:00  INFO 12520 --- [restartedMain] liquibase.changelog                      : Custom SQL executed
+2023-05-16T15:35:13.845+03:00  INFO 12520 --- [restartedMain] liquibase.changelog                      : ChangeSet db/changelog/dml/003_insert_data_position.sql::4::kate ran successfully in 3ms
+2023-05-16T15:35:13.850+03:00  INFO 12520 --- [restartedMain] liquibase.lockservice                    : Successfully released change log lock
+2023-05-16T15:35:13.965+03:00  INFO 12520 --- [restartedMain] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [name: default]
+2023-05-16T15:35:14.056+03:00  INFO 12520 --- [restartedMain] org.hibernate.Version                    : HHH000412: Hibernate ORM core version 6.1.7.Final
+2023-05-16T15:35:14.550+03:00  INFO 12520 --- [restartedMain] SQL dialect                              : HHH000400: Using dialect: org.hibernate.dialect.PostgreSQLDialect
+2023-05-16T15:35:15.935+03:00  INFO 12520 --- [restartedMain] o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000490: Using JtaPlatform implementation: [org.hibernate.engine.transaction.jta.platform.internal.NoJtaPlatform]
+2023-05-16T15:35:15.949+03:00  INFO 12520 --- [restartedMain] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2023-05-16T15:35:20.048+03:00  INFO 12520 --- [restartedMain] o.s.b.a.e.web.EndpointLinksResolver      : Exposing 4 endpoint(s) beneath base path '/actuator'
+2023-05-16T15:35:20.184+03:00  INFO 12520 --- [restartedMain] o.s.s.web.DefaultSecurityFilterChain     : Will secure any request with [org.springframework.security.web.session.DisableEncodeUrlFilter@eab51a3, org.springframework.security.web.context.request.async.WebAsyncManagerIntegrationFilter@66ac11d2, org.springframework.security.web.context.SecurityContextHolderFilter@5d036569, org.springframework.security.web.header.HeaderWriterFilter@6c83ccd, org.springframework.web.filter.CorsFilter@401afea9, org.springframework.security.web.authentication.logout.LogoutFilter@29ef02f8, org.springframework.security.oauth2.server.resource.web.authentication.BearerTokenAuthenticationFilter@56ce0bcd, org.springframework.security.web.authentication.www.BasicAuthenticationFilter@70eb6ac1, org.springframework.security.web.savedrequest.RequestCacheAwareFilter@4d4a941, org.springframework.security.web.servletapi.SecurityContextHolderAwareRequestFilter@1c59c9b, org.springframework.security.web.authentication.AnonymousAuthenticationFilter@42dfb68c, org.springframework.security.web.session.SessionManagementFilter@3ea06260, org.springframework.security.web.access.ExceptionTranslationFilter@50ff5265, org.springframework.security.web.access.intercept.AuthorizationFilter@7eb05d97]
+2023-05-16T15:35:20.832+03:00  INFO 12520 --- [restartedMain] o.s.b.d.a.OptionalLiveReloadServer       : LiveReload server is running on port 35729
+2023-05-16T15:35:20.952+03:00  INFO 12520 --- [restartedMain] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port(s): 8082 (http) with context path ''
+2023-05-16T15:35:20.975+03:00  INFO 12520 --- [restartedMain] starlight.backend.StarlightApplication   : Started StarlightApplication in 14.571 seconds (process running for 16.713)
+2023-05-16T15:35:32.017+03:00  INFO 12520 --- [http-nio-8082-exec-1] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring DispatcherServlet 'dispatcherServlet'
+2023-05-16T15:35:32.018+03:00  INFO 12520 --- [http-nio-8082-exec-1] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
+2023-05-16T15:35:32.021+03:00  INFO 12520 --- [http-nio-8082-exec-1] o.s.web.servlet.DispatcherServlet        : Completed initialization in 2 ms
+2023-05-16T15:35:32.245+03:00  INFO 12520 --- [http-nio-8082-exec-1] s.backend.security.SecurityController    : @PostMapping("/talents")
+2023-05-16T15:35:32.402+03:00 ERROR 12520 --- [http-nio-8082-exec-1] o.a.c.c.C.[.[.[/].[dispatcherServlet]    : Servlet.service() for servlet [dispatcherServlet] in context with path [] threw exception [Request processing failed: starlight.backend.exception.TalentAlreadyOccupiedException: Email 'kateystetsenko@gmail.com' is already occupied] with root cause
+
+starlight.backend.exception.TalentAlreadyOccupiedException: Email 'kateystetsenko@gmail.com' is already occupied
+	at starlight.backend.security.service.impl.SecurityServiceImpl.saveNewUser(SecurityServiceImpl.java:54) ~[classes/:na]
+	at starlight.backend.security.service.impl.SecurityServiceImpl.register(SecurityServiceImpl.java:47) ~[classes/:na]
+	at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java:104) ~[na:na]
+	at java.base/java.lang.reflect.Method.invoke(Method.java:578) ~[na:na]
+	at org.springframework.aop.support.AopUtils.invokeJoinpointUsingReflection(AopUtils.java:343) ~[spring-aop-6.0.6.jar:6.0.6]
+	at org.springframework.aop.framework.ReflectiveMethodInvocation.invokeJoinpoint(ReflectiveMethodInvocation.java:196) ~[spring-aop-6.0.6.jar:6.0.6]
+	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:163) ~[spring-aop-6.0.6.jar:6.0.6]
+	at org.springframework.aop.framework.CglibAopProxy$CglibMethodInvocation.proceed(CglibAopProxy.java:750) ~[spring-aop-6.0.6.jar:6.0.6]
+	at org.springframework.transaction.interceptor.TransactionInterceptor$1.proceedWithInvocation(TransactionInterceptor.java:123) ~[spring-tx-6.0.6.jar:6.0.6]
+	at org.springframework.transaction.interceptor.TransactionAspectSupport.invokeWithinTransaction(TransactionAspectSupport.java:390) ~[spring-tx-6.0.6.jar:6.0.6]
+	at org.springframework.transaction.interceptor.TransactionInterceptor.invoke(TransactionInterceptor.java:119) ~[spring-tx-6.0.6.jar:6.0.6]
+	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:184) ~[spring-aop-6.0.6.jar:6.0.6]
+	at org.springframework.aop.framework.CglibAopProxy$CglibMethodInvocation.proceed(CglibAopProxy.java:750) ~[spring-aop-6.0.6.jar:6.0.6]
+	at org.springframework.aop.framework.CglibAopProxy$DynamicAdvisedInterceptor.intercept(CglibAopProxy.java:702) ~[spring-aop-6.0.6.jar:6.0.6]
+	at starlight.backend.security.service.impl.SecurityServiceImpl$$SpringCGLIB$$0.register(<generated>) ~[classes/:na]
+	at starlight.backend.security.SecurityController.register(SecurityController.java:107) ~[classes/:na]
+	at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java:104) ~[na:na]
+	at java.base/java.lang.reflect.Method.invoke(Method.java:578) ~[na:na]
+	at org.springframework.web.method.support.InvocableHandlerMethod.doInvoke(InvocableHandlerMethod.java:207) ~[spring-web-6.0.6.jar:6.0.6]
+	at org.springframework.web.method.support.InvocableHandlerMethod.invokeForRequest(InvocableHandlerMethod.java:152) ~[spring-web-6.0.6.jar:6.0.6]
+	at org.springframework.web.servlet.mvc.method.annotation.ServletInvocableHandlerMethod.invokeAndHandle(ServletInvocableHandlerMethod.java:117) ~[spring-webmvc-6.0.6.jar:6.0.6]
+	at org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter.invokeHandlerMethod(RequestMappingHandlerAdapter.java:884) ~[spring-webmvc-6.0.6.jar:6.0.6]
+	at org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter.handleInternal(RequestMappingHandlerAdapter.java:797) ~[spring-webmvc-6.0.6.jar:6.0.6]
+	at org.springframework.web.servlet.mvc.method.AbstractHandlerMethodAdapter.handle(AbstractHandlerMethodAdapter.java:87) ~[spring-webmvc-6.0.6.jar:6.0.6]
+	at org.springframework.web.servlet.DispatcherServlet.doDispatch(DispatcherServlet.java:1081) ~[spring-webmvc-6.0.6.jar:6.0.6]
+	at org.springframework.web.servlet.DispatcherServlet.doService(DispatcherServlet.java:974) ~[spring-webmvc-6.0.6.jar:6.0.6]
+	at org.springframework.web.servlet.FrameworkServlet.processRequest(FrameworkServlet.java:1011) ~[spring-webmvc-6.0.6.jar:6.0.6]
+	at org.springframework.web.servlet.FrameworkServlet.doPost(FrameworkServlet.java:914) ~[spring-webmvc-6.0.6.jar:6.0.6]
+	at jakarta.servlet.http.HttpServlet.service(HttpServlet.java:731) ~[tomcat-embed-core-10.1.5.jar:6.0]
+	at org.springframework.web.servlet.FrameworkServlet.service(FrameworkServlet.java:885) ~[spring-webmvc-6.0.6.jar:6.0.6]
+	at jakarta.servlet.http.HttpServlet.service(HttpServlet.java:814) ~[tomcat-embed-core-10.1.5.jar:6.0]
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:223) ~[tomcat-embed-core-10.1.5.jar:10.1.5]
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:158) ~[tomcat-embed-core-10.1.5.jar:10.1.5]
+	at org.apache.tomcat.websocket.server.WsFilter.doFilter(WsFilter.java:53) ~[tomcat-embed-websocket-10.1.5.jar:10.1.5]
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:185) ~[tomcat-embed-core-10.1.5.jar:10.1.5]
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:158) ~[tomcat-embed-core-10.1.5.jar:10.1.5]
+	at org.springframework.security.web.FilterChainProxy.lambda$doFilterInternal$3(FilterChainProxy.java:231) ~[spring-security-web-6.0.2.jar:6.0.2]
+	at org.springframework.security.web.ObservationFilterChainDecorator$FilterObservation$SimpleFilterObservation.lambda$wrap$1(ObservationFilterChainDecorator.java:399) ~[spring-security-web-6.0.2.jar:6.0.2]
+	at org.springframework.security.web.ObservationFilterChainDecorator$AroundFilterObservation$SimpleAroundFilterObservation.lambda$wrap$1(ObservationFilterChainDecorator.java:297) ~[spring-security-web-6.0.2.jar:6.0.2]
+	at org.springframework.security.web.ObservationFilterChainDecorator.lambda$wrapSecured$0(ObservationFilterChainDecorator.java:79) ~[spring-security-web-6.0.2.jar:6.0.2]
+	at org.springframework.security.web.ObservationFilterChainDecorator$VirtualFilterChain.doFilter(ObservationFilterChainDecorator.java:125) ~[spring-security-web-6.0.2.jar:6.0.2]
+	at org.springframework.security.web.access.intercept.AuthorizationFilter.doFilter(AuthorizationFilter.java:100) ~[spring-security-web-6.0.2.jar:6.0.2]
+	at org.springframework.security.web.ObservationFilterChainDecorator$ObservationFilter.wrapFilter(ObservationFilterChainDecorator.java:186) ~[spring-security-web-6.0.2.jar:6.0.2]
+	at org.springframework.security.web.ObservationFilterChainDecorator$ObservationFilter.doFilter(ObservationFilterChainDecorator.java:173) ~[spring-security-web-6.0.2.jar:6.0.2]
+	at org.springframework.security.web.ObservationFilterChainDecorator$VirtualFilterChain.doFilter(ObservationFilterChainDecorator.java:134) ~[spring-security-web-6.0.2.jar:6.0.2]
+	at org.springframework.security.web.access.ExceptionTranslationFilter.doFilter(ExceptionTranslationFilter.java:126) ~[spring-security-web-6.0.2.jar:6.0.2]
+	at org.springframework.security.web.access.ExceptionTranslationFilter.doFilter(ExceptionTranslationFilter.java:120) ~[spring-security-web-6.0.2.jar:6.0.2]
+	at org.springframework.security.web.ObservationFilterChainDecorator$ObservationFilter.wrapFilter(ObservationFilterChainDecorator.java:186) ~[spring-security-web-6.0.2.jar:6.0.2]
+	at org.springframework.security.web.ObservationFilterChainDecorator$ObservationFilter.doFilter(ObservationFilterChainDecorator.java:173) ~[spring-security-web-6.0.2.jar:6.0.2]
+	at org.springframework.security.web.ObservationFilterChainDecorator$VirtualFilterChain.doFilter(ObservationFilterChainDecorator.java:134) ~[spring-security-web-6.0.2.jar:6.0.2]
+	at org.springframework.security.web.session.SessionManagementFilter.doFilter(SessionManagementFilter.java:131) ~[spring-security-web-6.0.2.jar:6.0.2]
+	at org.springframework.security.web.session.SessionManagementFilter.doFilter(SessionManagementFilter.java:85) ~[spring-security-web-6.0.2.jar:6.0.2]
+	at org.springframework.security.web.ObservationFilterChainDecorator$ObservationFilter.wrapFilter(ObservationFilterChainDecorator.java:186) ~[spring-security-web-6.0.2.jar:6.0.2]
+	at org.springframework.security.web.ObservationFilterChainDecorator$ObservationFilter.doFilter(ObservationFilterChainDecorator.java:173) ~[spring-security-web-6.0.2.jar:6.0.2]
+	at org.springframework.security.web.ObservationFilterChainDecorator$VirtualFilterChain.doFilter(ObservationFilterChainDecorator.java:134) ~[spring-security-web-6.0.2.jar:6.0.2]
+	at org.springframework.security.web.authentication.AnonymousAuthenticationFilter.doFilter(AnonymousAuthenticationFilter.java:100) ~[spring-security-web-6.0.2.jar:6.0.2]
+	at org.springframework.security.web.ObservationFilterChainDecorator$ObservationFilter.wrapFilter(ObservationFilterChainDecorator.java:186) ~[spring-security-web-6.0.2.jar:6.0.2]
+	at org.springframework.security.web.ObservationFilterChainDecorator$ObservationFilter.doFilter(ObservationFilterChainDecorator.java:173) ~[spring-security-web-6.0.2.jar:6.0.2]
+	at org.springframework.security.web.ObservationFilterChainDecorator$VirtualFilterChain.doFilter(ObservationFilterChainDecorator.java:134) ~[spring-security-web-6.0.2.jar:6.0.2]
+	at org.springframework.security.web.servletapi.SecurityContextHolderAwareRequestFilter.doFilter(SecurityContextHolderAwareRequestFilter.java:179) ~[spring-security-web-6.0.2.jar:6.0.2]
+	at org.springframework.security.web.ObservationFilterChainDecorator$ObservationFilter.wrapFilter(ObservationFilterChainDecorator.java:186) ~[spring-security-web-6.0.2.jar:6.0.2]
+	at org.springframework.security.web.ObservationFilterChainDecorator$ObservationFilter.doFilter(ObservationFilterChainDecorator.java:173) ~[spring-security-web-6.0.2.jar:6.0.2]
+	at org.springframework.security.web.ObservationFilterChainDecorator$VirtualFilterChain.doFilter(ObservationFilterChainDecorator.java:134) ~[spring-security-web-6.0.2.jar:6.0.2]
+	at org.springframework.security.web.savedrequest.RequestCacheAwareFilter.doFilter(RequestCacheAwareFilter.java:63) ~[spring-security-web-6.0.2.jar:6.0.2]
+	at org.springframework.security.web.ObservationFilterChainDecorator$ObservationFilter.wrapFilter(ObservationFilterChainDecorator.java:186) ~[spring-security-web-6.0.2.jar:6.0.2]
+	at org.springframework.security.web.ObservationFilterChainDecorator$ObservationFilter.doFilter(ObservationFilterChainDecorator.java:173) ~[spring-security-web-6.0.2.jar:6.0.2]
+	at org.springframework.security.web.ObservationFilterChainDecorator$VirtualFilterChain.doFilter(ObservationFilterChainDecorator.java:134) ~[spring-security-web-6.0.2.jar:6.0.2]
+	at org.springframework.security.web.authentication.www.BasicAuthenticationFilter.doFilterInternal(BasicAuthenticationFilter.java:170) ~[spring-security-web-6.0.2.jar:6.0.2]
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116) ~[spring-web-6.0.6.jar:6.0.6]
+	at org.springframework.security.web.ObservationFilterChainDecorator$ObservationFilter.wrapFilter(ObservationFilterChainDecorator.java:186) ~[spring-security-web-6.0.2.jar:6.0.2]
+	at org.springframework.security.web.ObservationFilterChainDecorator$ObservationFilter.doFilter(ObservationFilterChainDecorator.java:173) ~[spring-security-web-6.0.2.jar:6.0.2]
+	at org.springframework.security.web.ObservationFilterChainDecorator$VirtualFilterChain.doFilter(ObservationFilterChainDecorator.java:134) ~[spring-security-web-6.0.2.jar:6.0.2]
+	at org.springframework.security.oauth2.server.resource.web.authentication.BearerTokenAuthenticationFilter.doFilterInternal(BearerTokenAuthenticationFilter.java:128) ~[spring-security-oauth2-resource-server-6.0.2.jar:6.0.2]
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116) ~[spring-web-6.0.6.jar:6.0.6]
+	at org.springframework.security.web.ObservationFilterChainDecorator$ObservationFilter.wrapFilter(ObservationFilterChainDecorator.java:186) ~[spring-security-web-6.0.2.jar:6.0.2]
+	at org.springframework.security.web.ObservationFilterChainDecorator$ObservationFilter.doFilter(ObservationFilterChainDecorator.java:173) ~[spring-security-web-6.0.2.jar:6.0.2]
+	at org.springframework.security.web.ObservationFilterChainDecorator$VirtualFilterChain.doFilter(ObservationFilterChainDecorator.java:134) ~[spring-security-web-6.0.2.jar:6.0.2]
+	at org.springframework.security.web.authentication.logout.LogoutFilter.doFilter(LogoutFilter.java:107) ~[spring-security-web-6.0.2.jar:6.0.2]
+	at org.springframework.security.web.authentication.logout.LogoutFilter.doFilter(LogoutFilter.java:93) ~[spring-security-web-6.0.2.jar:6.0.2]
+	at org.springframework.security.web.ObservationFilterChainDecorator$ObservationFilter.wrapFilter(ObservationFilterChainDecorator.java:186) ~[spring-security-web-6.0.2.jar:6.0.2]
+	at org.springframework.security.web.ObservationFilterChainDecorator$ObservationFilter.doFilter(ObservationFilterChainDecorator.java:173) ~[spring-security-web-6.0.2.jar:6.0.2]
+	at org.springframework.security.web.ObservationFilterChainDecorator$VirtualFilterChain.doFilter(ObservationFilterChainDecorator.java:134) ~[spring-security-web-6.0.2.jar:6.0.2]
+	at org.springframework.web.filter.CorsFilter.doFilterInternal(CorsFilter.java:91) ~[spring-web-6.0.6.jar:6.0.6]
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116) ~[spring-web-6.0.6.jar:6.0.6]
+	at org.springframework.security.web.ObservationFilterChainDecorator$ObservationFilter.wrapFilter(ObservationFilterChainDecorator.java:186) ~[spring-security-web-6.0.2.jar:6.0.2]
+	at org.springframework.security.web.ObservationFilterChainDecorator$ObservationFilter.doFilter(ObservationFilterChainDecorator.java:173) ~[spring-security-web-6.0.2.jar:6.0.2]
+	at org.springframework.security.web.ObservationFilterChainDecorator$VirtualFilterChain.doFilter(ObservationFilterChainDecorator.java:134) ~[spring-security-web-6.0.2.jar:6.0.2]
+	at org.springframework.security.web.header.HeaderWriterFilter.doHeadersAfter(HeaderWriterFilter.java:90) ~[spring-security-web-6.0.2.jar:6.0.2]
+	at org.springframework.security.web.header.HeaderWriterFilter.doFilterInternal(HeaderWriterFilter.java:75) ~[spring-security-web-6.0.2.jar:6.0.2]
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116) ~[spring-web-6.0.6.jar:6.0.6]
+	at org.springframework.security.web.ObservationFilterChainDecorator$ObservationFilter.wrapFilter(ObservationFilterChainDecorator.java:186) ~[spring-security-web-6.0.2.jar:6.0.2]
+	at org.springframework.security.web.ObservationFilterChainDecorator$ObservationFilter.doFilter(ObservationFilterChainDecorator.java:173) ~[spring-security-web-6.0.2.jar:6.0.2]
+	at org.springframework.security.web.ObservationFilterChainDecorator$VirtualFilterChain.doFilter(ObservationFilterChainDecorator.java:134) ~[spring-security-web-6.0.2.jar:6.0.2]
+	at org.springframework.security.web.context.SecurityContextHolderFilter.doFilter(SecurityContextHolderFilter.java:82) ~[spring-security-web-6.0.2.jar:6.0.2]
+	at org.springframework.security.web.context.SecurityContextHolderFilter.doFilter(SecurityContextHolderFilter.java:69) ~[spring-security-web-6.0.2.jar:6.0.2]
+	at org.springframework.security.web.ObservationFilterChainDecorator$ObservationFilter.wrapFilter(ObservationFilterChainDecorator.java:186) ~[spring-security-web-6.0.2.jar:6.0.2]
+	at org.springframework.security.web.ObservationFilterChainDecorator$ObservationFilter.doFilter(ObservationFilterChainDecorator.java:173) ~[spring-security-web-6.0.2.jar:6.0.2]
+	at org.springframework.security.web.ObservationFilterChainDecorator$VirtualFilterChain.doFilter(ObservationFilterChainDecorator.java:134) ~[spring-security-web-6.0.2.jar:6.0.2]
+	at org.springframework.security.web.context.request.async.WebAsyncManagerIntegrationFilter.doFilterInternal(WebAsyncManagerIntegrationFilter.java:62) ~[spring-security-web-6.0.2.jar:6.0.2]
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116) ~[spring-web-6.0.6.jar:6.0.6]
+	at org.springframework.security.web.ObservationFilterChainDecorator$ObservationFilter.wrapFilter(ObservationFilterChainDecorator.java:186) ~[spring-security-web-6.0.2.jar:6.0.2]
+	at org.springframework.security.web.ObservationFilterChainDecorator$ObservationFilter.doFilter(ObservationFilterChainDecorator.java:173) ~[spring-security-web-6.0.2.jar:6.0.2]
+	at org.springframework.security.web.ObservationFilterChainDecorator$VirtualFilterChain.doFilter(ObservationFilterChainDecorator.java:134) ~[spring-security-web-6.0.2.jar:6.0.2]
+	at org.springframework.security.web.session.DisableEncodeUrlFilter.doFilterInternal(DisableEncodeUrlFilter.java:42) ~[spring-security-web-6.0.2.jar:6.0.2]
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116) ~[spring-web-6.0.6.jar:6.0.6]
+	at org.springframework.security.web.ObservationFilterChainDecorator$ObservationFilter.wrapFilter(ObservationFilterChainDecorator.java:186) ~[spring-security-web-6.0.2.jar:6.0.2]
+	at org.springframework.security.web.ObservationFilterChainDecorator$AroundFilterObservation$SimpleAroundFilterObservation.lambda$wrap$0(ObservationFilterChainDecorator.java:280) ~[spring-security-web-6.0.2.jar:6.0.2]
+	at org.springframework.security.web.ObservationFilterChainDecorator$ObservationFilter.doFilter(ObservationFilterChainDecorator.java:170) ~[spring-security-web-6.0.2.jar:6.0.2]
+	at org.springframework.security.web.ObservationFilterChainDecorator$VirtualFilterChain.doFilter(ObservationFilterChainDecorator.java:134) ~[spring-security-web-6.0.2.jar:6.0.2]
+	at org.springframework.security.web.FilterChainProxy.doFilterInternal(FilterChainProxy.java:233) ~[spring-security-web-6.0.2.jar:6.0.2]
+	at org.springframework.security.web.FilterChainProxy.doFilter(FilterChainProxy.java:191) ~[spring-security-web-6.0.2.jar:6.0.2]
+	at org.springframework.web.filter.DelegatingFilterProxy.invokeDelegate(DelegatingFilterProxy.java:352) ~[spring-web-6.0.6.jar:6.0.6]
+	at org.springframework.web.filter.DelegatingFilterProxy.doFilter(DelegatingFilterProxy.java:268) ~[spring-web-6.0.6.jar:6.0.6]
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:185) ~[tomcat-embed-core-10.1.5.jar:10.1.5]
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:158) ~[tomcat-embed-core-10.1.5.jar:10.1.5]
+	at org.springframework.web.filter.RequestContextFilter.doFilterInternal(RequestContextFilter.java:100) ~[spring-web-6.0.6.jar:6.0.6]
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116) ~[spring-web-6.0.6.jar:6.0.6]
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:185) ~[tomcat-embed-core-10.1.5.jar:10.1.5]
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:158) ~[tomcat-embed-core-10.1.5.jar:10.1.5]
+	at org.springframework.web.filter.FormContentFilter.doFilterInternal(FormContentFilter.java:93) ~[spring-web-6.0.6.jar:6.0.6]
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116) ~[spring-web-6.0.6.jar:6.0.6]
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:185) ~[tomcat-embed-core-10.1.5.jar:10.1.5]
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:158) ~[tomcat-embed-core-10.1.5.jar:10.1.5]
+	at org.springframework.web.filter.ServerHttpObservationFilter.doFilterInternal(ServerHttpObservationFilter.java:109) ~[spring-web-6.0.6.jar:6.0.6]
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116) ~[spring-web-6.0.6.jar:6.0.6]
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:185) ~[tomcat-embed-core-10.1.5.jar:10.1.5]
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:158) ~[tomcat-embed-core-10.1.5.jar:10.1.5]
+	at org.springframework.web.filter.CharacterEncodingFilter.doFilterInternal(CharacterEncodingFilter.java:201) ~[spring-web-6.0.6.jar:6.0.6]
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116) ~[spring-web-6.0.6.jar:6.0.6]
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:185) ~[tomcat-embed-core-10.1.5.jar:10.1.5]
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:158) ~[tomcat-embed-core-10.1.5.jar:10.1.5]
+	at org.apache.catalina.core.StandardWrapperValve.invoke(StandardWrapperValve.java:177) ~[tomcat-embed-core-10.1.5.jar:10.1.5]
+	at org.apache.catalina.core.StandardContextValve.invoke(StandardContextValve.java:97) ~[tomcat-embed-core-10.1.5.jar:10.1.5]
+	at org.apache.catalina.authenticator.AuthenticatorBase.invoke(AuthenticatorBase.java:542) ~[tomcat-embed-core-10.1.5.jar:10.1.5]
+	at org.apache.catalina.core.StandardHostValve.invoke(StandardHostValve.java:119) ~[tomcat-embed-core-10.1.5.jar:10.1.5]
+	at org.apache.catalina.valves.ErrorReportValve.invoke(ErrorReportValve.java:92) ~[tomcat-embed-core-10.1.5.jar:10.1.5]
+	at org.apache.catalina.core.StandardEngineValve.invoke(StandardEngineValve.java:78) ~[tomcat-embed-core-10.1.5.jar:10.1.5]
+	at org.apache.catalina.connector.CoyoteAdapter.service(CoyoteAdapter.java:357) ~[tomcat-embed-core-10.1.5.jar:10.1.5]
+	at org.apache.coyote.http11.Http11Processor.service(Http11Processor.java:400) ~[tomcat-embed-core-10.1.5.jar:10.1.5]
+	at org.apache.coyote.AbstractProcessorLight.process(AbstractProcessorLight.java:65) ~[tomcat-embed-core-10.1.5.jar:10.1.5]
+	at org.apache.coyote.AbstractProtocol$ConnectionHandler.process(AbstractProtocol.java:859) ~[tomcat-embed-core-10.1.5.jar:10.1.5]
+	at org.apache.tomcat.util.net.NioEndpoint$SocketProcessor.doRun(NioEndpoint.java:1734) ~[tomcat-embed-core-10.1.5.jar:10.1.5]
+	at org.apache.tomcat.util.net.SocketProcessorBase.run(SocketProcessorBase.java:52) ~[tomcat-embed-core-10.1.5.jar:10.1.5]
+	at org.apache.tomcat.util.threads.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1191) ~[tomcat-embed-core-10.1.5.jar:10.1.5]
+	at org.apache.tomcat.util.threads.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:659) ~[tomcat-embed-core-10.1.5.jar:10.1.5]
+	at org.apache.tomcat.util.threads.TaskThread$WrappingRunnable.run(TaskThread.java:61) ~[tomcat-embed-core-10.1.5.jar:10.1.5]
+	at java.base/java.lang.Thread.run(Thread.java:1589) ~[na:na]
+
+2023-05-16T15:35:41.954+03:00  INFO 12520 --- [http-nio-8082-exec-4] s.backend.security.SecurityController    : @PostMapping("/talents/login")
+2023-05-16T15:35:49.897+03:00  INFO 12520 --- [SpringApplicationShutdownHook] j.LocalContainerEntityManagerFactoryBean : Closing JPA EntityManagerFactory for persistence unit 'default'
+2023-05-16T15:35:49.904+03:00  INFO 12520 --- [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown initiated...
+2023-05-16T15:35:49.908+03:00  INFO 12520 --- [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown completed.
+2023-05-16T15:37:10.013+03:00  INFO 13648 --- [restartedMain] starlight.backend.StarlightApplication   : Starting StarlightApplication using Java 19.0.2 with PID 13648 (C:\Users\User\Desktop\backend\target\classes started by User in C:\Users\User\Desktop\backend)
+2023-05-16T15:37:10.017+03:00  INFO 13648 --- [restartedMain] starlight.backend.StarlightApplication   : The following 1 profile is active: "dev"
+2023-05-16T15:37:10.119+03:00  INFO 13648 --- [restartedMain] .e.DevToolsPropertyDefaultsPostProcessor : Devtools property defaults active! Set 'spring.devtools.add-properties' to 'false' to disable
+2023-05-16T15:37:10.120+03:00  INFO 13648 --- [restartedMain] .e.DevToolsPropertyDefaultsPostProcessor : For additional web related logging consider setting the 'logging.level.web' property to 'DEBUG'
+2023-05-16T15:37:12.529+03:00  INFO 13648 --- [restartedMain] .s.d.r.c.RepositoryConfigurationDelegate : Multiple Spring Data modules found, entering strict repository configuration mode
+2023-05-16T15:37:12.530+03:00  INFO 13648 --- [restartedMain] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JDBC repositories in DEFAULT mode.
+2023-05-16T15:37:12.579+03:00  INFO 13648 --- [restartedMain] .RepositoryConfigurationExtensionSupport : Spring Data JDBC - Could not safely identify store assignment for repository candidate interface starlight.backend.proof.ProofRepository; If you want this repository to be a JDBC repository, consider annotating your entities with one of these annotations: org.springframework.data.relational.core.mapping.Table.
+2023-05-16T15:37:12.581+03:00  INFO 13648 --- [restartedMain] .RepositoryConfigurationExtensionSupport : Spring Data JDBC - Could not safely identify store assignment for repository candidate interface starlight.backend.skill.repository.SkillRepository; If you want this repository to be a JDBC repository, consider annotating your entities with one of these annotations: org.springframework.data.relational.core.mapping.Table.
+2023-05-16T15:37:12.582+03:00  INFO 13648 --- [restartedMain] .RepositoryConfigurationExtensionSupport : Spring Data JDBC - Could not safely identify store assignment for repository candidate interface starlight.backend.user.repository.PositionRepository; If you want this repository to be a JDBC repository, consider annotating your entities with one of these annotations: org.springframework.data.relational.core.mapping.Table.
+2023-05-16T15:37:12.583+03:00  INFO 13648 --- [restartedMain] .RepositoryConfigurationExtensionSupport : Spring Data JDBC - Could not safely identify store assignment for repository candidate interface starlight.backend.user.repository.UserRepository; If you want this repository to be a JDBC repository, consider annotating your entities with one of these annotations: org.springframework.data.relational.core.mapping.Table.
+2023-05-16T15:37:12.584+03:00  INFO 13648 --- [restartedMain] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 49 ms. Found 0 JDBC repository interfaces.
+2023-05-16T15:37:12.594+03:00  INFO 13648 --- [restartedMain] .s.d.r.c.RepositoryConfigurationDelegate : Multiple Spring Data modules found, entering strict repository configuration mode
+2023-05-16T15:37:12.595+03:00  INFO 13648 --- [restartedMain] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2023-05-16T15:37:12.653+03:00  INFO 13648 --- [restartedMain] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 53 ms. Found 4 JPA repository interfaces.
+2023-05-16T15:37:13.638+03:00  INFO 13648 --- [restartedMain] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port(s): 8082 (http)
+2023-05-16T15:37:13.650+03:00  INFO 13648 --- [restartedMain] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2023-05-16T15:37:13.651+03:00  INFO 13648 --- [restartedMain] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/10.1.5]
+2023-05-16T15:37:13.741+03:00  INFO 13648 --- [restartedMain] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
+2023-05-16T15:37:13.742+03:00  INFO 13648 --- [restartedMain] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 3620 ms
+2023-05-16T15:37:13.913+03:00  INFO 13648 --- [restartedMain] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2023-05-16T15:37:14.229+03:00  INFO 13648 --- [restartedMain] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection conn0: url=jdbc:h2:file:./sampleDB user=
+2023-05-16T15:37:14.233+03:00  INFO 13648 --- [restartedMain] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2023-05-16T15:37:14.250+03:00  INFO 13648 --- [restartedMain] o.s.b.a.h2.H2ConsoleAutoConfiguration    : H2 console available at '/h2'. Database available at 'jdbc:h2:file:./sampleDB'
+2023-05-16T15:37:14.524+03:00  INFO 13648 --- [restartedMain] liquibase.database                       : Set default schema name to PUBLIC
+2023-05-16T15:37:14.719+03:00  INFO 13648 --- [restartedMain] liquibase.lockservice                    : Successfully acquired change log lock
+2023-05-16T15:37:15.119+03:00  INFO 13648 --- [restartedMain] liquibase.changelog                      : Reading from PUBLIC.DATABASECHANGELOG
+2023-05-16T15:37:15.189+03:00  INFO 13648 --- [restartedMain] liquibase.lockservice                    : Successfully released change log lock
+2023-05-16T15:37:15.287+03:00  INFO 13648 --- [restartedMain] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [name: default]
+2023-05-16T15:37:15.349+03:00  INFO 13648 --- [restartedMain] org.hibernate.Version                    : HHH000412: Hibernate ORM core version 6.1.7.Final
+2023-05-16T15:37:15.712+03:00  INFO 13648 --- [restartedMain] SQL dialect                              : HHH000400: Using dialect: org.hibernate.dialect.PostgreSQLDialect
+2023-05-16T15:37:17.051+03:00  INFO 13648 --- [restartedMain] o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000490: Using JtaPlatform implementation: [org.hibernate.engine.transaction.jta.platform.internal.NoJtaPlatform]
+2023-05-16T15:37:17.063+03:00  INFO 13648 --- [restartedMain] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2023-05-16T15:37:20.163+03:00  INFO 13648 --- [restartedMain] o.s.b.a.e.web.EndpointLinksResolver      : Exposing 4 endpoint(s) beneath base path '/actuator'
+2023-05-16T15:37:20.297+03:00  INFO 13648 --- [restartedMain] o.s.s.web.DefaultSecurityFilterChain     : Will secure any request with [org.springframework.security.web.session.DisableEncodeUrlFilter@741ac954, org.springframework.security.web.context.request.async.WebAsyncManagerIntegrationFilter@473e7439, org.springframework.security.web.context.SecurityContextHolderFilter@2a58ee63, org.springframework.security.web.header.HeaderWriterFilter@2243c630, org.springframework.web.filter.CorsFilter@51382b1f, org.springframework.security.web.authentication.logout.LogoutFilter@20ea6bc2, org.springframework.security.oauth2.server.resource.web.authentication.BearerTokenAuthenticationFilter@712ce796, org.springframework.security.web.authentication.www.BasicAuthenticationFilter@44004ed4, org.springframework.security.web.savedrequest.RequestCacheAwareFilter@24bc9739, org.springframework.security.web.servletapi.SecurityContextHolderAwareRequestFilter@706cf808, org.springframework.security.web.authentication.AnonymousAuthenticationFilter@598c8c4d, org.springframework.security.web.session.SessionManagementFilter@36f6c962, org.springframework.security.web.access.ExceptionTranslationFilter@471eca19, org.springframework.security.web.access.intercept.AuthorizationFilter@6ab5f3b8]
+2023-05-16T15:37:20.955+03:00  INFO 13648 --- [restartedMain] o.s.b.d.a.OptionalLiveReloadServer       : LiveReload server is running on port 35729
+2023-05-16T15:37:21.062+03:00  INFO 13648 --- [restartedMain] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port(s): 8082 (http) with context path ''
+2023-05-16T15:37:21.082+03:00  INFO 13648 --- [restartedMain] starlight.backend.StarlightApplication   : Started StarlightApplication in 11.822 seconds (process running for 14.14)
+2023-05-16T15:37:23.964+03:00  INFO 13648 --- [http-nio-8082-exec-1] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring DispatcherServlet 'dispatcherServlet'
+2023-05-16T15:37:23.965+03:00  INFO 13648 --- [http-nio-8082-exec-1] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
+2023-05-16T15:37:23.967+03:00  INFO 13648 --- [http-nio-8082-exec-1] o.s.web.servlet.DispatcherServlet        : Completed initialization in 2 ms
+2023-05-16T15:37:24.504+03:00  INFO 13648 --- [http-nio-8082-exec-1] s.backend.security.SecurityController    : @PostMapping("/talents/login")
+2023-05-16T15:37:36.665+03:00  INFO 13648 --- [http-nio-8082-exec-3] s.backend.talent.TalentController        : @GetMapping("/talents/{talent-id}")
+2023-05-16T15:38:56.012+03:00  INFO 13648 --- [http-nio-8082-exec-6] s.backend.security.SecurityController    : @PostMapping("/talents/login")
+2023-05-16T15:39:03.516+03:00  INFO 13648 --- [http-nio-8082-exec-7] s.backend.talent.TalentController        : @GetMapping("/talents/{talent-id}")
+2023-05-16T15:39:13.320+03:00  INFO 13648 --- [http-nio-8082-exec-8] s.backend.talent.TalentController        : @GetMapping("/talents/{talent-id}")
+2023-05-16T15:39:17.197+03:00  INFO 13648 --- [http-nio-8082-exec-9] s.backend.talent.TalentController        : @GetMapping("/talents/{talent-id}")
+2023-05-16T15:39:20.891+03:00  INFO 13648 --- [http-nio-8082-exec-10] s.backend.talent.TalentController        : @GetMapping("/talents/{talent-id}")
+2023-05-16T15:39:27.753+03:00  INFO 13648 --- [http-nio-8082-exec-2] s.backend.talent.TalentController        : @PatchMapping("/talents/{talent-id}")
+2023-05-16T15:39:33.542+03:00  INFO 13648 --- [http-nio-8082-exec-1] s.backend.talent.TalentController        : @PatchMapping("/talents/{talent-id}")
+2023-05-16T15:39:33.549+03:00  WARN 13648 --- [http-nio-8082-exec-1] .w.s.m.a.ResponseStatusExceptionResolver : Resolved [org.springframework.web.server.ResponseStatusException: 401 UNAUTHORIZED "you cannot change another talent"]
+2023-05-16T15:39:40.194+03:00  INFO 13648 --- [http-nio-8082-exec-3] s.backend.talent.TalentController        : @PatchMapping("/talents/{talent-id}")
+2023-05-16T15:39:44.478+03:00  INFO 13648 --- [http-nio-8082-exec-4] s.backend.talent.TalentController        : @GetMapping("/talents")
+2023-05-16T15:39:57.283+03:00  INFO 13648 --- [http-nio-8082-exec-5] s.backend.proof.ProofController          : @GetMapping("/proofs")
+2023-05-16T15:40:09.231+03:00  INFO 13648 --- [http-nio-8082-exec-6] s.backend.proof.ProofController          : @PostMapping("/talents/{talent-id}/proofs")
+2023-05-16T15:40:23.555+03:00  INFO 13648 --- [http-nio-8082-exec-8] s.backend.proof.ProofController          : @GetMapping("/talents/{talent-id}/proofs")
+2023-05-16T15:40:34.787+03:00  INFO 13648 --- [http-nio-8082-exec-9] s.backend.proof.ProofController          : @PatchMapping("/talents/{talent-id}/proofs/{proof-id}")
+2023-05-16T15:40:42.855+03:00  INFO 13648 --- [http-nio-8082-exec-10] s.backend.proof.ProofController          : @GetMapping("/proofs/{proof-id}")
+2023-05-16T15:40:51.656+03:00  INFO 13648 --- [http-nio-8082-exec-2] s.backend.skill.SkillController          : @GetMapping("/skills")
+2023-05-16T15:41:01.657+03:00  INFO 13648 --- [http-nio-8082-exec-1] s.backend.skill.SkillController          : @GetMapping("/talents/{talent-id}/proofs/{proof-id}/skills")
+2023-05-16T15:41:01.664+03:00 ERROR 13648 --- [http-nio-8082-exec-1] o.a.c.c.C.[.[.[/].[dispatcherServlet]    : Servlet.service() for servlet [dispatcherServlet] in context with path [] threw exception [Request processing failed: starlight.backend.exception.proof.UserCanNotEditProofNotInDraftException: You cannot change proof with status not a DRAFT.] with root cause
+
+starlight.backend.exception.proof.UserCanNotEditProofNotInDraftException: You cannot change proof with status not a DRAFT.
+	at starlight.backend.skill.service.impl.SkillServiceImpl.addSkillInYourProof(SkillServiceImpl.java:73) ~[classes/:na]
+	at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java:104) ~[na:na]
+	at java.base/java.lang.reflect.Method.invoke(Method.java:578) ~[na:na]
+	at org.springframework.aop.support.AopUtils.invokeJoinpointUsingReflection(AopUtils.java:343) ~[spring-aop-6.0.6.jar:6.0.6]
+	at org.springframework.aop.framework.ReflectiveMethodInvocation.invokeJoinpoint(ReflectiveMethodInvocation.java:196) ~[spring-aop-6.0.6.jar:6.0.6]
+	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:163) ~[spring-aop-6.0.6.jar:6.0.6]
+	at org.springframework.aop.framework.CglibAopProxy$CglibMethodInvocation.proceed(CglibAopProxy.java:750) ~[spring-aop-6.0.6.jar:6.0.6]
+	at org.springframework.transaction.interceptor.TransactionInterceptor$1.proceedWithInvocation(TransactionInterceptor.java:123) ~[spring-tx-6.0.6.jar:6.0.6]
+	at org.springframework.transaction.interceptor.TransactionAspectSupport.invokeWithinTransaction(TransactionAspectSupport.java:390) ~[spring-tx-6.0.6.jar:6.0.6]
+	at org.springframework.transaction.interceptor.TransactionInterceptor.invoke(TransactionInterceptor.java:119) ~[spring-tx-6.0.6.jar:6.0.6]
+	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:184) ~[spring-aop-6.0.6.jar:6.0.6]
+	at org.springframework.aop.framework.CglibAopProxy$CglibMethodInvocation.proceed(CglibAopProxy.java:750) ~[spring-aop-6.0.6.jar:6.0.6]
+	at org.springframework.aop.framework.CglibAopProxy$DynamicAdvisedInterceptor.intercept(CglibAopProxy.java:702) ~[spring-aop-6.0.6.jar:6.0.6]
+	at starlight.backend.skill.service.impl.SkillServiceImpl$$SpringCGLIB$$0.addSkillInYourProof(<generated>) ~[classes/:na]
+	at starlight.backend.skill.SkillController.addSkillInProof(SkillController.java:86) ~[classes/:na]
+	at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java:104) ~[na:na]
+	at java.base/java.lang.reflect.Method.invoke(Method.java:578) ~[na:na]
+	at org.springframework.aop.support.AopUtils.invokeJoinpointUsingReflection(AopUtils.java:343) ~[spring-aop-6.0.6.jar:6.0.6]
+	at org.springframework.aop.framework.ReflectiveMethodInvocation.invokeJoinpoint(ReflectiveMethodInvocation.java:196) ~[spring-aop-6.0.6.jar:6.0.6]
+	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:163) ~[spring-aop-6.0.6.jar:6.0.6]
+	at org.springframework.aop.framework.CglibAopProxy$CglibMethodInvocation.proceed(CglibAopProxy.java:750) ~[spring-aop-6.0.6.jar:6.0.6]
+	at org.springframework.validation.beanvalidation.MethodValidationInterceptor.invoke(MethodValidationInterceptor.java:141) ~[spring-context-6.0.6.jar:6.0.6]
+	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:184) ~[spring-aop-6.0.6.jar:6.0.6]
+	at org.springframework.aop.framework.CglibAopProxy$CglibMethodInvocation.proceed(CglibAopProxy.java:750) ~[spring-aop-6.0.6.jar:6.0.6]
+	at org.springframework.security.authorization.method.AuthorizationManagerBeforeMethodInterceptor.invoke(AuthorizationManagerBeforeMethodInterceptor.java:199) ~[spring-security-core-6.0.2.jar:6.0.2]
+	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:184) ~[spring-aop-6.0.6.jar:6.0.6]
+	at org.springframework.aop.framework.CglibAopProxy$CglibMethodInvocation.proceed(CglibAopProxy.java:750) ~[spring-aop-6.0.6.jar:6.0.6]
+	at org.springframework.aop.framework.CglibAopProxy$DynamicAdvisedInterceptor.intercept(CglibAopProxy.java:702) ~[spring-aop-6.0.6.jar:6.0.6]
+	at starlight.backend.skill.SkillController$$SpringCGLIB$$0.addSkillInProof(<generated>) ~[classes/:na]
+	at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java:104) ~[na:na]
+	at java.base/java.lang.reflect.Method.invoke(Method.java:578) ~[na:na]
+	at org.springframework.web.method.support.InvocableHandlerMethod.doInvoke(InvocableHandlerMethod.java:207) ~[spring-web-6.0.6.jar:6.0.6]
+	at org.springframework.web.method.support.InvocableHandlerMethod.invokeForRequest(InvocableHandlerMethod.java:152) ~[spring-web-6.0.6.jar:6.0.6]
+	at org.springframework.web.servlet.mvc.method.annotation.ServletInvocableHandlerMethod.invokeAndHandle(ServletInvocableHandlerMethod.java:117) ~[spring-webmvc-6.0.6.jar:6.0.6]
+	at org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter.invokeHandlerMethod(RequestMappingHandlerAdapter.java:884) ~[spring-webmvc-6.0.6.jar:6.0.6]
+	at org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter.handleInternal(RequestMappingHandlerAdapter.java:797) ~[spring-webmvc-6.0.6.jar:6.0.6]
+	at org.springframework.web.servlet.mvc.method.AbstractHandlerMethodAdapter.handle(AbstractHandlerMethodAdapter.java:87) ~[spring-webmvc-6.0.6.jar:6.0.6]
+	at org.springframework.web.servlet.DispatcherServlet.doDispatch(DispatcherServlet.java:1081) ~[spring-webmvc-6.0.6.jar:6.0.6]
+	at org.springframework.web.servlet.DispatcherServlet.doService(DispatcherServlet.java:974) ~[spring-webmvc-6.0.6.jar:6.0.6]
+	at org.springframework.web.servlet.FrameworkServlet.processRequest(FrameworkServlet.java:1011) ~[spring-webmvc-6.0.6.jar:6.0.6]
+	at org.springframework.web.servlet.FrameworkServlet.doPost(FrameworkServlet.java:914) ~[spring-webmvc-6.0.6.jar:6.0.6]
+	at jakarta.servlet.http.HttpServlet.service(HttpServlet.java:731) ~[tomcat-embed-core-10.1.5.jar:6.0]
+	at org.springframework.web.servlet.FrameworkServlet.service(FrameworkServlet.java:885) ~[spring-webmvc-6.0.6.jar:6.0.6]
+	at jakarta.servlet.http.HttpServlet.service(HttpServlet.java:814) ~[tomcat-embed-core-10.1.5.jar:6.0]
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:223) ~[tomcat-embed-core-10.1.5.jar:10.1.5]
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:158) ~[tomcat-embed-core-10.1.5.jar:10.1.5]
+	at org.apache.tomcat.websocket.server.WsFilter.doFilter(WsFilter.java:53) ~[tomcat-embed-websocket-10.1.5.jar:10.1.5]
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:185) ~[tomcat-embed-core-10.1.5.jar:10.1.5]
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:158) ~[tomcat-embed-core-10.1.5.jar:10.1.5]
+	at org.springframework.security.web.FilterChainProxy.lambda$doFilterInternal$3(FilterChainProxy.java:231) ~[spring-security-web-6.0.2.jar:6.0.2]
+	at org.springframework.security.web.ObservationFilterChainDecorator$FilterObservation$SimpleFilterObservation.lambda$wrap$1(ObservationFilterChainDecorator.java:399) ~[spring-security-web-6.0.2.jar:6.0.2]
+	at org.springframework.security.web.ObservationFilterChainDecorator$AroundFilterObservation$SimpleAroundFilterObservation.lambda$wrap$1(ObservationFilterChainDecorator.java:297) ~[spring-security-web-6.0.2.jar:6.0.2]
+	at org.springframework.security.web.ObservationFilterChainDecorator.lambda$wrapSecured$0(ObservationFilterChainDecorator.java:79) ~[spring-security-web-6.0.2.jar:6.0.2]
+	at org.springframework.security.web.ObservationFilterChainDecorator$VirtualFilterChain.doFilter(ObservationFilterChainDecorator.java:125) ~[spring-security-web-6.0.2.jar:6.0.2]
+	at org.springframework.security.web.access.intercept.AuthorizationFilter.doFilter(AuthorizationFilter.java:100) ~[spring-security-web-6.0.2.jar:6.0.2]
+	at org.springframework.security.web.ObservationFilterChainDecorator$ObservationFilter.wrapFilter(ObservationFilterChainDecorator.java:186) ~[spring-security-web-6.0.2.jar:6.0.2]
+	at org.springframework.security.web.ObservationFilterChainDecorator$ObservationFilter.doFilter(ObservationFilterChainDecorator.java:173) ~[spring-security-web-6.0.2.jar:6.0.2]
+	at org.springframework.security.web.ObservationFilterChainDecorator$VirtualFilterChain.doFilter(ObservationFilterChainDecorator.java:134) ~[spring-security-web-6.0.2.jar:6.0.2]
+	at org.springframework.security.web.access.ExceptionTranslationFilter.doFilter(ExceptionTranslationFilter.java:126) ~[spring-security-web-6.0.2.jar:6.0.2]
+	at org.springframework.security.web.access.ExceptionTranslationFilter.doFilter(ExceptionTranslationFilter.java:120) ~[spring-security-web-6.0.2.jar:6.0.2]
+	at org.springframework.security.web.ObservationFilterChainDecorator$ObservationFilter.wrapFilter(ObservationFilterChainDecorator.java:186) ~[spring-security-web-6.0.2.jar:6.0.2]
+	at org.springframework.security.web.ObservationFilterChainDecorator$ObservationFilter.doFilter(ObservationFilterChainDecorator.java:173) ~[spring-security-web-6.0.2.jar:6.0.2]
+	at org.springframework.security.web.ObservationFilterChainDecorator$VirtualFilterChain.doFilter(ObservationFilterChainDecorator.java:134) ~[spring-security-web-6.0.2.jar:6.0.2]
+	at org.springframework.security.web.session.SessionManagementFilter.doFilter(SessionManagementFilter.java:131) ~[spring-security-web-6.0.2.jar:6.0.2]
+	at org.springframework.security.web.session.SessionManagementFilter.doFilter(SessionManagementFilter.java:85) ~[spring-security-web-6.0.2.jar:6.0.2]
+	at org.springframework.security.web.ObservationFilterChainDecorator$ObservationFilter.wrapFilter(ObservationFilterChainDecorator.java:186) ~[spring-security-web-6.0.2.jar:6.0.2]
+	at org.springframework.security.web.ObservationFilterChainDecorator$ObservationFilter.doFilter(ObservationFilterChainDecorator.java:173) ~[spring-security-web-6.0.2.jar:6.0.2]
+	at org.springframework.security.web.ObservationFilterChainDecorator$VirtualFilterChain.doFilter(ObservationFilterChainDecorator.java:134) ~[spring-security-web-6.0.2.jar:6.0.2]
+	at org.springframework.security.web.authentication.AnonymousAuthenticationFilter.doFilter(AnonymousAuthenticationFilter.java:100) ~[spring-security-web-6.0.2.jar:6.0.2]
+	at org.springframework.security.web.ObservationFilterChainDecorator$ObservationFilter.wrapFilter(ObservationFilterChainDecorator.java:186) ~[spring-security-web-6.0.2.jar:6.0.2]
+	at org.springframework.security.web.ObservationFilterChainDecorator$ObservationFilter.doFilter(ObservationFilterChainDecorator.java:173) ~[spring-security-web-6.0.2.jar:6.0.2]
+	at org.springframework.security.web.ObservationFilterChainDecorator$VirtualFilterChain.doFilter(ObservationFilterChainDecorator.java:134) ~[spring-security-web-6.0.2.jar:6.0.2]
+	at org.springframework.security.web.servletapi.SecurityContextHolderAwareRequestFilter.doFilter(SecurityContextHolderAwareRequestFilter.java:179) ~[spring-security-web-6.0.2.jar:6.0.2]
+	at org.springframework.security.web.ObservationFilterChainDecorator$ObservationFilter.wrapFilter(ObservationFilterChainDecorator.java:186) ~[spring-security-web-6.0.2.jar:6.0.2]
+	at org.springframework.security.web.ObservationFilterChainDecorator$ObservationFilter.doFilter(ObservationFilterChainDecorator.java:173) ~[spring-security-web-6.0.2.jar:6.0.2]
+	at org.springframework.security.web.ObservationFilterChainDecorator$VirtualFilterChain.doFilter(ObservationFilterChainDecorator.java:134) ~[spring-security-web-6.0.2.jar:6.0.2]
+	at org.springframework.security.web.savedrequest.RequestCacheAwareFilter.doFilter(RequestCacheAwareFilter.java:63) ~[spring-security-web-6.0.2.jar:6.0.2]
+	at org.springframework.security.web.ObservationFilterChainDecorator$ObservationFilter.wrapFilter(ObservationFilterChainDecorator.java:186) ~[spring-security-web-6.0.2.jar:6.0.2]
+	at org.springframework.security.web.ObservationFilterChainDecorator$ObservationFilter.doFilter(ObservationFilterChainDecorator.java:173) ~[spring-security-web-6.0.2.jar:6.0.2]
+	at org.springframework.security.web.ObservationFilterChainDecorator$VirtualFilterChain.doFilter(ObservationFilterChainDecorator.java:134) ~[spring-security-web-6.0.2.jar:6.0.2]
+	at org.springframework.security.web.authentication.www.BasicAuthenticationFilter.doFilterInternal(BasicAuthenticationFilter.java:170) ~[spring-security-web-6.0.2.jar:6.0.2]
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116) ~[spring-web-6.0.6.jar:6.0.6]
+	at org.springframework.security.web.ObservationFilterChainDecorator$ObservationFilter.wrapFilter(ObservationFilterChainDecorator.java:186) ~[spring-security-web-6.0.2.jar:6.0.2]
+	at org.springframework.security.web.ObservationFilterChainDecorator$ObservationFilter.doFilter(ObservationFilterChainDecorator.java:173) ~[spring-security-web-6.0.2.jar:6.0.2]
+	at org.springframework.security.web.ObservationFilterChainDecorator$VirtualFilterChain.doFilter(ObservationFilterChainDecorator.java:134) ~[spring-security-web-6.0.2.jar:6.0.2]
+	at org.springframework.security.oauth2.server.resource.web.authentication.BearerTokenAuthenticationFilter.doFilterInternal(BearerTokenAuthenticationFilter.java:145) ~[spring-security-oauth2-resource-server-6.0.2.jar:6.0.2]
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116) ~[spring-web-6.0.6.jar:6.0.6]
+	at org.springframework.security.web.ObservationFilterChainDecorator$ObservationFilter.wrapFilter(ObservationFilterChainDecorator.java:186) ~[spring-security-web-6.0.2.jar:6.0.2]
+	at org.springframework.security.web.ObservationFilterChainDecorator$ObservationFilter.doFilter(ObservationFilterChainDecorator.java:173) ~[spring-security-web-6.0.2.jar:6.0.2]
+	at org.springframework.security.web.ObservationFilterChainDecorator$VirtualFilterChain.doFilter(ObservationFilterChainDecorator.java:134) ~[spring-security-web-6.0.2.jar:6.0.2]
+	at org.springframework.security.web.authentication.logout.LogoutFilter.doFilter(LogoutFilter.java:107) ~[spring-security-web-6.0.2.jar:6.0.2]
+	at org.springframework.security.web.authentication.logout.LogoutFilter.doFilter(LogoutFilter.java:93) ~[spring-security-web-6.0.2.jar:6.0.2]
+	at org.springframework.security.web.ObservationFilterChainDecorator$ObservationFilter.wrapFilter(ObservationFilterChainDecorator.java:186) ~[spring-security-web-6.0.2.jar:6.0.2]
+	at org.springframework.security.web.ObservationFilterChainDecorator$ObservationFilter.doFilter(ObservationFilterChainDecorator.java:173) ~[spring-security-web-6.0.2.jar:6.0.2]
+	at org.springframework.security.web.ObservationFilterChainDecorator$VirtualFilterChain.doFilter(ObservationFilterChainDecorator.java:134) ~[spring-security-web-6.0.2.jar:6.0.2]
+	at org.springframework.web.filter.CorsFilter.doFilterInternal(CorsFilter.java:91) ~[spring-web-6.0.6.jar:6.0.6]
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116) ~[spring-web-6.0.6.jar:6.0.6]
+	at org.springframework.security.web.ObservationFilterChainDecorator$ObservationFilter.wrapFilter(ObservationFilterChainDecorator.java:186) ~[spring-security-web-6.0.2.jar:6.0.2]
+	at org.springframework.security.web.ObservationFilterChainDecorator$ObservationFilter.doFilter(ObservationFilterChainDecorator.java:173) ~[spring-security-web-6.0.2.jar:6.0.2]
+	at org.springframework.security.web.ObservationFilterChainDecorator$VirtualFilterChain.doFilter(ObservationFilterChainDecorator.java:134) ~[spring-security-web-6.0.2.jar:6.0.2]
+	at org.springframework.security.web.header.HeaderWriterFilter.doHeadersAfter(HeaderWriterFilter.java:90) ~[spring-security-web-6.0.2.jar:6.0.2]
+	at org.springframework.security.web.header.HeaderWriterFilter.doFilterInternal(HeaderWriterFilter.java:75) ~[spring-security-web-6.0.2.jar:6.0.2]
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116) ~[spring-web-6.0.6.jar:6.0.6]
+	at org.springframework.security.web.ObservationFilterChainDecorator$ObservationFilter.wrapFilter(ObservationFilterChainDecorator.java:186) ~[spring-security-web-6.0.2.jar:6.0.2]
+	at org.springframework.security.web.ObservationFilterChainDecorator$ObservationFilter.doFilter(ObservationFilterChainDecorator.java:173) ~[spring-security-web-6.0.2.jar:6.0.2]
+	at org.springframework.security.web.ObservationFilterChainDecorator$VirtualFilterChain.doFilter(ObservationFilterChainDecorator.java:134) ~[spring-security-web-6.0.2.jar:6.0.2]
+	at org.springframework.security.web.context.SecurityContextHolderFilter.doFilter(SecurityContextHolderFilter.java:82) ~[spring-security-web-6.0.2.jar:6.0.2]
+	at org.springframework.security.web.context.SecurityContextHolderFilter.doFilter(SecurityContextHolderFilter.java:69) ~[spring-security-web-6.0.2.jar:6.0.2]
+	at org.springframework.security.web.ObservationFilterChainDecorator$ObservationFilter.wrapFilter(ObservationFilterChainDecorator.java:186) ~[spring-security-web-6.0.2.jar:6.0.2]
+	at org.springframework.security.web.ObservationFilterChainDecorator$ObservationFilter.doFilter(ObservationFilterChainDecorator.java:173) ~[spring-security-web-6.0.2.jar:6.0.2]
+	at org.springframework.security.web.ObservationFilterChainDecorator$VirtualFilterChain.doFilter(ObservationFilterChainDecorator.java:134) ~[spring-security-web-6.0.2.jar:6.0.2]
+	at org.springframework.security.web.context.request.async.WebAsyncManagerIntegrationFilter.doFilterInternal(WebAsyncManagerIntegrationFilter.java:62) ~[spring-security-web-6.0.2.jar:6.0.2]
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116) ~[spring-web-6.0.6.jar:6.0.6]
+	at org.springframework.security.web.ObservationFilterChainDecorator$ObservationFilter.wrapFilter(ObservationFilterChainDecorator.java:186) ~[spring-security-web-6.0.2.jar:6.0.2]
+	at org.springframework.security.web.ObservationFilterChainDecorator$ObservationFilter.doFilter(ObservationFilterChainDecorator.java:173) ~[spring-security-web-6.0.2.jar:6.0.2]
+	at org.springframework.security.web.ObservationFilterChainDecorator$VirtualFilterChain.doFilter(ObservationFilterChainDecorator.java:134) ~[spring-security-web-6.0.2.jar:6.0.2]
+	at org.springframework.security.web.session.DisableEncodeUrlFilter.doFilterInternal(DisableEncodeUrlFilter.java:42) ~[spring-security-web-6.0.2.jar:6.0.2]
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116) ~[spring-web-6.0.6.jar:6.0.6]
+	at org.springframework.security.web.ObservationFilterChainDecorator$ObservationFilter.wrapFilter(ObservationFilterChainDecorator.java:186) ~[spring-security-web-6.0.2.jar:6.0.2]
+	at org.springframework.security.web.ObservationFilterChainDecorator$AroundFilterObservation$SimpleAroundFilterObservation.lambda$wrap$0(ObservationFilterChainDecorator.java:280) ~[spring-security-web-6.0.2.jar:6.0.2]
+	at org.springframework.security.web.ObservationFilterChainDecorator$ObservationFilter.doFilter(ObservationFilterChainDecorator.java:170) ~[spring-security-web-6.0.2.jar:6.0.2]
+	at org.springframework.security.web.ObservationFilterChainDecorator$VirtualFilterChain.doFilter(ObservationFilterChainDecorator.java:134) ~[spring-security-web-6.0.2.jar:6.0.2]
+	at org.springframework.security.web.FilterChainProxy.doFilterInternal(FilterChainProxy.java:233) ~[spring-security-web-6.0.2.jar:6.0.2]
+	at org.springframework.security.web.FilterChainProxy.doFilter(FilterChainProxy.java:191) ~[spring-security-web-6.0.2.jar:6.0.2]
+	at org.springframework.web.filter.DelegatingFilterProxy.invokeDelegate(DelegatingFilterProxy.java:352) ~[spring-web-6.0.6.jar:6.0.6]
+	at org.springframework.web.filter.DelegatingFilterProxy.doFilter(DelegatingFilterProxy.java:268) ~[spring-web-6.0.6.jar:6.0.6]
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:185) ~[tomcat-embed-core-10.1.5.jar:10.1.5]
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:158) ~[tomcat-embed-core-10.1.5.jar:10.1.5]
+	at org.springframework.web.filter.RequestContextFilter.doFilterInternal(RequestContextFilter.java:100) ~[spring-web-6.0.6.jar:6.0.6]
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116) ~[spring-web-6.0.6.jar:6.0.6]
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:185) ~[tomcat-embed-core-10.1.5.jar:10.1.5]
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:158) ~[tomcat-embed-core-10.1.5.jar:10.1.5]
+	at org.springframework.web.filter.FormContentFilter.doFilterInternal(FormContentFilter.java:93) ~[spring-web-6.0.6.jar:6.0.6]
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116) ~[spring-web-6.0.6.jar:6.0.6]
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:185) ~[tomcat-embed-core-10.1.5.jar:10.1.5]
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:158) ~[tomcat-embed-core-10.1.5.jar:10.1.5]
+	at org.springframework.web.filter.ServerHttpObservationFilter.doFilterInternal(ServerHttpObservationFilter.java:109) ~[spring-web-6.0.6.jar:6.0.6]
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116) ~[spring-web-6.0.6.jar:6.0.6]
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:185) ~[tomcat-embed-core-10.1.5.jar:10.1.5]
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:158) ~[tomcat-embed-core-10.1.5.jar:10.1.5]
+	at org.springframework.web.filter.CharacterEncodingFilter.doFilterInternal(CharacterEncodingFilter.java:201) ~[spring-web-6.0.6.jar:6.0.6]
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116) ~[spring-web-6.0.6.jar:6.0.6]
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:185) ~[tomcat-embed-core-10.1.5.jar:10.1.5]
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:158) ~[tomcat-embed-core-10.1.5.jar:10.1.5]
+	at org.apache.catalina.core.StandardWrapperValve.invoke(StandardWrapperValve.java:177) ~[tomcat-embed-core-10.1.5.jar:10.1.5]
+	at org.apache.catalina.core.StandardContextValve.invoke(StandardContextValve.java:97) ~[tomcat-embed-core-10.1.5.jar:10.1.5]
+	at org.apache.catalina.authenticator.AuthenticatorBase.invoke(AuthenticatorBase.java:542) ~[tomcat-embed-core-10.1.5.jar:10.1.5]
+	at org.apache.catalina.core.StandardHostValve.invoke(StandardHostValve.java:119) ~[tomcat-embed-core-10.1.5.jar:10.1.5]
+	at org.apache.catalina.valves.ErrorReportValve.invoke(ErrorReportValve.java:92) ~[tomcat-embed-core-10.1.5.jar:10.1.5]
+	at org.apache.catalina.core.StandardEngineValve.invoke(StandardEngineValve.java:78) ~[tomcat-embed-core-10.1.5.jar:10.1.5]
+	at org.apache.catalina.connector.CoyoteAdapter.service(CoyoteAdapter.java:357) ~[tomcat-embed-core-10.1.5.jar:10.1.5]
+	at org.apache.coyote.http11.Http11Processor.service(Http11Processor.java:400) ~[tomcat-embed-core-10.1.5.jar:10.1.5]
+	at org.apache.coyote.AbstractProcessorLight.process(AbstractProcessorLight.java:65) ~[tomcat-embed-core-10.1.5.jar:10.1.5]
+	at org.apache.coyote.AbstractProtocol$ConnectionHandler.process(AbstractProtocol.java:859) ~[tomcat-embed-core-10.1.5.jar:10.1.5]
+	at org.apache.tomcat.util.net.NioEndpoint$SocketProcessor.doRun(NioEndpoint.java:1734) ~[tomcat-embed-core-10.1.5.jar:10.1.5]
+	at org.apache.tomcat.util.net.SocketProcessorBase.run(SocketProcessorBase.java:52) ~[tomcat-embed-core-10.1.5.jar:10.1.5]
+	at org.apache.tomcat.util.threads.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1191) ~[tomcat-embed-core-10.1.5.jar:10.1.5]
+	at org.apache.tomcat.util.threads.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:659) ~[tomcat-embed-core-10.1.5.jar:10.1.5]
+	at org.apache.tomcat.util.threads.TaskThread$WrappingRunnable.run(TaskThread.java:61) ~[tomcat-embed-core-10.1.5.jar:10.1.5]
+	at java.base/java.lang.Thread.run(Thread.java:1589) ~[na:na]
+
+2023-05-16T15:41:10.992+03:00  INFO 13648 --- [http-nio-8082-exec-3] s.backend.proof.ProofController          : @PostMapping("/talents/{talent-id}/proofs")
+2023-05-16T15:41:16.241+03:00  INFO 13648 --- [http-nio-8082-exec-5] s.backend.skill.SkillController          : @GetMapping("/talents/{talent-id}/proofs/{proof-id}/skills")
+2023-05-16T15:41:22.914+03:00  INFO 13648 --- [http-nio-8082-exec-6] s.backend.skill.SkillController          : @GetMapping("/skills")
+2023-05-16T15:41:37.675+03:00  INFO 13648 --- [http-nio-8082-exec-7] s.backend.skill.SkillController          : @GetMapping("/skills")
+2023-05-16T15:41:49.412+03:00  INFO 13648 --- [http-nio-8082-exec-8] s.backend.skill.SkillController          : @GetMapping("/talents/{talent-id}/proofs/{proof-id}/skills/{skill-id}")
+2023-05-16T15:41:49.421+03:00  WARN 13648 --- [http-nio-8082-exec-8] .w.s.m.a.ResponseStatusExceptionResolver : Resolved [org.springframework.web.server.ResponseStatusException: 400 BAD_REQUEST "don`t found skill by talentId and proofId!"]
+2023-05-16T15:42:13.691+03:00  INFO 13648 --- [http-nio-8082-exec-10] s.backend.skill.SkillController          : @GetMapping("/talents/{talent-id}/proofs/{proof-id}/skills/{skill-id}")
+2023-05-16T15:42:18.336+03:00  INFO 13648 --- [http-nio-8082-exec-2] s.backend.skill.SkillController          : @GetMapping("/skills")
+2023-05-16T15:42:29.695+03:00  INFO 13648 --- [http-nio-8082-exec-1] s.backend.proof.ProofController          : @DeleteMapping("/talents/{talent-id}/proofs/{proof-id}")
+2023-05-16T15:43:19.346+03:00  INFO 13648 --- [http-nio-8082-exec-7] s.backend.talent.TalentController        : @DeleteMapping("/talents/{talent-id}")
+2023-05-16T15:43:42.253+03:00  INFO 13648 --- [SpringApplicationShutdownHook] j.LocalContainerEntityManagerFactoryBean : Closing JPA EntityManagerFactory for persistence unit 'default'
+2023-05-16T15:43:42.262+03:00  INFO 13648 --- [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown initiated...
+2023-05-16T15:43:42.265+03:00  INFO 13648 --- [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown completed.
+2023-05-16T15:48:11.790+03:00  INFO 3212 --- [restartedMain] starlight.backend.StarlightApplication   : Starting StarlightApplication using Java 19.0.2 with PID 3212 (C:\Users\User\Desktop\backend\target\classes started by User in C:\Users\User\Desktop\backend)
+2023-05-16T15:48:11.793+03:00  INFO 3212 --- [restartedMain] starlight.backend.StarlightApplication   : The following 1 profile is active: "dev"
+2023-05-16T15:48:11.930+03:00  INFO 3212 --- [restartedMain] .e.DevToolsPropertyDefaultsPostProcessor : Devtools property defaults active! Set 'spring.devtools.add-properties' to 'false' to disable
+2023-05-16T15:48:11.930+03:00  INFO 3212 --- [restartedMain] .e.DevToolsPropertyDefaultsPostProcessor : For additional web related logging consider setting the 'logging.level.web' property to 'DEBUG'
+2023-05-16T15:48:14.395+03:00  INFO 3212 --- [restartedMain] .s.d.r.c.RepositoryConfigurationDelegate : Multiple Spring Data modules found, entering strict repository configuration mode
+2023-05-16T15:48:14.398+03:00  INFO 3212 --- [restartedMain] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JDBC repositories in DEFAULT mode.
+2023-05-16T15:48:14.455+03:00  INFO 3212 --- [restartedMain] .RepositoryConfigurationExtensionSupport : Spring Data JDBC - Could not safely identify store assignment for repository candidate interface starlight.backend.proof.ProofRepository; If you want this repository to be a JDBC repository, consider annotating your entities with one of these annotations: org.springframework.data.relational.core.mapping.Table.
+2023-05-16T15:48:14.457+03:00  INFO 3212 --- [restartedMain] .RepositoryConfigurationExtensionSupport : Spring Data JDBC - Could not safely identify store assignment for repository candidate interface starlight.backend.skill.repository.SkillRepository; If you want this repository to be a JDBC repository, consider annotating your entities with one of these annotations: org.springframework.data.relational.core.mapping.Table.
+2023-05-16T15:48:14.459+03:00  INFO 3212 --- [restartedMain] .RepositoryConfigurationExtensionSupport : Spring Data JDBC - Could not safely identify store assignment for repository candidate interface starlight.backend.user.repository.PositionRepository; If you want this repository to be a JDBC repository, consider annotating your entities with one of these annotations: org.springframework.data.relational.core.mapping.Table.
+2023-05-16T15:48:14.460+03:00  INFO 3212 --- [restartedMain] .RepositoryConfigurationExtensionSupport : Spring Data JDBC - Could not safely identify store assignment for repository candidate interface starlight.backend.user.repository.UserRepository; If you want this repository to be a JDBC repository, consider annotating your entities with one of these annotations: org.springframework.data.relational.core.mapping.Table.
+2023-05-16T15:48:14.461+03:00  INFO 3212 --- [restartedMain] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 56 ms. Found 0 JDBC repository interfaces.
+2023-05-16T15:48:14.472+03:00  INFO 3212 --- [restartedMain] .s.d.r.c.RepositoryConfigurationDelegate : Multiple Spring Data modules found, entering strict repository configuration mode
+2023-05-16T15:48:14.473+03:00  INFO 3212 --- [restartedMain] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2023-05-16T15:48:14.533+03:00  INFO 3212 --- [restartedMain] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 55 ms. Found 4 JPA repository interfaces.
+2023-05-16T15:48:15.432+03:00  INFO 3212 --- [restartedMain] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port(s): 8082 (http)
+2023-05-16T15:48:15.444+03:00  INFO 3212 --- [restartedMain] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2023-05-16T15:48:15.445+03:00  INFO 3212 --- [restartedMain] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/10.1.5]
+2023-05-16T15:48:15.530+03:00  INFO 3212 --- [restartedMain] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
+2023-05-16T15:48:15.531+03:00  INFO 3212 --- [restartedMain] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 3600 ms
+2023-05-16T15:48:15.700+03:00  INFO 3212 --- [restartedMain] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2023-05-16T15:48:16.035+03:00  INFO 3212 --- [restartedMain] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection conn0: url=jdbc:h2:file:./sampleDB user=
+2023-05-16T15:48:16.037+03:00  INFO 3212 --- [restartedMain] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2023-05-16T15:48:16.054+03:00  INFO 3212 --- [restartedMain] o.s.b.a.h2.H2ConsoleAutoConfiguration    : H2 console available at '/h2'. Database available at 'jdbc:h2:file:./sampleDB'
+2023-05-16T15:48:16.312+03:00  INFO 3212 --- [restartedMain] liquibase.database                       : Set default schema name to PUBLIC
+2023-05-16T15:48:16.482+03:00  INFO 3212 --- [restartedMain] liquibase.lockservice                    : Successfully acquired change log lock
+2023-05-16T15:48:16.884+03:00  INFO 3212 --- [restartedMain] liquibase.changelog                      : Reading from PUBLIC.DATABASECHANGELOG
+2023-05-16T15:48:16.959+03:00  INFO 3212 --- [restartedMain] liquibase.lockservice                    : Successfully released change log lock
+2023-05-16T15:48:17.062+03:00  INFO 3212 --- [restartedMain] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [name: default]
+2023-05-16T15:48:17.126+03:00  INFO 3212 --- [restartedMain] org.hibernate.Version                    : HHH000412: Hibernate ORM core version 6.1.7.Final
+2023-05-16T15:48:17.465+03:00  INFO 3212 --- [restartedMain] SQL dialect                              : HHH000400: Using dialect: org.hibernate.dialect.PostgreSQLDialect
+2023-05-16T15:48:18.558+03:00  INFO 3212 --- [restartedMain] o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000490: Using JtaPlatform implementation: [org.hibernate.engine.transaction.jta.platform.internal.NoJtaPlatform]
+2023-05-16T15:48:18.570+03:00  INFO 3212 --- [restartedMain] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2023-05-16T15:48:20.239+03:00  INFO 3212 --- [restartedMain] o.s.b.a.e.web.EndpointLinksResolver      : Exposing 4 endpoint(s) beneath base path '/actuator'
+2023-05-16T15:48:20.379+03:00  INFO 3212 --- [restartedMain] o.s.s.web.DefaultSecurityFilterChain     : Will secure any request with [org.springframework.security.web.session.DisableEncodeUrlFilter@59b052c9, org.springframework.security.web.context.request.async.WebAsyncManagerIntegrationFilter@200d00a8, org.springframework.security.web.context.SecurityContextHolderFilter@1482e365, org.springframework.security.web.header.HeaderWriterFilter@644fa640, org.springframework.web.filter.CorsFilter@e02421a, org.springframework.security.web.authentication.logout.LogoutFilter@3ae29a5d, org.springframework.security.oauth2.server.resource.web.authentication.BearerTokenAuthenticationFilter@549f57c4, org.springframework.security.web.authentication.www.BasicAuthenticationFilter@3d51ff8, org.springframework.security.web.savedrequest.RequestCacheAwareFilter@29dacb0f, org.springframework.security.web.servletapi.SecurityContextHolderAwareRequestFilter@10b020d0, org.springframework.security.web.authentication.AnonymousAuthenticationFilter@4d88dfc3, org.springframework.security.web.session.SessionManagementFilter@23008a46, org.springframework.security.web.access.ExceptionTranslationFilter@7c41e7cb, org.springframework.security.web.access.intercept.AuthorizationFilter@44b22c6b]
+2023-05-16T15:48:21.011+03:00  INFO 3212 --- [restartedMain] o.s.b.d.a.OptionalLiveReloadServer       : LiveReload server is running on port 35729
+2023-05-16T15:48:21.129+03:00  INFO 3212 --- [restartedMain] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port(s): 8082 (http) with context path ''
+2023-05-16T15:48:21.149+03:00  INFO 3212 --- [restartedMain] starlight.backend.StarlightApplication   : Started StarlightApplication in 10.316 seconds (process running for 11.819)
+2023-05-16T15:49:04.900+03:00  INFO 3212 --- [SpringApplicationShutdownHook] j.LocalContainerEntityManagerFactoryBean : Closing JPA EntityManagerFactory for persistence unit 'default'
+2023-05-16T15:49:04.907+03:00  INFO 3212 --- [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown initiated...
+2023-05-16T15:49:04.910+03:00  INFO 3212 --- [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown completed.
+2023-05-16T15:49:36.979+03:00  INFO 10540 --- [restartedMain] starlight.backend.StarlightApplication   : Starting StarlightApplication using Java 19.0.2 with PID 10540 (C:\Users\User\Desktop\backend\target\classes started by User in C:\Users\User\Desktop\backend)
+2023-05-16T15:49:36.982+03:00  INFO 10540 --- [restartedMain] starlight.backend.StarlightApplication   : The following 1 profile is active: "dev"
+2023-05-16T15:49:37.254+03:00  INFO 10540 --- [restartedMain] .e.DevToolsPropertyDefaultsPostProcessor : Devtools property defaults active! Set 'spring.devtools.add-properties' to 'false' to disable
+2023-05-16T15:49:37.255+03:00  INFO 10540 --- [restartedMain] .e.DevToolsPropertyDefaultsPostProcessor : For additional web related logging consider setting the 'logging.level.web' property to 'DEBUG'
+2023-05-16T15:49:39.880+03:00  INFO 10540 --- [restartedMain] .s.d.r.c.RepositoryConfigurationDelegate : Multiple Spring Data modules found, entering strict repository configuration mode
+2023-05-16T15:49:39.882+03:00  INFO 10540 --- [restartedMain] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JDBC repositories in DEFAULT mode.
+2023-05-16T15:49:39.952+03:00  INFO 10540 --- [restartedMain] .RepositoryConfigurationExtensionSupport : Spring Data JDBC - Could not safely identify store assignment for repository candidate interface starlight.backend.proof.ProofRepository; If you want this repository to be a JDBC repository, consider annotating your entities with one of these annotations: org.springframework.data.relational.core.mapping.Table.
+2023-05-16T15:49:39.954+03:00  INFO 10540 --- [restartedMain] .RepositoryConfigurationExtensionSupport : Spring Data JDBC - Could not safely identify store assignment for repository candidate interface starlight.backend.skill.repository.SkillRepository; If you want this repository to be a JDBC repository, consider annotating your entities with one of these annotations: org.springframework.data.relational.core.mapping.Table.
+2023-05-16T15:49:39.957+03:00  INFO 10540 --- [restartedMain] .RepositoryConfigurationExtensionSupport : Spring Data JDBC - Could not safely identify store assignment for repository candidate interface starlight.backend.user.repository.PositionRepository; If you want this repository to be a JDBC repository, consider annotating your entities with one of these annotations: org.springframework.data.relational.core.mapping.Table.
+2023-05-16T15:49:39.957+03:00  INFO 10540 --- [restartedMain] .RepositoryConfigurationExtensionSupport : Spring Data JDBC - Could not safely identify store assignment for repository candidate interface starlight.backend.user.repository.UserRepository; If you want this repository to be a JDBC repository, consider annotating your entities with one of these annotations: org.springframework.data.relational.core.mapping.Table.
+2023-05-16T15:49:39.958+03:00  INFO 10540 --- [restartedMain] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 71 ms. Found 0 JDBC repository interfaces.
+2023-05-16T15:49:39.975+03:00  INFO 10540 --- [restartedMain] .s.d.r.c.RepositoryConfigurationDelegate : Multiple Spring Data modules found, entering strict repository configuration mode
+2023-05-16T15:49:39.977+03:00  INFO 10540 --- [restartedMain] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2023-05-16T15:49:40.060+03:00  INFO 10540 --- [restartedMain] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 76 ms. Found 4 JPA repository interfaces.
+2023-05-16T15:49:41.194+03:00  INFO 10540 --- [restartedMain] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port(s): 8082 (http)
+2023-05-16T15:49:41.207+03:00  INFO 10540 --- [restartedMain] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2023-05-16T15:49:41.208+03:00  INFO 10540 --- [restartedMain] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/10.1.5]
+2023-05-16T15:49:41.291+03:00  INFO 10540 --- [restartedMain] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
+2023-05-16T15:49:41.292+03:00  INFO 10540 --- [restartedMain] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 4035 ms
+2023-05-16T15:49:41.457+03:00  INFO 10540 --- [restartedMain] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2023-05-16T15:49:41.781+03:00  INFO 10540 --- [restartedMain] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection conn0: url=jdbc:h2:file:./sampleDB user=
+2023-05-16T15:49:41.783+03:00  INFO 10540 --- [restartedMain] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2023-05-16T15:49:41.796+03:00  INFO 10540 --- [restartedMain] o.s.b.a.h2.H2ConsoleAutoConfiguration    : H2 console available at '/h2'. Database available at 'jdbc:h2:file:./sampleDB'
+2023-05-16T15:49:42.065+03:00  INFO 10540 --- [restartedMain] liquibase.database                       : Set default schema name to PUBLIC
+2023-05-16T15:49:42.240+03:00  INFO 10540 --- [restartedMain] liquibase.lockservice                    : Successfully acquired change log lock
+2023-05-16T15:49:42.636+03:00  INFO 10540 --- [restartedMain] liquibase.changelog                      : Reading from PUBLIC.DATABASECHANGELOG
+2023-05-16T15:49:42.708+03:00  INFO 10540 --- [restartedMain] liquibase.lockservice                    : Successfully released change log lock
+2023-05-16T15:49:42.802+03:00  INFO 10540 --- [restartedMain] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [name: default]
+2023-05-16T15:49:42.863+03:00  INFO 10540 --- [restartedMain] org.hibernate.Version                    : HHH000412: Hibernate ORM core version 6.1.7.Final
+2023-05-16T15:49:43.209+03:00  INFO 10540 --- [restartedMain] SQL dialect                              : HHH000400: Using dialect: org.hibernate.dialect.PostgreSQLDialect
+2023-05-16T15:49:44.279+03:00  INFO 10540 --- [restartedMain] o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000490: Using JtaPlatform implementation: [org.hibernate.engine.transaction.jta.platform.internal.NoJtaPlatform]
+2023-05-16T15:49:44.291+03:00  INFO 10540 --- [restartedMain] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2023-05-16T15:49:48.870+03:00  INFO 10540 --- [restartedMain] o.s.b.a.e.web.EndpointLinksResolver      : Exposing 4 endpoint(s) beneath base path '/actuator'
+2023-05-16T15:49:49.006+03:00  INFO 10540 --- [restartedMain] o.s.s.web.DefaultSecurityFilterChain     : Will secure any request with [org.springframework.security.web.session.DisableEncodeUrlFilter@3ee4ae34, org.springframework.security.web.context.request.async.WebAsyncManagerIntegrationFilter@627f862e, org.springframework.security.web.context.SecurityContextHolderFilter@4db96caf, org.springframework.security.web.header.HeaderWriterFilter@4600bd4d, org.springframework.web.filter.CorsFilter@25796a8e, org.springframework.security.web.authentication.logout.LogoutFilter@4a820d13, org.springframework.security.oauth2.server.resource.web.authentication.BearerTokenAuthenticationFilter@39cfc1de, org.springframework.security.web.authentication.www.BasicAuthenticationFilter@5e9a9023, org.springframework.security.web.savedrequest.RequestCacheAwareFilter@5e1c173b, org.springframework.security.web.servletapi.SecurityContextHolderAwareRequestFilter@6aa9be1f, org.springframework.security.web.authentication.AnonymousAuthenticationFilter@53bb5c64, org.springframework.security.web.session.SessionManagementFilter@790664bb, org.springframework.security.web.access.ExceptionTranslationFilter@5e234b70, org.springframework.security.web.access.intercept.AuthorizationFilter@77fddf0b]
+2023-05-16T15:49:49.654+03:00  INFO 10540 --- [restartedMain] o.s.b.d.a.OptionalLiveReloadServer       : LiveReload server is running on port 35729
+2023-05-16T15:49:49.776+03:00  INFO 10540 --- [restartedMain] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port(s): 8082 (http) with context path ''
+2023-05-16T15:49:49.796+03:00  INFO 10540 --- [restartedMain] starlight.backend.StarlightApplication   : Started StarlightApplication in 13.709 seconds (process running for 15.43)
+2023-05-16T15:49:51.690+03:00  INFO 10540 --- [SpringApplicationShutdownHook] j.LocalContainerEntityManagerFactoryBean : Closing JPA EntityManagerFactory for persistence unit 'default'
+2023-05-16T15:49:51.697+03:00  INFO 10540 --- [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown initiated...
+2023-05-16T15:49:51.700+03:00  INFO 10540 --- [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown completed.
