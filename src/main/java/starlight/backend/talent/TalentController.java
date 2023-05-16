@@ -15,13 +15,11 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import starlight.backend.exception.TalentAlreadyOccupiedException;
+import starlight.backend.exception.EmailAlreadyOccupiedException;
 import starlight.backend.talent.model.request.TalentUpdateRequest;
 import starlight.backend.talent.model.response.TalentFullInfo;
 import starlight.backend.talent.model.response.TalentPagePagination;
 import starlight.backend.talent.service.TalentServiceInterface;
-
-import java.util.Optional;
 
 @RestController
 @AllArgsConstructor
@@ -217,7 +215,7 @@ public class TalentController {
                     content = @Content(
                             mediaType = MediaType.APPLICATION_JSON_VALUE,
                             schema = @Schema(
-                                    implementation = TalentAlreadyOccupiedException.class
+                                    implementation = EmailAlreadyOccupiedException.class
                             )
                     )
             )

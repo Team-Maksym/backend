@@ -22,6 +22,7 @@ import starlight.backend.skill.model.response.SkillList;
 import starlight.backend.skill.model.response.SkillListWithPagination;
 import starlight.backend.skill.service.SkillServiceInterface;
 
+
 @Slf4j
 @RestController
 @AllArgsConstructor
@@ -54,5 +55,82 @@ public class SkillController {
                                                   @RequestParam String filter) {
         log.info("@GetMapping(\"/skills\")");
         return serviceService.getListSkillWithFiltration(filter, skip, limit);
+    }
+
+    @Operation(
+            summary = "Add skill",
+            description = "Add a Skill to a Proof, given the Proof ID and the Talent ID, only if the Proof is in status \"Draft\" and the Talent owns the Proof."
+    )
+    @ApiResponses(value = {
+            @ApiResponse(
+                    responseCode = "202",
+                    description = "Created",
+                    content = @Content(
+                            mediaType = MediaType.APPLICATION_JSON_VALUE,
+                            schema = @Schema(
+                                    implementation = ProofWithSkills.class
+                            )
+                    )
+            ),
+            @ApiResponse(responseCode = "404", description = "Not found"),
+            @ApiResponse(responseCode = "401", description = "Unauthorized"),
+            @ApiResponse(responseCode = "403", description = "Forbidden")
+    })
+    @PreAuthorize("hasRole('TALENT')")
+    @ResponseStatus(HttpStatus.CREATED)
+    @PostMapping("/talents/{talent-id}/proofs/{proof-id}/skills")
+    public ProofWithSkills addSkillInProof(@PathVariable("talent-id") long talentId,
+                                           @PathVariable("proof-id") long proofId,
+                                           @RequestBody AddSkill skills,
+                                           Authentication auth) {
+        log.info("@GetMapping(\"/talents/{talent-id}/proofs/{proof-id}/skills\")");
+        return serviceService.addSkillInYourProof(talentId, proofId, auth, skills);
+    }
+
+    @Operation(
+            summary = "Get all skills of proof",
+            description = "On this you can see the skills of a specific proof."
+    )
+    @ApiResponses(value = {
+            @ApiResponse(
+                    responseCode = "200",
+                    content = @Content(
+                            mediaType = MediaType.APPLICATION_JSON_VALUE,
+                            schema = @Schema(
+                                    implementation = SkillList.class
+                            )
+                    )
+            ),
+            @ApiResponse(responseCode = "404", description = "Not found"),
+            @ApiResponse(responseCode = "401", description = "Unauthorized")
+    })
+    @GetMapping("/proofs/{proof-id}/skills")
+    public SkillList getSkillsOfProof(@PathVariable("proof-id") long proofId) {
+        log.info("@GetMapping(\"/skills\")");
+        return serviceService.getListSkillsOfProof(proofId);
+    }
+
+    @Operation(
+            summary = "Delete Skill",
+            description = "Delete skill."
+    )
+    @ApiResponses(value = {
+            @ApiResponse(
+                    responseCode = "200",
+                    content = @Content(
+                            mediaType = MediaType.APPLICATION_JSON_VALUE
+                    )
+            ),
+            @ApiResponse(responseCode = "404", description = "Not found"),
+            @ApiResponse(responseCode = "401", description = "Unauthorized")
+    })
+    @PreAuthorize("hasRole('TALENT')")
+    @DeleteMapping("/talents/{talent-id}/proofs/{proof-id}/skills/{skill-id}")
+    public void deleteSkill(@PathVariable("talent-id") long talentId,
+                            @PathVariable("proof-id") long proofId,
+                            @PathVariable("skill-id") long skillId,
+                            Authentication auth) {
+        log.info("@GetMapping(\"/talents/{talent-id}/proofs/{proof-id}/skills/{skill-id}\")");
+        serviceService.deleteSkill(talentId, proofId, skillId, auth);
     }
 }
