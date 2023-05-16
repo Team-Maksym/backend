@@ -60,9 +60,11 @@ class SecurityConfiguration {
                 /////////////////////////Actuator//////////////////////////////////////////////////
                 .requestMatchers(antMatcher("/actuator/**")).permitAll()
                 /////////////////////////Production////////////////////////////////////////////////
+                .requestMatchers("/api/v1/skills").permitAll()
                 .requestMatchers("/api/v1/talents").permitAll()
                 .requestMatchers("/api/v1/proofs").permitAll()
                 .requestMatchers(POST, "/api/v1/talents/login").permitAll()
+                .requestMatchers(antMatcher("/api/v1/proofs/**")).permitAll()
                 /////////////////////////Another///////////////////////////////////////////////////
                 .anyRequest().authenticated()
         );
