@@ -85,15 +85,6 @@ public interface ProofMapper {
                 .build();
     }
 
-    /*default ProofPagePagination toProofPagePaginationWithProofFullInfoWithSkills(Page<ProofEntity> proofs) {
-        return ProofPagePagination.builder()
-                .total(proofs.getTotalElements())
-                .data(proofs.getContent()
-                        .stream()
-                        .map(this::toProofFullInfoWithKudoses)
-                        .toList())
-                .build();
-    }*/
 
     default SkillWithCategory toSkillWithCategory(SkillEntity skillEntity) {
         return SkillWithCategory.builder()
