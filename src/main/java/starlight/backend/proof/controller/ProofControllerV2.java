@@ -14,7 +14,6 @@ import org.springframework.http.MediaType;
 import org.springframework.security.core.Authentication;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import starlight.backend.exception.PageNotFoundException;
 import starlight.backend.proof.model.response.ProofFullInfoWithSkills;
 import starlight.backend.proof.model.response.ProofPagePagination;
 import starlight.backend.proof.model.response.ProofPagePaginationWithSkills;
