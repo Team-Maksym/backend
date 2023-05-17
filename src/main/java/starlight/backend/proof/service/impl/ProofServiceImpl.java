@@ -1,8 +1,7 @@
 package starlight.backend.proof.service.impl;
 
-import jakarta.persistence.EntityManager;
-import jakarta.persistence.PersistenceContext;
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
@@ -14,6 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import starlight.backend.exception.PageNotFoundException;
+import starlight.backend.exception.proof.InvalidStatusException;
 import starlight.backend.exception.proof.ProofNotFoundException;
 import starlight.backend.exception.proof.UserAccesDeniedToProofException;
 import starlight.backend.exception.proof.UserCanNotEditProofNotInDraftException;
@@ -25,26 +25,28 @@ import starlight.backend.proof.model.enums.Status;
 import starlight.backend.proof.model.request.ProofAddRequest;
 import starlight.backend.proof.model.request.ProofUpdateRequest;
 import starlight.backend.proof.model.response.ProofFullInfo;
+import starlight.backend.proof.model.response.ProofFullInfoWithSkills;
 import starlight.backend.proof.model.response.ProofPagePagination;
+import starlight.backend.proof.model.response.ProofPagePaginationWithSkills;
 import starlight.backend.proof.service.ProofServiceInterface;
 import starlight.backend.security.service.SecurityServiceInterface;
 import starlight.backend.user.repository.UserRepository;
 
 import java.net.URI;
 import java.time.Instant;
+import java.util.Arrays;
+import java.util.regex.Pattern;
 
 @AllArgsConstructor
 @Service
 @Transactional
+@Slf4j
 public class ProofServiceImpl implements ProofServiceInterface {
     private final String DATA_CREATED = "dateCreated";
     private ProofRepository repository;
     private UserRepository userRepository;
     private ProofMapper mapper;
     private SecurityServiceInterface securityService;
-    @PersistenceContext
-    private EntityManager em;
-
     @Override
     public ProofPagePagination proofsPagination(int page, int size, boolean sort) {
         var pageRequest = repository.findByStatus(
@@ -146,6 +148,7 @@ public class ProofServiceImpl implements ProofServiceInterface {
     @Override
     public ProofPagePagination getTalentAllProofs(Authentication auth, long talentId,
                                                   int page, int size, boolean sort, String status) {
+        isStatusCorrect(status);
         if (securityService.checkingLoggedAndToken(talentId, auth)) {
             Page<ProofEntity> pageRequest = getPaginationForTheTalent(talentId, page, size, sort, status);
             return mapper.toProofPagePagination(pageRequest);
@@ -155,8 +158,23 @@ public class ProofServiceImpl implements ProofServiceInterface {
         return mapper.toProofPagePagination(pageRequest);
     }
 
+    @Override
+    @Transactional(readOnly = true)
+    public ProofPagePaginationWithSkills getTalentAllProofsWithSkills(Authentication auth, long talentId,
+                                                                      int page, int size, boolean sort, String status) {
+        isStatusCorrect(status);
+        if (securityService.checkingLoggedAndToken(talentId, auth)) {
+            Page<ProofEntity> pageRequest = getPaginationForTheTalent(talentId, page, size, sort, status);
+            return mapper.toProofPagePaginationWithSkills(pageRequest);
+        }
+        var pageRequest = getPaginationForTheTalent(talentId, page,
+                size, sort, Status.PUBLISHED.name());
+        return mapper.toProofPagePaginationWithSkills(pageRequest);
+    }
+
     private Page<ProofEntity> getPaginationForTheTalent(long talentId, int page, int size,
                                                         boolean sort, String status) {
+        isStatusCorrect(status);
         return (status.equals(Status.ALL.getStatus())) ?
                 repository.findByUser_UserId(talentId,
                         PageRequest.of(page, size, doSort(sort, DATA_CREATED)))
@@ -167,19 +185,28 @@ public class ProofServiceImpl implements ProofServiceInterface {
 
     @Override
     public ProofFullInfo getProofFullInfo(Authentication auth, long proofId) {
-        if (!repository.existsByProofId(proofId)) {
-            throw new ProofNotFoundException(proofId);
-        }
-        ProofEntity proof = em.find(ProofEntity.class, proofId);
+        ProofEntity proof = repository.findById(proofId)
+                .orElseThrow(() -> new ProofNotFoundException(proofId));
         var talentId = proof.getUser().getUserId();
         if (securityService.checkingLoggedAndToken(talentId, auth)) {
-            var optionalProof = repository.findById(proofId);
-            ProofEntity requestProof = optionalProof.orElseThrow(() -> new ProofNotFoundException(proofId));
-            return mapper.toProofFullInfo(requestProof);
+            return mapper.toProofFullInfo(proof);
+        } else if (proof.getStatus().equals(Status.PUBLISHED)) {
+            return mapper.toProofFullInfo(proof);
         }
-        var optionalProof = repository.findByProofIdAndStatus(proofId, Status.PUBLISHED);
-        ProofEntity requestProof = optionalProof.orElseThrow(() -> new ProofNotFoundException(proofId));
-        return mapper.toProofFullInfo(requestProof);
+        throw new ProofNotFoundException(proofId);
+    }
+
+    @Override
+    public ProofFullInfoWithSkills getProofFullInfoWithSkills(Authentication auth, long proofId) {
+        ProofEntity proof = repository.findById(proofId)
+                .orElseThrow(() -> new ProofNotFoundException(proofId));
+        var talentId = proof.getUser().getUserId();
+        if (securityService.checkingLoggedAndToken(talentId, auth)) {
+            return mapper.toProofFullInfoWithSkills(proof);
+        } else if (proof.getStatus().equals(Status.PUBLISHED)) {
+            return mapper.toProofFullInfoWithSkills(proof);
+        }
+        throw new ProofNotFoundException(proofId);
     }
 
     public Sort doSort(boolean sort, String sortParam) {
@@ -190,6 +217,13 @@ public class ProofServiceImpl implements ProofServiceInterface {
             dateSort = Sort.by(sortParam);
         }
         return dateSort;
+    }
+
+    private void isStatusCorrect(String status) {
+        if (!Arrays.toString(Status.values())
+                .matches(".*" + Pattern.quote(status) + ".*")) {
+            throw new InvalidStatusException(status);
+        }
     }
 }
 
