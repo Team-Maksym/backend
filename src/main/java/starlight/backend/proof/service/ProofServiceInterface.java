@@ -29,4 +29,6 @@ public interface ProofServiceInterface {
                                                                int page, int size, boolean sort, String status);
 
     ProofFullInfoWithSkills getProofFullInfoWithSkills(Authentication auth, long proofId);
+
+    ProofPagePaginationWithSkills proofsPaginationWithSkills(int page, int size, boolean sort);
 }

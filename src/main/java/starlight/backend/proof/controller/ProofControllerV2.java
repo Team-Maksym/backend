@@ -47,11 +47,11 @@ public class ProofControllerV2 {
             @ApiResponse(responseCode = "404", description = "Not found")
     })
     @GetMapping("/proofs")
-    public ProofPagePagination pagination(@RequestParam(defaultValue = "0") @Min(0) int page,
+    public ProofPagePaginationWithSkills pagination(@RequestParam(defaultValue = "0") @Min(0) int page,
                                           @RequestParam(defaultValue = "5") @Positive int size,
                                           @RequestParam(defaultValue = "true") boolean sort) {
         log.info("@GetMapping(\"/proofs\")");
-        return proofService.proofsPagination(page, size, sort);
+        return proofService.proofsPaginationWithSkills(page, size, sort);
     }
     @Operation(summary = "Return list of all proofs with skills for talent by talent_id",
             description = "Return list of all proofs for talent with sponsors who placed kudos on proofs"
