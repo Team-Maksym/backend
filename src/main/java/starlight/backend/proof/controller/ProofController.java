@@ -1,4 +1,4 @@
-package starlight.backend.proof;
+package starlight.backend.proof.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -35,8 +35,6 @@ import starlight.backend.talent.model.response.TalentPagePagination;
 @Tag(name = "Proof", description = "Proof API")
 public class ProofController {
     private ProofServiceInterface proofService;
-    private ProofRepository proofRepository;
-    private final ProofMapper proofMapper;
 
     @Operation(
             summary = "Get all proofs",
