@@ -6,6 +6,7 @@ import starlight.backend.skill.model.entity.SkillEntity;
 import starlight.backend.skill.model.request.AddSkill;
 import starlight.backend.skill.model.response.SkillList;
 import starlight.backend.skill.model.response.SkillListWithPagination;
+import starlight.backend.talent.model.response.TalentWithSkills;
 
 import java.util.List;
 
@@ -21,4 +22,6 @@ public interface SkillServiceInterface {
     SkillEntity skillValidation(String skill);
 
     void deleteSkill(long talentId, long proofId, long skillId, Authentication auth);
+
+    TalentWithSkills addSkillToTalent(long talentId, AddSkill skills, Authentication auth);
 }

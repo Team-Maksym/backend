@@ -22,6 +22,8 @@ import starlight.backend.skill.model.response.SkillList;
 import starlight.backend.skill.model.response.SkillListWithPagination;
 import starlight.backend.skill.repository.SkillRepository;
 import starlight.backend.skill.service.SkillServiceInterface;
+import starlight.backend.talent.model.response.TalentWithSkills;
+import starlight.backend.user.repository.UserRepository;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -36,6 +38,7 @@ public class SkillServiceImpl implements SkillServiceInterface {
     private SkillMapper skillMapper;
     private SecurityServiceInterface securityService;
     private ProofRepository proofRepository;
+    private UserRepository userRepository;
 
     @Override
     public SkillListWithPagination getListSkillWithFiltration(String filter, int skip, int limit) {
@@ -123,6 +126,20 @@ public class SkillServiceImpl implements SkillServiceInterface {
         var proof = proofRepository.findById(proofId)
                 .orElseThrow(() -> new ProofNotFoundException(proofId));
         proof.getSkills().remove(skill);
+    }
+
+    @Override
+    public TalentWithSkills addSkillToTalent(long talentId, AddSkill skills, Authentication auth) {
+        if (!securityService.checkingLoggedAndToken(talentId, auth)) {
+            throw new UserAccesDeniedToProofException();
+        }
+        var talent = userRepository.findById(talentId)
+                .orElseThrow(() -> new ProofNotFoundException(talentId));
+        talent.setTalentSkills(existsSkill(
+                talent.getTalentSkills(),
+                skills.skills()));
+        userRepository.save(talent);
+        return skillMapper.toTalentWithSkills(talent);
     }
 }
 
