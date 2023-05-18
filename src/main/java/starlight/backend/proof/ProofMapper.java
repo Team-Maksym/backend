@@ -5,6 +5,7 @@ import org.springframework.data.domain.Page;
 import starlight.backend.proof.model.entity.ProofEntity;
 import starlight.backend.proof.model.response.*;
 import starlight.backend.skill.model.entity.SkillEntity;
+import starlight.backend.skill.model.response.SkillWithCategory;
 
 import java.util.LinkedList;
 import java.util.stream.Collectors;
@@ -88,6 +89,7 @@ public interface ProofMapper {
 
     default SkillWithCategory toSkillWithCategory(SkillEntity skillEntity) {
         return SkillWithCategory.builder()
+                .skillId(skillEntity.getSkillId())
                 .skill(skillEntity.getSkill())
                 .category(skillEntity.getCategory())
                 .build();

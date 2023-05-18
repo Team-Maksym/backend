@@ -13,11 +13,11 @@ import starlight.backend.exception.proof.UserAccesDeniedToProofException;
 import starlight.backend.exception.proof.UserCanNotEditProofNotInDraftException;
 import starlight.backend.proof.ProofRepository;
 import starlight.backend.proof.model.enums.Status;
+import starlight.backend.proof.model.response.ProofWithSkills;
 import starlight.backend.security.service.SecurityServiceInterface;
 import starlight.backend.skill.SkillMapper;
 import starlight.backend.skill.model.entity.SkillEntity;
 import starlight.backend.skill.model.request.AddSkill;
-import starlight.backend.skill.model.response.ProofWithSkills;
 import starlight.backend.skill.model.response.SkillList;
 import starlight.backend.skill.model.response.SkillListWithPagination;
 import starlight.backend.skill.repository.SkillRepository;
@@ -88,8 +88,8 @@ public class SkillServiceImpl implements SkillServiceInterface {
         return skillMapper.toSkillList(proof.getSkills().stream().toList());
     }
 
-    private Set<SkillEntity> existsSkill(Set<SkillEntity> proofSkill,
-                                         List<String> skills) {
+    private List<SkillEntity> existsSkill(List<SkillEntity> proofSkill,
+                                          List<String> skills) {
         if (skills != null && !skills.isEmpty()) {
             Set<SkillEntity> newSkills = skills.stream()
                     .map(skill -> {
@@ -101,7 +101,7 @@ public class SkillServiceImpl implements SkillServiceInterface {
                     .filter(Objects::nonNull)
                     .collect(Collectors.toSet());
             newSkills.addAll(proofSkill);
-            return newSkills;
+            return newSkills.stream().toList();
         }
         return proofSkill;
     }

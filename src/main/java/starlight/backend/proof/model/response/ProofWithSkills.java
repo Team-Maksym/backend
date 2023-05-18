@@ -1,4 +1,4 @@
-package starlight.backend.skill.model.response;
+package starlight.backend.proof.model.response;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Builder;
