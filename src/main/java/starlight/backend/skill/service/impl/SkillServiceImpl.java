@@ -17,6 +17,7 @@ import starlight.backend.security.service.SecurityServiceInterface;
 import starlight.backend.skill.SkillMapper;
 import starlight.backend.skill.model.entity.SkillEntity;
 import starlight.backend.skill.model.request.AddSkill;
+import starlight.backend.skill.model.request.NewSkillWithCategory;
 import starlight.backend.skill.model.response.ProofWithSkills;
 import starlight.backend.skill.model.response.SkillList;
 import starlight.backend.skill.model.response.SkillListWithPagination;
@@ -89,12 +90,12 @@ public class SkillServiceImpl implements SkillServiceInterface {
     }
 
     private Set<SkillEntity> existsSkill(Set<SkillEntity> proofSkill,
-                                         List<String> skills) {
+                                         List<NewSkillWithCategory> skills) {
         if (skills != null && !skills.isEmpty()) {
             Set<SkillEntity> newSkills = skills.stream()
                     .map(skill -> {
                         if (skill != null) {
-                            return skillValidation(skill);
+                            return skillValidation(skill.skill(),skill.category());
                         }
                         return null;
                     })
@@ -106,12 +107,12 @@ public class SkillServiceImpl implements SkillServiceInterface {
         return proofSkill;
     }
 
-    private SkillEntity skillValidation(String skill) {
+    private SkillEntity skillValidation(String skill,String category) {
         SkillEntity skillEntity;
         if (skillRepository.existsBySkillIgnoreCase(skill)) {
             skillEntity = skillRepository.findBySkillIgnoreCase(skill);
         } else {
-            skillEntity = new SkillEntity(skill);
+            skillEntity = new SkillEntity(skill,category);
         }
         return skillEntity;
     }

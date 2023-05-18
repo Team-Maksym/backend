@@ -6,6 +6,6 @@ import java.util.List;
 
 @Builder
 public record AddSkill(
-        List<String> skills
+        List<NewSkillWithCategory> skills
 ) {
 }
