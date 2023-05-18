@@ -33,9 +33,7 @@ public class SkillEntity {
     @JsonBackReference
     private Set<ProofEntity> proofs;
 
-    public SkillEntity(String skill, String category) {
+    public SkillEntity(String skill) {
         this.skill = skill;
-        this.category = category;
-
     }
 }
