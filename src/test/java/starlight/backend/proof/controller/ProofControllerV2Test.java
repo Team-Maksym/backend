@@ -12,6 +12,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.test.context.support.WithMockUser;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.web.server.ResponseStatusException;
 import starlight.backend.proof.model.response.ProofInfo;
@@ -21,14 +22,14 @@ import starlight.backend.proof.service.ProofServiceInterface;
 import java.util.ArrayList;
 import java.util.List;
 
+import static org.hamcrest.Matchers.hasSize;
 import static org.mockito.Mockito.when;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-@ExtendWith(MockitoExtension.class)
-@WebMvcTest(controllers = ProofControllerV2.class)
-@AutoConfigureMockMvc(addFilters = false)
+@ExtendWith(SpringExtension.class)
+@WebMvcTest(controllers  = ProofControllerV2.class)
 class ProofControllerV2Test {
     @MockBean
     private ProofServiceInterface proofService;
@@ -66,15 +67,13 @@ class ProofControllerV2Test {
                         .param("sort", String.valueOf(sort))
                         .param("status", status))
                 .andDo(print())
-                .andExpect(status().isOk());
-
-               /* .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-               .andExpect(jsonPath("$.total", is(5)))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                //.andExpect(jsonPath("$.total", is(5)))
                 .andExpect(jsonPath("$.data").isArray())
                 .andExpect(jsonPath("$.data", hasSize(5)))
                 .andExpect(jsonPath("$").isNotEmpty());
 
-                */
     }
 
     @DisplayName("JUnit test for getTalentProofs method which throw exception")
@@ -97,9 +96,6 @@ class ProofControllerV2Test {
                         .param("status", status)
                         .contentType(MediaType.APPLICATION_JSON))
                 .andDo(print())
-                .andExpect(status().isUnauthorized());/*
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$").isNotEmpty());
-                */
+                .andExpect(status().isUnauthorized());
     }
 }

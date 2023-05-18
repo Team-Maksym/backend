@@ -1,5 +1,6 @@
 package starlight.backend.kudos.controller;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
@@ -13,6 +14,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.test.context.support.WithMockUser;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.web.server.ResponseStatusException;
 import starlight.backend.kudos.model.entity.KudosEntity;
@@ -28,12 +30,14 @@ import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuild
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-@ExtendWith(MockitoExtension.class)
+@ExtendWith(SpringExtension.class)
 @WebMvcTest(controllers = KudosController.class)
 @AutoConfigureMockMvc(addFilters = false)
 class KudosControllerTest {
     @Autowired
     private MockMvc mockMvc;
+    @Autowired
+    private ObjectMapper objectMapper;
     @MockBean
     private Authentication auth;
     @MockBean
