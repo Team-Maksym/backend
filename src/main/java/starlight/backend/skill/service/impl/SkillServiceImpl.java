@@ -122,13 +122,7 @@ public class SkillServiceImpl implements SkillServiceInterface {
         var skill = skillRepository.findBySkillIdAndProofs_ProofIdAndProofs_User_UserId(skillId, proofId, talentId);
         var proof = proofRepository.findById(proofId)
                 .orElseThrow(() -> new ProofNotFoundException(proofId));
-        if (skill.getProofs().size() == 1) {
-            skill.setProofs(null);
-            proof.getSkills().remove(skill);
-            skillRepository.delete(skill);
-        } else {
-            proof.getSkills().remove(skill);
-        }
+        proof.getSkills().remove(skill);
     }
 }
 
