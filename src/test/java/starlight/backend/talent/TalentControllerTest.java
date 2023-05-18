@@ -180,10 +180,18 @@ class TalentControllerTest {
 
         // When // Then
         mockMvc.perform(patch("/api/v1/talents/{talent-id}", talentId)
-                        .contentType(MediaType.APPLICATION_JSON_VALUE)
-                        .content(objectMapper.writeValueAsString(updateRequest)))
+                        .content(objectMapper.writeValueAsString(updateRequest))
+                        .contentType(MediaType.APPLICATION_JSON))
                 .andDo(print())
-                .andExpect(status().isOk());
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$.fullName").value(expectedTalent.fullName()))
+                .andExpect(jsonPath("$.email").value(expectedTalent.email()))
+                .andExpect(jsonPath("$.birthday").value(String.valueOf(expectedTalent.birthday())))
+                .andExpect(jsonPath("$.avatar").value(expectedTalent.avatar()))
+                .andExpect(jsonPath("$.education").value(expectedTalent.education()))
+                .andExpect(jsonPath("$.experience").value(expectedTalent.experience()))
+                .andExpect(jsonPath("$.positions").isArray());
     }
 
     @DisplayName("JUnit test for update info about talent method which throw exception Unauthorized")
