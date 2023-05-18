@@ -1,20 +1,12 @@
 package starlight.backend.talent;
 
 import org.mapstruct.Mapper;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
-import starlight.backend.proof.model.entity.ProofEntity;
-import starlight.backend.proof.model.response.ProofInfoWithSkills;
-import starlight.backend.skill.SkillMapper;
-import starlight.backend.talent.model.response.TalentWithSkills;
-import starlight.backend.user.model.entity.PositionEntity;
-import starlight.backend.user.model.entity.UserEntity;
 import starlight.backend.talent.model.response.TalentFullInfo;
 import starlight.backend.talent.model.response.TalentPagePagination;
 import starlight.backend.talent.model.response.TalentProfile;
-
-import java.util.LinkedList;
-import java.util.stream.Collectors;
+import starlight.backend.user.model.entity.PositionEntity;
+import starlight.backend.user.model.entity.UserEntity;
 
 import static org.mapstruct.ReportingPolicy.IGNORE;
 

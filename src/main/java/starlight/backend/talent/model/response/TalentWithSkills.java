@@ -1,7 +1,6 @@
 package starlight.backend.talent.model.response;
 
 import lombok.Builder;
-import starlight.backend.skill.model.entity.SkillEntity;
 import starlight.backend.skill.model.response.SkillWithCategory;
 
 import java.util.List;

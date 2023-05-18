@@ -11,9 +11,7 @@ import starlight.backend.talent.model.response.TalentWithSkills;
 import starlight.backend.user.model.entity.PositionEntity;
 import starlight.backend.user.model.entity.UserEntity;
 
-import java.util.LinkedList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import static org.mapstruct.ReportingPolicy.IGNORE;
 
