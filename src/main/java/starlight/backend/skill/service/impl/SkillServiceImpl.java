@@ -107,13 +107,9 @@ public class SkillServiceImpl implements SkillServiceInterface {
     }
 
     private SkillEntity skillValidation(String skill) {
-        SkillEntity skillEntity;
-        if (skillRepository.existsBySkillIgnoreCase(skill)) {
-            skillEntity = skillRepository.findBySkillIgnoreCase(skill);
-        } else {
-            skillEntity = new SkillEntity(skill);
-        }
-        return skillEntity;
+        return skillRepository.existsBySkillIgnoreCase(skill) ?
+                skillRepository.findBySkillIgnoreCase(skill) :
+                null;
     }
 
     @Override
