@@ -1,6 +1,5 @@
 package starlight.backend.security;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -86,14 +85,15 @@ class SecurityControllerTest {
 
         //When //Then
         mockMvc.perform(post("/api/v1/talents")
-                                .content(objectMapper.writeValueAsString(newUser))
-                                .contentType(MediaType.APPLICATION_JSON))
+                        .content(objectMapper.writeValueAsString(newUser))
+                        .contentType(MediaType.APPLICATION_JSON))
                 .andDo(print())
                 .andExpect(status().isCreated())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$").isNotEmpty())
                 .andExpect(jsonPath("$.token").value(sessionInfo.token()));
     }
+
     @DisplayName("JUnit test for login Sponsor")
     @Test
     void loginSponsor() throws Exception {
@@ -121,8 +121,8 @@ class SecurityControllerTest {
 
         //When //Then
         mockMvc.perform(post("/api/v1/sponsors")
-                                .content(objectMapper.writeValueAsString(newUser))
-                                .contentType(MediaType.APPLICATION_JSON))
+                        .content(objectMapper.writeValueAsString(newUser))
+                        .contentType(MediaType.APPLICATION_JSON))
                 .andDo(print())
                 .andExpect(status().isCreated())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))

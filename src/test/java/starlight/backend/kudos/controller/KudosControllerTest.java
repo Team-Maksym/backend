@@ -32,7 +32,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @WebMvcTest(controllers = KudosController.class)
 @AutoConfigureMockMvc(addFilters = false)
 class KudosControllerTest {
-
     @Autowired
     private MockMvc mockMvc;
     @MockBean
@@ -58,7 +57,7 @@ class KudosControllerTest {
         mockMvc.perform(get("/api/v1/proofs/{proof-id}/kudos", proofId))
                 .andDo(print())
                 .andExpect(status().isOk())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
                 .andExpect(jsonPath("$.kudos_on_proof").value(kudosOnProof.kudosOnProof()))
                 .andExpect(jsonPath("$.kudos_from_me").value(kudosOnProof.kudosFromMe()))
                 .andExpect(jsonPath("$.is_kudosed").value(kudosOnProof.isKudosed()))
@@ -74,6 +73,7 @@ class KudosControllerTest {
         int proofId = 1;
         int kudos = 20;
         KudosEntity kudosEntity = KudosEntity.builder()
+                .kudosId(1L)
                 .followerId(1L)
                 .countKudos(20)
                 .updateData(Instant.MIN)
@@ -87,7 +87,7 @@ class KudosControllerTest {
                         .contentType(MediaType.APPLICATION_JSON))
                 .andDo(print())
                 .andExpect(status().isCreated())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
                 .andExpect(jsonPath("$.follower_id").value(kudosEntity.getFollowerId()))
                 .andExpect(jsonPath("$.count_kudos").value(kudosEntity.getCountKudos()))
                 .andExpect(jsonPath("$.update_data").value(kudosEntity.getUpdateData()))
