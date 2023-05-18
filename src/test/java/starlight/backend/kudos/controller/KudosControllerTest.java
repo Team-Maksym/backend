@@ -85,7 +85,9 @@ class KudosControllerTest {
         // When // Then
         mockMvc.perform(post("/api/v1/proofs/{proof-id}/kudos", proofId)
                         .param("kudos", String.valueOf(kudos))
-                        .contentType(MediaType.APPLICATION_JSON))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON)
+                        .characterEncoding("utf-8"))
                 .andDo(print())
                 .andExpect(status().isCreated())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
