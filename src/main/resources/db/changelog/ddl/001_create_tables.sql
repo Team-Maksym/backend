@@ -173,3 +173,6 @@ CREATE TABLE skill_entity
 
 -- changeset kate:14
 ALTER TABLE skill_entity ADD COLUMN IF NOT EXISTS category VARCHAR(255) NULL;
+
+-- changeset kate:15
+ALTER TABLE proof_skill DROP CONSTRAINT pk_proof_skill;
