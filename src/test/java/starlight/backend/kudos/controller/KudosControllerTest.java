@@ -54,7 +54,8 @@ class KudosControllerTest {
         given(kudosService.getKudosOnProof(proofId, auth)).willReturn(kudosOnProof);
 
         // When // Then
-        mockMvc.perform(get("/api/v1/proofs/{proof-id}/kudos", proofId))
+        mockMvc.perform(get("/api/v1/proofs/{proof-id}/kudos", proofId)
+                        .contentType(MediaType.APPLICATION_JSON))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
