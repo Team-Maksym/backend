@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Builder;
 import starlight.backend.proof.model.enums.Status;
 import starlight.backend.skill.model.entity.SkillEntity;
+import starlight.backend.skill.model.response.SkillWithCategory;
 
 import java.time.Instant;
 import java.util.List;
@@ -18,6 +19,6 @@ public record ProofWithSkills(
         @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "UTC")
         Instant dateLastUpdated,
         Status status,
-        List<SkillEntity> skill
+        List<SkillWithCategory> skill
 ) {
 }

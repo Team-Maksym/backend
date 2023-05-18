@@ -47,7 +47,10 @@ public interface SkillMapper {
                 .description(proofEntity.getDescription())
                 .dateLastUpdated(proofEntity.getDateLastUpdated())
                 .dateCreated(proofEntity.getDateCreated())
-                .skill(proofEntity.getSkills().stream().toList())
+                .skill(proofEntity.getSkills()
+                        .stream()
+                        .map(this::toSkillWithCategory)
+                        .toList())
                 .build();
     }
 

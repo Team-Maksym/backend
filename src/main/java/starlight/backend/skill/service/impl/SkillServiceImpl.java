@@ -23,10 +23,7 @@ import starlight.backend.skill.model.response.SkillListWithPagination;
 import starlight.backend.skill.repository.SkillRepository;
 import starlight.backend.skill.service.SkillServiceInterface;
 
-import java.util.Comparator;
-import java.util.List;
-import java.util.Objects;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 
@@ -91,7 +88,7 @@ public class SkillServiceImpl implements SkillServiceInterface {
     private List<SkillEntity> existsSkill(List<SkillEntity> proofSkill,
                                           List<String> skills) {
         if (skills != null && !skills.isEmpty()) {
-            Set<SkillEntity> newSkills = skills.stream()
+            LinkedHashSet<SkillEntity> newSkills = skills.stream()
                     .map(skill -> {
                         if (skill != null) {
                             return skillValidation(skill);
@@ -99,9 +96,9 @@ public class SkillServiceImpl implements SkillServiceInterface {
                         return null;
                     })
                     .filter(Objects::nonNull)
-                    .collect(Collectors.toSet());
+                    .collect(Collectors.toCollection(LinkedHashSet::new));
             newSkills.addAll(proofSkill);
-            return newSkills.stream().toList();
+            return new ArrayList<>(newSkills);
         }
         return proofSkill;
     }
