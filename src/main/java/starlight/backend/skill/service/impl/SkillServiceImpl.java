@@ -42,7 +42,9 @@ public class SkillServiceImpl implements SkillServiceInterface {
         var skillStream = skillRepository.findAll().stream();
 
         if (filter != null && !filter.isEmpty()) {
-            skillStream = skillStream.filter(skill -> skill.getSkill().contains(filter));
+            skillStream = skillStream.filter(skill -> skill.getSkill()
+                    .toLowerCase()
+                    .contains(filter.toLowerCase()));
         }
         Sort sort = Sort.by(Sort.Order.asc(filterParam));
 
