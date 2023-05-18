@@ -43,8 +43,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 class TalentControllerTest {
     @MockBean
     private TalentServiceImpl service;
-    @MockBean
-    private MapperTalent mapper;
     @Autowired
     private ObjectMapper objectMapper;
     @MockBean
@@ -126,7 +124,7 @@ class TalentControllerTest {
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$.full_name").value(expectedTalent.fullName()))
+                .andExpect(jsonPath("$.fullName").value(expectedTalent.fullName()))
                 .andExpect(jsonPath("$.email").value(expectedTalent.email()))
                 .andExpect(jsonPath("$.birthday").value(String.valueOf(expectedTalent.birthday())))
                 .andExpect(jsonPath("$.avatar").value(expectedTalent.avatar()))

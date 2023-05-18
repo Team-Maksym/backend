@@ -19,6 +19,9 @@ import starlight.backend.kudos.model.entity.KudosEntity;
 import starlight.backend.kudos.model.response.KudosOnProof;
 import starlight.backend.kudos.service.KudosServiceInterface;
 
+import java.time.Instant;
+
+import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.when;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.get;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.post;
@@ -43,17 +46,23 @@ class KudosControllerTest {
     @WithMockUser(username = "user1", roles = {"SPONSOR"})
     public void getKudosOnProofShouldReturnKudosOnProof() throws Exception {
         //Given
-        KudosOnProof kudosOnProof = KudosOnProof.builder().build();
-        when(kudosService.getKudosOnProof(1, auth)).thenReturn(kudosOnProof);
+        int proofId = 1;
+        KudosOnProof kudosOnProof = KudosOnProof.builder()
+                .kudosOnProof(1)
+                .kudosFromMe(1)
+                .isKudosed(true)
+                .build();
+        given(kudosService.getKudosOnProof(proofId, auth)).willReturn(kudosOnProof);
 
         // When // Then
-        mockMvc.perform(get("/api/v1/proofs/1/kudos"))
+        mockMvc.perform(get("/api/v1/proofs/{proof-id}/kudos", proofId))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$").isNotEmpty())
-                .andExpect(jsonPath("$").value(kudosOnProof));
-
+                .andExpect(jsonPath("$.kudos_on_proof").value(kudosOnProof.kudosOnProof()))
+                .andExpect(jsonPath("$.kudos_from_me").value(kudosOnProof.kudosFromMe()))
+                .andExpect(jsonPath("$.is_kudosed").value(kudosOnProof.isKudosed()))
+                .andExpect(jsonPath("$").isNotEmpty());
     }
 
     @DisplayName("JUnit test for addKudosShouldReturnKudosEntity")
@@ -62,29 +71,54 @@ class KudosControllerTest {
     @WithMockUser(username = "user1", roles = {"SPONSOR"})
     public void addKudosShouldReturnKudosEntity() throws Exception {
         //Given
-        KudosEntity kudosEntity = new KudosEntity();
-        when(kudosService.addKudosOnProof(1, 1, auth))
-                .thenReturn(kudosEntity);
+        int proofId = 1;
+        int kudos = 20;
+        KudosEntity kudosEntity = KudosEntity.builder()
+                .followerId(1L)
+                .countKudos(20)
+                .updateData(Instant.MIN)
+                .createData(Instant.MAX)
+                .build();
+        when(kudosService.addKudosOnProof(proofId, kudos, auth)).thenReturn(kudosEntity);
 
         // When // Then
-        mockMvc.perform(post("/api/v1/proofs/1/kudos")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .param("kudos", "1"))
+        mockMvc.perform(post("/api/v1/proofs/{proof-id}/kudos", proofId)
+                        .param("kudos", String.valueOf(kudos))
+                        .contentType(MediaType.APPLICATION_JSON))
                 .andDo(print())
-                .andExpect(status().isCreated());
-               /* .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$").isNotEmpty())
-                .andExpect(jsonPath("$").value(kudosEntity));
-                */
+                .andExpect(status().isCreated())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$.follower_id").value(kudosEntity.getFollowerId()))
+                .andExpect(jsonPath("$.count_kudos").value(kudosEntity.getCountKudos()))
+                .andExpect(jsonPath("$.update_data").value(kudosEntity.getUpdateData()))
+                .andExpect(jsonPath("$.create_data").value(kudosEntity.getCreateData()))
+                .andExpect(jsonPath("$").isNotEmpty());
     }
 
     @DisplayName("JUnit test for add Kudos Should Return Bad Request When Kudos Parameter Is Not Provided")
     @Test
+    public void addKudosShouldReturnBadRequestWhenKudosParameterIsNotProvided() throws Exception {
+        //Given
+        int proofId = 1;
+        when(kudosService.getKudosOnProof(proofId, null))
+                .thenThrow(new ResponseStatusException(HttpStatus.UNAUTHORIZED));
+
+        // When // Then
+        mockMvc.perform(post("/api/v1/proofs/{proof-id}/kudos", proofId)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isBadRequest());
+    }
+
+    @DisplayName("JUnit test for add Kudos Should Return Unauthorized When Kudos Parameter Is Not Authenticated")
+    @Test
     @Order(1)
     @WithMockUser(username = "user1", roles = {"SPONSOR"})
-    public void addKudosShouldReturnBadRequestWhenKudosParameterIsNotProvided() throws Exception {
-        //Given // When // Then
-        mockMvc.perform(post("/api/v1/proofs/1/kudos")
+    public void addKudosShouldReturnUnauthorizedWhenKudosParameterIsNotProvided() throws Exception {
+        //Given
+        int proofId = 1;
+
+        // When // Then
+        mockMvc.perform(post("/api/v1/proofs/{proof-id}/kudos", proofId)
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isBadRequest());
     }
@@ -93,11 +127,12 @@ class KudosControllerTest {
     @Test
     public void addKudosShouldReturnUnauthorizedWhenUserIsNotAuthenticated() throws Exception {
         //Given
-        when(kudosService.addKudosOnProof(1, 1, null))
+        int proofId = 1;
+        when(kudosService.addKudosOnProof(proofId, 1, null))
                 .thenThrow(new ResponseStatusException(HttpStatus.UNAUTHORIZED));
 
         // When // Then
-        mockMvc.perform(post("/api/v1/proofs/1/kudos")
+        mockMvc.perform(post("/api/v1/proofs/{proof-id}/kudos", proofId)
                         .contentType(MediaType.APPLICATION_JSON)
                         .contentType(MediaType.APPLICATION_JSON)
                         .param("kudos", "1"))

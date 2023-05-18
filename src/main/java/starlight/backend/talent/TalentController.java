@@ -71,7 +71,6 @@ public class TalentController {
             @ApiResponse(responseCode = "401", description = "Unauthorized"),
             @ApiResponse(responseCode = "404", description = "Not found")
     })
-//    @PreAuthorize("hasRole('TALENT')")
     @GetMapping("/talents/{talent-id}")
     public TalentFullInfo searchTalentById(@PathVariable("talent-id") long talentId) {
         log.info("@GetMapping(\"/talents/{talent-id}\")");

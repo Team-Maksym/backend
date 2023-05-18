@@ -85,8 +85,7 @@ class SecurityControllerTest {
         when(service.register(newUser)).thenReturn(sessionInfo);
 
         //When //Then
-        mockMvc.perform(
-                        post("/api/v1/talents")
+        mockMvc.perform(post("/api/v1/talents")
                                 .content(objectMapper.writeValueAsString(newUser))
                                 .contentType(MediaType.APPLICATION_JSON))
                 .andDo(print())
@@ -121,8 +120,7 @@ class SecurityControllerTest {
         when(service.registerSponsor(newUser)).thenReturn(sessionInfo);
 
         //When //Then
-        mockMvc.perform(
-                        post("/api/v1/sponsors")
+        mockMvc.perform(post("/api/v1/sponsors")
                                 .content(objectMapper.writeValueAsString(newUser))
                                 .contentType(MediaType.APPLICATION_JSON))
                 .andDo(print())
