@@ -23,6 +23,7 @@ import starlight.backend.proof.ProofRepository;
 import starlight.backend.proof.model.entity.ProofEntity;
 import starlight.backend.proof.model.enums.Status;
 import starlight.backend.proof.model.request.ProofAddRequest;
+import starlight.backend.proof.model.request.ProofAddWithSkillsRequest;
 import starlight.backend.proof.model.request.ProofUpdateRequest;
 import starlight.backend.proof.model.response.ProofFullInfo;
 import starlight.backend.proof.model.response.ProofFullInfoWithSkills;
@@ -30,12 +31,16 @@ import starlight.backend.proof.model.response.ProofPagePagination;
 import starlight.backend.proof.model.response.ProofPagePaginationWithSkills;
 import starlight.backend.proof.service.ProofServiceInterface;
 import starlight.backend.security.service.SecurityServiceInterface;
+import starlight.backend.skill.service.SkillServiceInterface;
 import starlight.backend.user.repository.UserRepository;
 
 import java.net.URI;
 import java.time.Instant;
 import java.util.Arrays;
+import java.util.LinkedHashSet;
+import java.util.Objects;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 @AllArgsConstructor
 @Service
@@ -47,6 +52,8 @@ public class ProofServiceImpl implements ProofServiceInterface {
     private UserRepository userRepository;
     private ProofMapper mapper;
     private SecurityServiceInterface securityService;
+    private SkillServiceInterface skillService;
+
     @Override
     public ProofPagePagination proofsPagination(int page, int size, boolean sort) {
         var pageRequest = repository.findByStatus(
@@ -65,6 +72,47 @@ public class ProofServiceImpl implements ProofServiceInterface {
         if (page >= pageRequest.getTotalPages())
             throw new PageNotFoundException(page);
         return mapper.toProofPagePaginationWithSkills(pageRequest);
+    }
+
+    @Override
+    public ResponseEntity<?> getLocationForAddProofWithSkill(long talentId,
+                                                             ProofAddWithSkillsRequest proofAddWithSkillsRequest,
+                                                             Authentication auth) {
+        if (!securityService.checkingLoggedAndToken(talentId, auth)) {
+            throw new UserAccesDeniedToProofException();
+        }
+        long proofId = addProofProfileWithSkill(talentId, proofAddWithSkillsRequest, auth);
+        URI location = ServletUriComponentsBuilder
+                .fromCurrentRequest()
+                .path("/{proof-id}")
+                .buildAndExpand(proofId)
+                .toUri();
+        return ResponseEntity.created(location).build();
+    }
+
+    @Override
+    public long addProofProfileWithSkill(long talentId,
+                                         ProofAddWithSkillsRequest proofAddWithSkillsRequest,
+                                         Authentication auth) {
+        var proof = repository.save(ProofEntity.builder()
+                .title(proofAddWithSkillsRequest.title())
+                .description(proofAddWithSkillsRequest.description())
+                .link(proofAddWithSkillsRequest.link())
+                .status(Status.DRAFT)
+                .dateCreated(Instant.now())
+                .user(userRepository.findById(talentId)
+                        .orElseThrow(() -> new TalentNotFoundException(talentId)))
+                .skills(proofAddWithSkillsRequest.skills().stream()
+                        .map(skill -> {
+                            if (skill != null) {
+                                return skillService.skillValidation(skill);
+                            }
+                            return null;
+                        })
+                        .filter(Objects::nonNull)
+                        .toList())
+                .build());
+        return proof.getProofId();
     }
 
     @Override

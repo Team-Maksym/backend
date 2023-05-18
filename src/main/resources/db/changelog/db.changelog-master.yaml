@@ -90,3 +90,7 @@ databaseChangeLog:
   - changeSet:
       id: 15
       author: kate
+
+  - changeSet:
+      id: 16
+      author: kate

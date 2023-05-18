@@ -86,8 +86,8 @@ public class SkillServiceImpl implements SkillServiceInterface {
                 .orElseThrow(() -> new ProofNotFoundException(proofId));
         return skillMapper.toSkillList(proof.getSkills().stream().toList());
     }
-
-    private List<SkillEntity> existsSkill(List<SkillEntity> proofSkill,
+    @Override
+    public List<SkillEntity> existsSkill(List<SkillEntity> proofSkill,
                                           List<String> skills) {
         if (skills != null && !skills.isEmpty()) {
             LinkedHashSet<SkillEntity> newSkills = skills.stream()
@@ -104,8 +104,8 @@ public class SkillServiceImpl implements SkillServiceInterface {
         }
         return proofSkill;
     }
-
-    private SkillEntity skillValidation(String skill) {
+    @Override
+    public SkillEntity skillValidation(String skill) {
         return skillRepository.existsBySkillIgnoreCase(skill) ?
                 skillRepository.findBySkillIgnoreCase(skill) :
                 null;

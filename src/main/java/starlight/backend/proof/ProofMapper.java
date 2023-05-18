@@ -38,6 +38,7 @@ public interface ProofMapper {
                 )
                 .build();
     }
+
     default ProofPagePagination toProofPagePagination(Page<ProofEntity> proofs) {
         return ProofPagePagination.builder()
                 .total(proofs.getTotalElements())

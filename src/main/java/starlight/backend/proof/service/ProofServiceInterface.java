@@ -4,6 +4,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import starlight.backend.proof.model.entity.ProofEntity;
 import starlight.backend.proof.model.request.ProofAddRequest;
+import starlight.backend.proof.model.request.ProofAddWithSkillsRequest;
 import starlight.backend.proof.model.request.ProofUpdateRequest;
 import starlight.backend.proof.model.response.ProofFullInfo;
 import starlight.backend.proof.model.response.ProofFullInfoWithSkills;
@@ -31,4 +32,8 @@ public interface ProofServiceInterface {
     ProofFullInfoWithSkills getProofFullInfoWithSkills(Authentication auth, long proofId);
 
     ProofPagePaginationWithSkills proofsPaginationWithSkills(int page, int size, boolean sort);
+
+    ResponseEntity<?> getLocationForAddProofWithSkill(long talentId, ProofAddWithSkillsRequest proofAddWithSkillsRequest, Authentication auth);
+
+    long addProofProfileWithSkill(long talentId, ProofAddWithSkillsRequest proofAddWithSkillsRequest, Authentication auth);
 }

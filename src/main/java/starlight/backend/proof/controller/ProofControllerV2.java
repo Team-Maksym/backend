@@ -10,10 +10,17 @@ import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.Positive;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import starlight.backend.proof.model.request.ProofAddRequest;
+import starlight.backend.proof.model.request.ProofAddWithSkillsRequest;
+import starlight.backend.proof.model.request.ProofUpdateRequest;
+import starlight.backend.proof.model.response.ProofFullInfo;
 import starlight.backend.proof.model.response.ProofFullInfoWithSkills;
 import starlight.backend.proof.model.response.ProofPagePagination;
 import starlight.backend.proof.model.response.ProofPagePaginationWithSkills;
@@ -103,5 +110,51 @@ public class ProofControllerV2 {
                                                 Authentication auth) {
         log.info("@GetMapping(\"/proofs/{proof-id}\")");
         return proofService.getProofFullInfoWithSkills(auth, proofId);
+    }
+
+    @Operation(
+            summary = "Add proof in status draft",
+            description = "Adding a proof for a specific talent, issuing a link in Location to a page with a full description of the proof."
+    )
+    @ApiResponses(value = {
+            @ApiResponse(
+                    responseCode = "201",
+                    description = "Created",
+                    content = @Content(
+                            mediaType = MediaType.APPLICATION_JSON_VALUE,
+                            schema = @Schema(
+                                    implementation = ResponseEntity.class
+                            )
+                    )
+            ),
+            @ApiResponse(
+                    responseCode = "404",
+                    description = "Not found",
+                    content = @Content(
+                            mediaType = MediaType.APPLICATION_JSON_VALUE,
+                            schema = @Schema(
+                                    implementation = Exception.class
+                            )
+                    )
+            ),
+            @ApiResponse(
+                    responseCode = "401",
+                    description = "Unauthorized",
+                    content = @Content(
+                            mediaType = MediaType.APPLICATION_JSON_VALUE,
+                            schema = @Schema(
+                                    implementation = Exception.class
+                            )
+                    )
+            )
+    })
+    @PreAuthorize("hasRole('TALENT')")
+    @ResponseStatus(HttpStatus.CREATED)
+    @PostMapping("/talents/{talent-id}/proofs")
+    public ResponseEntity<?> addProofFullInfo(@PathVariable("talent-id") long talentId,
+                                              @RequestBody ProofAddWithSkillsRequest proofAddWithSkillsRequest,
+                                              Authentication auth) {
+        log.info("@PostMapping(\"v2/talents/{talent-id}/proofs\")");
+        return proofService.getLocationForAddProofWithSkill(talentId, proofAddWithSkillsRequest, auth);
     }
 }
