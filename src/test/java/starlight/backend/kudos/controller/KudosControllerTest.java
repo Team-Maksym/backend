@@ -23,7 +23,7 @@ import static org.mockito.Mockito.when;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.get;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @ExtendWith(MockitoExtension.class)
 @WebMvcTest(controllers = KudosController.class)
@@ -47,14 +47,13 @@ class KudosControllerTest {
         when(kudosService.getKudosOnProof(1, auth)).thenReturn(kudosOnProof);
 
         // When // Then
-        mockMvc.perform(get("/api/v1/proofs/1/kudos")
-                        .contentType(MediaType.APPLICATION_JSON))
+        mockMvc.perform(get("/api/v1/proofs/1/kudos"))
                 .andDo(print())
-                .andExpect(status().isOk());
-                /*.andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$").isNotEmpty())
                 .andExpect(jsonPath("$").value(kudosOnProof));
-                 */
+
     }
 
     @DisplayName("JUnit test for addKudosShouldReturnKudosEntity")
