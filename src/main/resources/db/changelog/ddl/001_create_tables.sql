@@ -204,3 +204,6 @@ ALTER TABLE talent_skill
 
 ALTER TABLE talent_skill
     ADD CONSTRAINT fk_talski_on_user_entity FOREIGN KEY (user_id) REFERENCES user_entity (user_id);
+
+-- changeset sasha:18
+DROP TABLE IF EXISTS skill_entity_id_proofs CASCADE;

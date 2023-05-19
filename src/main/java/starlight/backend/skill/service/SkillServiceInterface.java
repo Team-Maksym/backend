@@ -24,4 +24,6 @@ public interface SkillServiceInterface {
     void deleteSkill(long talentId, long proofId, long skillId, Authentication auth);
 
     TalentWithSkills addSkillToTalent(long talentId, AddSkill skills, Authentication auth);
+
+    ProofWithSkills addSkillInYourProofV2(long talentId, long proofId, Authentication auth, AddSkill skills);
 }

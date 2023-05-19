@@ -19,7 +19,6 @@ import java.util.Set;
 import static jakarta.persistence.GenerationType.IDENTITY;
 
 @Builder
-@ToString
 @Getter
 @Setter
 @AllArgsConstructor
