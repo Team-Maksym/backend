@@ -95,9 +95,9 @@ public class SkillServiceImpl implements SkillServiceInterface {
                     .filter(Objects::nonNull)
                     .collect(Collectors.toSet());
             newSkills.addAll(proofSkill);
-            return new ArrayList<>(newSkills);
+            return newSkills.stream().distinct().collect(Collectors.toList());
         }
-        return proofSkill;
+        return proofSkill.stream().distinct().collect(Collectors.toList());
     }
     @Override
     public SkillEntity skillValidation(String skill) {
