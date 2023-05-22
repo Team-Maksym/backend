@@ -119,7 +119,8 @@ public class SkillServiceImpl implements SkillServiceInterface {
         if (!skillRepository.existsBySkillIdAndProofs_ProofIdAndProofs_User_UserId(skillId, proofId, talentId)) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "don`t found skill by talentId and proofId!");
         }
-        var skill = skillRepository.findBySkillIdAndProofs_ProofIdAndProofs_User_UserId(skillId, proofId, talentId);
+        var skill = skillRepository.findById(skillId)
+                .orElseThrow(()->new ResponseStatusException(HttpStatus.BAD_REQUEST,"don`t found this skill"));
         var proof = proofRepository.findById(proofId)
                 .orElseThrow(() -> new ProofNotFoundException(proofId));
         proof.getSkills().remove(skill);
