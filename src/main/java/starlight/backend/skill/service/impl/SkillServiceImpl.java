@@ -90,15 +90,10 @@ public class SkillServiceImpl implements SkillServiceInterface {
     public List<SkillEntity> existsSkill(List<SkillEntity> proofSkill,
                                           List<String> skills) {
         if (skills != null && !skills.isEmpty()) {
-            LinkedHashSet<SkillEntity> newSkills = skills.stream()
-                    .map(skill -> {
-                        if (skill != null) {
-                            return skillValidation(skill);
-                        }
-                        return null;
-                    })
+            Set<SkillEntity> newSkills = skills.stream()
+                    .map(this::skillValidation)
                     .filter(Objects::nonNull)
-                    .collect(Collectors.toCollection(LinkedHashSet::new));
+                    .collect(Collectors.toSet());
             newSkills.addAll(proofSkill);
             return new ArrayList<>(newSkills);
         }
