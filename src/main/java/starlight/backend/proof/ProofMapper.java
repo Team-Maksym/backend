@@ -34,7 +34,7 @@ public interface ProofMapper {
                 .skillWithCategoryList(proof.getSkills()
                         .stream()
                         .map(this::toSkillWithCategory)
-                        .collect(Collectors.toCollection(LinkedList::new))
+                        .toList()
                 )
                 .build();
     }
