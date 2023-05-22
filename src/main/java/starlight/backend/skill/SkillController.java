@@ -18,6 +18,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import starlight.backend.skill.model.request.AddSkill;
 import starlight.backend.proof.model.response.ProofWithSkills;
+import starlight.backend.skill.model.request.DeleteIdSkills;
 import starlight.backend.skill.model.response.SkillList;
 import starlight.backend.skill.model.response.SkillListWithPagination;
 import starlight.backend.skill.service.SkillServiceInterface;
@@ -132,5 +133,29 @@ public class SkillController {
                             Authentication auth) {
         log.info("@DeleteMapping(\"/talents/{talent-id}/proofs/{proof-id}/skills/{skill-id}\")");
         serviceService.deleteSkill(talentId, proofId, skillId, auth);
+    }
+
+    @Operation(
+            summary = "Delete Array Skill",
+            description = "Delete skill array."
+    )
+    @ApiResponses(value = {
+            @ApiResponse(
+                    responseCode = "200",
+                    content = @Content(
+                            mediaType = MediaType.APPLICATION_JSON_VALUE
+                    )
+            ),
+            @ApiResponse(responseCode = "404", description = "Not found"),
+            @ApiResponse(responseCode = "401", description = "Unauthorized")
+    })
+    @PreAuthorize("hasRole('TALENT')")
+    @DeleteMapping("/talents/{talent-id}/proofs/{proof-id}/skills")
+    public void deleteSkillArray(@PathVariable("talent-id") long talentId,
+                            @PathVariable("proof-id") long proofId,
+                            @RequestBody DeleteIdSkills skillId,
+                            Authentication auth) {
+        log.info("@DeleteMapping(\"/talents/{talent-id}/proofs/{proof-id}/skills\")");
+        serviceService.deleteSkillArray(talentId, proofId, skillId, auth);
     }
 }
