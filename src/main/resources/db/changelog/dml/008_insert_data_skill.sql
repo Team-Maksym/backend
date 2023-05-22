@@ -348,6 +348,3 @@ UPDATE skill_entity SET category = 'boardGame'WHERE skill_id IN (124);
 
 -- changeset kate:16
 UPDATE skill_entity SET category = 'sport'WHERE skill_id IN (123);
-
--- changeset kate:17
-DELETE FROM proof_skill;
