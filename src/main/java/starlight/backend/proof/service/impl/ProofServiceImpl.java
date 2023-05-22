@@ -39,6 +39,7 @@ import java.time.Instant;
 import java.util.Arrays;
 import java.util.Objects;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 @AllArgsConstructor
 @Service
@@ -103,6 +104,7 @@ public class ProofServiceImpl implements ProofServiceInterface {
                 .skills(proofAddWithSkillsRequest.skills().stream()
                         .map(skill -> skillService.skillValidation(skill))
                         .filter(Objects::nonNull)
+                        .distinct()
                         .toList())
                 .build());
         return proof.getProofId();
