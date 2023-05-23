@@ -5,6 +5,7 @@ import starlight.backend.proof.model.response.ProofListWithSkills;
 import starlight.backend.proof.model.response.ProofWithSkills;
 import starlight.backend.skill.model.entity.SkillEntity;
 import starlight.backend.skill.model.request.AddSkill;
+import starlight.backend.skill.model.request.DeleteIdSkills;
 import starlight.backend.skill.model.response.SkillList;
 import starlight.backend.skill.model.response.SkillListWithPagination;
 import starlight.backend.talent.model.response.TalentWithSkills;
@@ -31,4 +32,7 @@ public interface SkillServiceInterface {
     TalentWithSkills getListSkillsOfTalent(long talentId, Authentication auth);
 
     ProofListWithSkills getListProofsOfSkill(long talentId, long skillsId, Authentication auth);
+
+    void deleteSkillArray(long talentId, long proofId, DeleteIdSkills skillId, Authentication auth);
+
 }
