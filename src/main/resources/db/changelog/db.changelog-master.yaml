@@ -86,3 +86,19 @@ databaseChangeLog:
   - changeSet:
       id: 14
       author: kate
+
+  - changeSet:
+      id: 15
+      author: kate
+
+  - changeSet:
+      id: 16
+      author: kate
+
+  - changeSet:
+      id: 17
+      author: sasha
+
+  - changeSet:
+      id: 18
+      author: sasha

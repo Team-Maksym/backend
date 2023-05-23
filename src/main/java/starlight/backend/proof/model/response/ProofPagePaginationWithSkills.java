@@ -5,7 +5,7 @@ import lombok.Builder;
 import java.util.List;
 
 @Builder
-public record ProofPagePagination(
+public record ProofPagePaginationWithSkills(
         long total,
-        List<ProofInfo> data
+        List<ProofInfoWithSkills> data
 ) {}

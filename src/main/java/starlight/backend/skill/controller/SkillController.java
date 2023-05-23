@@ -1,4 +1,4 @@
-package starlight.backend.skill;
+package starlight.backend.skill.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -17,7 +17,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import starlight.backend.skill.model.request.AddSkill;
-import starlight.backend.skill.model.response.ProofWithSkills;
+import starlight.backend.proof.model.response.ProofWithSkills;
 import starlight.backend.skill.model.response.SkillList;
 import starlight.backend.skill.model.response.SkillListWithPagination;
 import starlight.backend.skill.service.SkillServiceInterface;
@@ -83,7 +83,7 @@ public class SkillController {
                                            @PathVariable("proof-id") long proofId,
                                            @RequestBody AddSkill skills,
                                            Authentication auth) {
-        log.info("@GetMapping(\"/talents/{talent-id}/proofs/{proof-id}/skills\")");
+        log.info("@PostMapping(\"/talents/{talent-id}/proofs/{proof-id}/skills\")");
         return serviceService.addSkillInYourProof(talentId, proofId, auth, skills);
     }
 
@@ -130,7 +130,7 @@ public class SkillController {
                             @PathVariable("proof-id") long proofId,
                             @PathVariable("skill-id") long skillId,
                             Authentication auth) {
-        log.info("@GetMapping(\"/talents/{talent-id}/proofs/{proof-id}/skills/{skill-id}\")");
+        log.info("@DeleteMapping(\"/talents/{talent-id}/proofs/{proof-id}/skills/{skill-id}\")");
         serviceService.deleteSkill(talentId, proofId, skillId, auth);
     }
 }

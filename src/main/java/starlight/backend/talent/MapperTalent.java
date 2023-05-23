@@ -2,11 +2,11 @@ package starlight.backend.talent;
 
 import org.mapstruct.Mapper;
 import org.springframework.data.domain.Page;
-import starlight.backend.user.model.entity.PositionEntity;
-import starlight.backend.user.model.entity.UserEntity;
 import starlight.backend.talent.model.response.TalentFullInfo;
 import starlight.backend.talent.model.response.TalentPagePagination;
 import starlight.backend.talent.model.response.TalentProfile;
+import starlight.backend.user.model.entity.PositionEntity;
+import starlight.backend.user.model.entity.UserEntity;
 
 import static org.mapstruct.ReportingPolicy.IGNORE;
 
