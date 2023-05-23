@@ -12,9 +12,13 @@ import org.springframework.web.server.ResponseStatusException;
 import starlight.backend.exception.proof.ProofNotFoundException;
 import starlight.backend.exception.proof.UserAccesDeniedToProofException;
 import starlight.backend.exception.proof.UserCanNotEditProofNotInDraftException;
+import starlight.backend.exception.skill.SkillNotFoundException;
+import starlight.backend.exception.user.UserNotFoundException;
 import starlight.backend.proof.ProofMapper;
 import starlight.backend.proof.ProofRepository;
+import starlight.backend.proof.model.entity.ProofEntity;
 import starlight.backend.proof.model.enums.Status;
+import starlight.backend.proof.model.response.ProofListWithSkills;
 import starlight.backend.proof.model.response.ProofWithSkills;
 import starlight.backend.security.service.SecurityServiceInterface;
 import starlight.backend.skill.SkillMapper;
@@ -36,7 +40,7 @@ import java.util.stream.Collectors;
 @Transactional
 @Slf4j
 public class SkillServiceImpl implements SkillServiceInterface {
-    private final ProofMapper proofMapper;
+    private ProofMapper proofMapper;
     private final String filterParam = "skill";
     private SkillRepository skillRepository;
     private SkillMapper skillMapper;
@@ -169,5 +173,28 @@ public class SkillServiceImpl implements SkillServiceInterface {
         }
         return skillMapper.toProofWithSkills(proof);
     }
+
+    @Override
+    public TalentWithSkills getListSkillsOfTalent(long talentId, Authentication auth) {
+        var talent = userRepository.findById(talentId)
+                .orElseThrow(() -> new UserNotFoundException(talentId));
+        var skills = talent.getTalentSkills();
+        return skillMapper.toTalentWithSkills(talent);
+    }
+
+    @Override
+    public ProofListWithSkills getListProofsOfSkill(long talentId, long skillId, Authentication auth) {
+        var user = userRepository.findById(talentId)
+                .orElseThrow(() -> new UserNotFoundException(talentId));
+        var skill = skillRepository.findBySkillId(skillId).orElseThrow(() -> new SkillNotFoundException(skillId));
+        List<ProofEntity> proofs = proofRepository.findBySkills_SkillIdAndSkills_Talents_UserId(skillId, talentId);
+
+
+        return proofMapper.toProofListWithSkills(user, proofs);
+    }
 }
 
+//        var proofs = skills.stream()
+//                .filter(skillEntity -> skillEntity.getSkillId() == skillId)
+//                .map(SkillEntity::getProofs)
+//                .collect(Collectors.toSet());

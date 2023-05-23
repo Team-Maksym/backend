@@ -6,8 +6,11 @@ import starlight.backend.proof.model.entity.ProofEntity;
 import starlight.backend.proof.model.response.*;
 import starlight.backend.skill.model.entity.SkillEntity;
 import starlight.backend.skill.model.response.SkillWithCategory;
+import starlight.backend.user.model.entity.UserEntity;
 
 import java.util.LinkedList;
+import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import static org.mapstruct.ReportingPolicy.IGNORE;
@@ -93,6 +96,15 @@ public interface ProofMapper {
                 .skillId(skillEntity.getSkillId())
                 .skill(skillEntity.getSkill())
                 .category(skillEntity.getCategory())
+                .build();
+    }
+
+    default ProofListWithSkills toProofListWithSkills(UserEntity user, List<ProofEntity> proofs){
+
+        return ProofListWithSkills.builder()
+                .data(proofs.stream()
+                        .map(this::toProofFullInfoWithSkills)
+                        .toList())
                 .build();
     }
 }

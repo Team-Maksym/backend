@@ -1,4 +1,4 @@
-package starlight.backend.talent;
+package starlight.backend.talent.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -27,7 +27,7 @@ import starlight.backend.talent.service.TalentServiceInterface;
 @RequestMapping("/api/v1")
 @Tag(name = "Talent", description = "Talent API")
 @Slf4j
-public class TalentController {
+public class TalentControllerV1 {
     private TalentServiceInterface talentService;
 
     @Operation(
