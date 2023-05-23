@@ -20,6 +20,15 @@ import starlight.backend.skill.service.SkillServiceInterface;
 import starlight.backend.talent.model.response.TalentPagePagination;
 import starlight.backend.talent.model.response.TalentWithSkills;
 import starlight.backend.talent.service.TalentServiceInterface;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+import starlight.backend.proof.model.response.ProofListWithSkills;
+import starlight.backend.proof.model.response.ProofWithSkills;
+import starlight.backend.skill.model.response.SkillListWithPagination;
+import starlight.backend.skill.service.SkillServiceInterface;
+import starlight.backend.talent.model.response.TalentWithSkills;
 
 @RestController
 @AllArgsConstructor

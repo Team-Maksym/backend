@@ -1,6 +1,7 @@
 package starlight.backend.skill.service;
 
 import org.springframework.security.core.Authentication;
+import starlight.backend.proof.model.response.ProofListWithSkills;
 import starlight.backend.proof.model.response.ProofWithSkills;
 import starlight.backend.skill.model.entity.SkillEntity;
 import starlight.backend.skill.model.request.AddSkill;
@@ -28,5 +29,10 @@ public interface SkillServiceInterface {
 
     ProofWithSkills addSkillInYourProofV2(long talentId, long proofId, Authentication auth, AddSkill skills);
 
+    TalentWithSkills getListSkillsOfTalent(long talentId, Authentication auth);
+
+    ProofListWithSkills getListProofsOfSkill(long talentId, long skillsId, Authentication auth);
+
     void deleteSkillArray(long talentId, long proofId, DeleteIdSkills skillId, Authentication auth);
+
 }
