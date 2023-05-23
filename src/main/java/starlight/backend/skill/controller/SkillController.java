@@ -22,6 +22,7 @@ import starlight.backend.skill.model.request.DeleteIdSkills;
 import starlight.backend.skill.model.response.SkillList;
 import starlight.backend.skill.model.response.SkillListWithPagination;
 import starlight.backend.skill.service.SkillServiceInterface;
+import starlight.backend.talent.model.response.TalentWithSkills;
 
 
 @Slf4j

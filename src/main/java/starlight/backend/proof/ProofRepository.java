@@ -13,6 +13,7 @@ import java.util.Optional;
 
 @Repository
 public interface ProofRepository extends JpaRepository<ProofEntity, Long> {
+    List<ProofEntity> findBySkills_SkillIdAndSkills_Talents_UserId(Long skillId, Long userId);
     Page<ProofEntity> findAllByUser_UserId(Long userId, Pageable pageable);
 
     boolean existsByProofId(Long proofId);
