@@ -7,6 +7,9 @@ import starlight.backend.skill.model.entity.SkillEntity;
 import starlight.backend.skill.model.response.SkillList;
 import starlight.backend.skill.model.response.SkillListWithPagination;
 import starlight.backend.skill.model.response.SkillWithCategory;
+import starlight.backend.talent.model.response.TalentWithSkills;
+import starlight.backend.user.model.entity.PositionEntity;
+import starlight.backend.user.model.entity.UserEntity;
 
 import java.util.List;
 
@@ -54,4 +57,18 @@ public interface SkillMapper {
                 .build();
     }
 
+    default TalentWithSkills toTalentWithSkills(UserEntity user) {
+        return TalentWithSkills.builder()
+                .id(user.getUserId())
+                .fullName(user.getFullName())
+                .position(user.getPositions().stream()
+                        .findAny()
+                        .map(PositionEntity::getPosition)
+                        .orElse(null))
+                .skill(user.getTalentSkills()
+                        .stream()
+                        .map(this::toSkillWithCategory)
+                        .toList())
+                .build();
+    }
 }
