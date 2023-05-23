@@ -18,6 +18,7 @@ import starlight.backend.security.service.SecurityServiceInterface;
 import starlight.backend.skill.SkillMapper;
 import starlight.backend.skill.model.entity.SkillEntity;
 import starlight.backend.skill.model.request.AddSkill;
+import starlight.backend.skill.model.request.DeleteIdSkills;
 import starlight.backend.skill.model.response.SkillList;
 import starlight.backend.skill.model.response.SkillListWithPagination;
 import starlight.backend.skill.repository.SkillRepository;
@@ -25,7 +26,10 @@ import starlight.backend.skill.service.SkillServiceInterface;
 import starlight.backend.talent.model.response.TalentWithSkills;
 import starlight.backend.user.repository.UserRepository;
 
-import java.util.*;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Objects;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 
@@ -89,24 +93,21 @@ public class SkillServiceImpl implements SkillServiceInterface {
                 .orElseThrow(() -> new ProofNotFoundException(proofId));
         return skillMapper.toSkillList(proof.getSkills().stream().toList());
     }
+
     @Override
     public List<SkillEntity> existsSkill(List<SkillEntity> proofSkill,
-                                          List<String> skills) {
+                                         List<String> skills) {
         if (skills != null && !skills.isEmpty()) {
-            LinkedHashSet<SkillEntity> newSkills = skills.stream()
-                    .map(skill -> {
-                        if (skill != null) {
-                            return skillValidation(skill);
-                        }
-                        return null;
-                    })
+            Set<SkillEntity> newSkills = skills.stream()
+                    .map(this::skillValidation)
                     .filter(Objects::nonNull)
-                    .collect(Collectors.toCollection(LinkedHashSet::new));
+                    .collect(Collectors.toSet());
             newSkills.addAll(proofSkill);
-            return new ArrayList<>(newSkills);
+            return newSkills.stream().distinct().collect(Collectors.toList());
         }
-        return proofSkill;
+        return proofSkill.stream().distinct().collect(Collectors.toList());
     }
+
     @Override
     public SkillEntity skillValidation(String skill) {
         return skillRepository.existsBySkillIgnoreCase(skill) ?
@@ -122,10 +123,28 @@ public class SkillServiceImpl implements SkillServiceInterface {
         if (!skillRepository.existsBySkillIdAndProofs_ProofIdAndProofs_User_UserId(skillId, proofId, talentId)) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "don`t found skill by talentId and proofId!");
         }
-        var skill = skillRepository.findBySkillIdAndProofs_ProofIdAndProofs_User_UserId(skillId, proofId, talentId);
+        var skill = skillRepository.findById(skillId)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "don`t found this skill"));
         var proof = proofRepository.findById(proofId)
                 .orElseThrow(() -> new ProofNotFoundException(proofId));
         proof.getSkills().remove(skill);
+    }
+
+    @Override
+    public void deleteSkillArray(long talentId, long proofId, DeleteIdSkills deleteSkillId, Authentication auth) {
+        if (!securityService.checkingLoggedAndToken(talentId, auth)) {
+            throw new UserAccesDeniedToProofException();
+        }
+        for (long skillId : deleteSkillId.skillsId()) {
+            if (!skillRepository.existsBySkillIdAndProofs_ProofIdAndProofs_User_UserId(skillId, proofId, talentId)) {
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "don`t found skill by talentId and proofId!");
+            }
+            var skill = skillRepository.findById(skillId)
+                    .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "don`t found this skill"));
+            var proof = proofRepository.findById(proofId)
+                    .orElseThrow(() -> new ProofNotFoundException(proofId));
+            proof.getSkills().remove(skill);
+        }
     }
 
     @Override
