@@ -11,6 +11,7 @@ import org.springframework.web.server.ResponseStatusException;
 import starlight.backend.exception.proof.ProofNotFoundException;
 import starlight.backend.exception.proof.UserAccesDeniedToProofException;
 import starlight.backend.exception.proof.UserCanNotEditProofNotInDraftException;
+import starlight.backend.exception.user.talent.TalentNotFoundException;
 import starlight.backend.proof.ProofRepository;
 import starlight.backend.proof.model.enums.Status;
 import starlight.backend.proof.model.response.ProofWithSkills;
@@ -153,7 +154,7 @@ public class SkillServiceImpl implements SkillServiceInterface {
             throw new UserAccesDeniedToProofException();
         }
         var talent = userRepository.findById(talentId)
-                .orElseThrow(() -> new ProofNotFoundException(talentId));
+                .orElseThrow(() -> new TalentNotFoundException(talentId));
         talent.setTalentSkills(existsSkill(
                 talent.getTalentSkills(),
                 skills.skills()));
