@@ -7,13 +7,11 @@ import org.springframework.validation.annotation.Validated;
 import starlight.backend.proof.model.entity.ProofEntity;
 import starlight.backend.user.model.entity.UserEntity;
 
-import java.util.Collection;
 import java.util.Set;
 
 import static jakarta.persistence.GenerationType.IDENTITY;
 
 @Builder
-@ToString
 @Getter
 @Setter
 @AllArgsConstructor
@@ -28,9 +26,6 @@ public class SkillEntity {
     private String skill;
     private String category;
 
-    @ElementCollection(fetch = FetchType.EAGER)
-    private Collection<Long> idProofs;
-
     @ManyToMany(mappedBy = "skills")
     @JsonBackReference
     private Set<ProofEntity> proofs;
@@ -43,3 +38,4 @@ public class SkillEntity {
         this.skill = skill;
     }
 }
+

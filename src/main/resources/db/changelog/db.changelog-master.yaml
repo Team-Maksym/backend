@@ -94,3 +94,7 @@ databaseChangeLog:
   - changeSet:
       id: 17
       author: sasha
+
+  - changeSet:
+      id: 18
+      author: sasha

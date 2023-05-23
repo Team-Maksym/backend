@@ -1,6 +1,7 @@
 package starlight.backend.skill.service.impl;
 
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
@@ -12,6 +13,7 @@ import starlight.backend.exception.proof.ProofNotFoundException;
 import starlight.backend.exception.proof.UserAccesDeniedToProofException;
 import starlight.backend.exception.proof.UserCanNotEditProofNotInDraftException;
 import starlight.backend.exception.user.talent.TalentNotFoundException;
+import starlight.backend.proof.ProofMapper;
 import starlight.backend.proof.ProofRepository;
 import starlight.backend.proof.model.enums.Status;
 import starlight.backend.proof.model.response.ProofWithSkills;
@@ -37,7 +39,9 @@ import java.util.stream.Collectors;
 @AllArgsConstructor
 @Service
 @Transactional
+@Slf4j
 public class SkillServiceImpl implements SkillServiceInterface {
+    private final ProofMapper proofMapper;
     private final String filterParam = "skill";
     private SkillRepository skillRepository;
     private SkillMapper skillMapper;
@@ -160,6 +164,30 @@ public class SkillServiceImpl implements SkillServiceInterface {
                 skills.skills()));
         userRepository.save(talent);
         return skillMapper.toTalentWithSkills(talent);
+    }
+
+    @Override
+    public ProofWithSkills addSkillInYourProofV2(long talentId, long proofId, Authentication auth, AddSkill skills) {
+        if (!securityService.checkingLoggedAndToken(talentId, auth)) {
+            throw new UserAccesDeniedToProofException();
+        }
+        var proof = proofRepository.findById(proofId)
+                .orElseThrow(() -> new ProofNotFoundException(proofId));
+        var talent = userRepository.findById(talentId)
+                .orElseThrow(() -> new ProofNotFoundException(talentId));
+        if (!proof.getStatus().equals(Status.DRAFT)) {
+            throw new UserCanNotEditProofNotInDraftException();
+        } else {
+            talent.setTalentSkills(existsSkill(
+                    talent.getTalentSkills(),
+                    skills.skills()));
+            userRepository.save(talent);
+            proof.setSkills(existsSkill(
+                    proof.getSkills(),
+                    skills.skills()));
+            proofRepository.save(proof);
+        }
+        return skillMapper.toProofWithSkills(proof);
     }
 }
 
