@@ -198,7 +198,6 @@ public class SkillServiceImpl implements SkillServiceInterface {
     public TalentWithSkills getListSkillsOfTalent(long talentId, Authentication auth) {
         var talent = userRepository.findById(talentId)
                 .orElseThrow(() -> new UserNotFoundException(talentId));
-        var skills = talent.getTalentSkills();
         return skillMapper.toTalentWithSkills(talent);
     }
 
@@ -206,15 +205,7 @@ public class SkillServiceImpl implements SkillServiceInterface {
     public ProofListWithSkills getListProofsOfSkill(long talentId, long skillId, Authentication auth) {
         var user = userRepository.findById(talentId)
                 .orElseThrow(() -> new UserNotFoundException(talentId));
-        var skill = skillRepository.findBySkillId(skillId).orElseThrow(() -> new SkillNotFoundException(skillId));
         List<ProofEntity> proofs = proofRepository.findBySkills_SkillIdAndSkills_Talents_UserId(skillId, talentId);
-
-
         return proofMapper.toProofListWithSkills(user, proofs);
     }
 }
-
-//        var proofs = skills.stream()
-//                .filter(skillEntity -> skillEntity.getSkillId() == skillId)
-//                .map(SkillEntity::getProofs)
-//                .collect(Collectors.toSet());
