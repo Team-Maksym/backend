@@ -25,10 +25,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import starlight.backend.proof.model.response.ProofListWithSkills;
-import starlight.backend.proof.model.response.ProofWithSkills;
-import starlight.backend.skill.model.response.SkillListWithPagination;
-import starlight.backend.skill.service.SkillServiceInterface;
-import starlight.backend.talent.model.response.TalentWithSkills;
 
 @RestController
 @AllArgsConstructor
@@ -37,7 +33,7 @@ import starlight.backend.talent.model.response.TalentWithSkills;
 @Tag(name = "Talent v2", description = "Talent API v2 (with skills")
 @Slf4j
 public class TalentControllerV2 {
-    private SkillServiceInterface serviceService;
+    private SkillServiceInterface skillService;
     private TalentServiceInterface talentService;
 
     @Operation(
@@ -63,7 +59,7 @@ public class TalentControllerV2 {
                                               Authentication auth){
 
         log.info("@GetMapping(\"/talents/{talent-id}/skills\")");
-        return serviceService.getListSkillsOfTalent(talentId, auth);
+        return skillService.getListSkillsOfTalent(talentId, auth);
     }
 
 
@@ -90,7 +86,7 @@ public class TalentControllerV2 {
                                                 Authentication auth){
 
         log.info("@GetMapping(\"/talents/{talent-id}/skills/{skills-id}/proofs\")");
-        return serviceService.getListProofsOfSkill(talentId, skillId, auth);
+        return skillService.getListProofsOfSkill(talentId, skillId, auth);
     }
 
     @Operation(
