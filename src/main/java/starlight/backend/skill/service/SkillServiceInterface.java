@@ -4,6 +4,7 @@ import org.springframework.security.core.Authentication;
 import starlight.backend.proof.model.response.ProofWithSkills;
 import starlight.backend.skill.model.entity.SkillEntity;
 import starlight.backend.skill.model.request.AddSkill;
+import starlight.backend.skill.model.request.DeleteIdSkills;
 import starlight.backend.skill.model.response.SkillList;
 import starlight.backend.skill.model.response.SkillListWithPagination;
 import starlight.backend.talent.model.response.TalentWithSkills;
@@ -26,4 +27,6 @@ public interface SkillServiceInterface {
     TalentWithSkills addSkillToTalent(long talentId, AddSkill skills, Authentication auth);
 
     ProofWithSkills addSkillInYourProofV2(long talentId, long proofId, Authentication auth, AddSkill skills);
+
+    void deleteSkillArray(long talentId, long proofId, DeleteIdSkills skillId, Authentication auth);
 }

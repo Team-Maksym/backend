@@ -37,7 +37,6 @@ import starlight.backend.user.repository.UserRepository;
 import java.net.URI;
 import java.time.Instant;
 import java.util.Arrays;
-import java.util.LinkedHashSet;
 import java.util.Objects;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -103,13 +102,9 @@ public class ProofServiceImpl implements ProofServiceInterface {
                 .user(userRepository.findById(talentId)
                         .orElseThrow(() -> new TalentNotFoundException(talentId)))
                 .skills(proofAddWithSkillsRequest.skills().stream()
-                        .map(skill -> {
-                            if (skill != null) {
-                                return skillService.skillValidation(skill);
-                            }
-                            return null;
-                        })
+                        .map(skill -> skillService.skillValidation(skill))
                         .filter(Objects::nonNull)
+                        .distinct()
                         .toList())
                 .build());
         return proof.getProofId();
