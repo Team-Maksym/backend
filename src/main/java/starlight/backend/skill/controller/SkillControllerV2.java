@@ -25,7 +25,7 @@ import starlight.backend.talent.model.response.TalentWithSkills;
 @AllArgsConstructor
 @Validated
 @RequestMapping("/api/v2")
-@Tag(name = "Skill", description = "Skill API")
+@Tag(name = "Skill v2", description = "Skill API v2")
 public class SkillControllerV2 {
     private SkillServiceInterface serviceService;
 
