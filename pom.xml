@@ -124,18 +124,18 @@
 			<!--			ENV in build process-->
 			<!--			TODO: COMMENT THIS BLOCK BEFORE PUSH YOUR CODE TO ORIGIN-->
 
-						<plugin>
-							<groupId>org.apache.maven.plugins</groupId>
-							<artifactId>maven-surefire-plugin</artifactId>
-							<version>3.0.0-M5</version>
-							<configuration>
-								<systemPropertyVariables>
-									<DB_LOGIN>postgres</DB_LOGIN>
-									<DB_PASSWORD>123456</DB_PASSWORD>
-									<DB_URL>localhost:8083/postgres</DB_URL>
-								</systemPropertyVariables>
-							</configuration>
-						</plugin>
+<!--						<plugin>-->
+<!--							<groupId>org.apache.maven.plugins</groupId>-->
+<!--							<artifactId>maven-surefire-plugin</artifactId>-->
+<!--							<version>3.0.0-M5</version>-->
+<!--							<configuration>-->
+<!--								<systemPropertyVariables>-->
+<!--									<DB_LOGIN>postgres</DB_LOGIN>-->
+<!--									<DB_PASSWORD>123456</DB_PASSWORD>-->
+<!--									<DB_URL>localhost:8083/postgres</DB_URL>-->
+<!--								</systemPropertyVariables>-->
+<!--							</configuration>-->
+<!--						</plugin>-->
 
 			<!--			ENV in build process-->
 			<plugin>
