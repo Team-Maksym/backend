@@ -94,7 +94,7 @@ public class TalentControllerV2 {
 
     @Operation(
             summary = "Get all talents",
-            description = "Get list of all talents. The response is list of talent objects with fields 'id','full_name', 'position' and 'avatar'."
+            description = "Get list of all talents. The response is list of talent objects with fields 'id','full_name', 'position', 'avatar' and '[skills]'. \nEmpty field of filter return all skills."
     )
     @ApiResponses(value = {
             @ApiResponse(
