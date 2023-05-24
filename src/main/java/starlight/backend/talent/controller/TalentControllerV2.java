@@ -65,31 +65,31 @@ public class TalentControllerV2 {
     }
 
 
-//    @Operation(
-//            summary = "Get proofs of skill",
-//            description = "On this you can see the proofs of a specific skill."
-//    )
-//    @ApiResponses(value = {
-//            @ApiResponse(
-//                    responseCode = "200",
-//                    content = @Content(
-//                            mediaType = MediaType.APPLICATION_JSON_VALUE,
-//                            schema = @Schema(
-//                                    implementation = ProofListWithSkills.class
-//                            )
-//                    )
-//            ),
-//            @ApiResponse(responseCode = "404", description = "Not found"),
-//            @ApiResponse(responseCode = "401", description = "Unauthorized")
-//    })
-//    @GetMapping("/talents/{talent-id}/skills/{skill-id}/proofs")
-//    public ResponseEntity<ProofListWithSkills> getProofsOfSkill(@PathVariable("talent-id") long talentId,
-//                                           @PathVariable("skill-id") long skillId,
-//                                           Authentication auth){
-//
-//        log.info("@GetMapping(\"/talents/{talent-id}/skills/{skills-id}/proofs\")");
-//        return ResponseEntity.ok(skillService.getListProofsOfSkill(talentId, skillId, auth));
-//    }
+    @Operation(
+            summary = "Get proofs of skill",
+            description = "On this you can see the proofs of a specific skill."
+    )
+    @ApiResponses(value = {
+            @ApiResponse(
+                    responseCode = "200",
+                    content = @Content(
+                            mediaType = MediaType.APPLICATION_JSON_VALUE,
+                            schema = @Schema(
+                                    implementation = ProofListWithSkills.class
+                            )
+                    )
+            ),
+            @ApiResponse(responseCode = "404", description = "Not found"),
+            @ApiResponse(responseCode = "401", description = "Unauthorized")
+    })
+    @GetMapping("/talents/{talent-id}/skills/{skill-id}/proofs")
+    public ResponseEntity<ProofListWithSkills> getProofsOfSkill(@PathVariable("talent-id") long talentId,
+                                           @PathVariable("skill-id") long skillId,
+                                           Authentication auth){
+
+        log.info("@GetMapping(\"/talents/{talent-id}/skills/{skills-id}/proofs\")");
+        return ResponseEntity.ok(skillService.getListProofsOfSkill(talentId, skillId, auth));
+    }
 
     @Operation(
             summary = "Get all talents",
@@ -123,15 +123,5 @@ public class TalentControllerV2 {
 
         log.info("@GetMapping(\"/talents\")");
         return talentService.talentPagination(page, size);
-    }
-
-    @GetMapping("/talents/{talent-id}/skills/{skill-id}/proofs")
-    public ProofListWithSkills getProofsOfSkill(@PathVariable("talent-id") long talentId,
-                                                                @PathVariable("skill-id") long skillId,
-                                                                Authentication auth) {
-
-        log.info("@GetMapping(\"/talents/{talent-id}/skills/{skills-id}/proofs\")");
-
-        return skillService.getListProofsOfSkill(talentId, skillId, auth);
     }
 }
