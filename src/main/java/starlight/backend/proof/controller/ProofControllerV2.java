@@ -37,7 +37,7 @@ public class ProofControllerV2 {
                     content = @Content(
                             mediaType = MediaType.APPLICATION_JSON_VALUE,
                             schema = @Schema(
-                                    implementation = TalentPagePagination.class
+                                    implementation = ProofPagePagination.class
                             )
                     )
             ),

@@ -1,9 +1,9 @@
 package starlight.backend.proof.controller;
 
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -15,6 +15,8 @@ import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.web.server.ResponseStatusException;
+import starlight.backend.proof.ProofMapper;
+import starlight.backend.proof.model.entity.ProofEntity;
 import starlight.backend.proof.model.response.ProofInfo;
 import starlight.backend.proof.model.response.ProofPagePagination;
 import starlight.backend.proof.service.ProofServiceInterface;
@@ -23,16 +25,20 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static org.hamcrest.Matchers.hasSize;
+import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.when;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @ExtendWith(SpringExtension.class)
-@WebMvcTest(controllers  = ProofControllerV2.class)
+@WebMvcTest(controllers = ProofControllerV2.class)
+@AutoConfigureMockMvc(addFilters = false)
 class ProofControllerV2Test {
     @MockBean
     private ProofServiceInterface proofService;
+    @MockBean
+    private ProofMapper mapper;
     @MockBean
     private Authentication auth;
     @Autowired
@@ -40,6 +46,7 @@ class ProofControllerV2Test {
 
     @DisplayName("JUnit test for getTalentProofs method which throw exception")
     @Test
+    @Order(1)
     @WithMockUser(username = "user", roles = {"TALENT"})
     void getTalentProofs() throws Exception {
         // Given
@@ -48,32 +55,31 @@ class ProofControllerV2Test {
         int size = 5;
         boolean sort = true;
         String status = "ALL";
-        ProofInfo proofInfo = ProofInfo.builder().build();
-        List<ProofInfo> proofs = new ArrayList<>();
-        for (int i = 0; i < 5; i++) {
+        ProofEntity proofInfo = new ProofEntity();
+        List<ProofEntity> proofs = new ArrayList<>();
+        for (int i = 0; i < size; i++) {
             proofs.add(proofInfo);
         }
         ProofPagePagination proofPagePagination = ProofPagePagination.builder()
                 .data(proofs)
                 .total(5)
                 .build();
-        when(proofService.getTalentAllProofsWithKudoses(auth, talentId, page, size, sort, status))
-                .thenReturn(proofPagePagination);
+        given(proofService.getTalentAllProofsWithKudoses(auth, talentId, page, size, sort, status))
+                .willReturn(proofPagePagination);
 
         // When // Then
         mockMvc.perform(get("/api/v2/talents/{talent-id}/proofs", talentId)
                         .param("page", String.valueOf(page))
                         .param("size", String.valueOf(size))
                         .param("sort", String.valueOf(sort))
-                        .param("status", status))
+                        .param("status", status)
+                        .contentType(MediaType.APPLICATION_JSON))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                //.andExpect(jsonPath("$.total", is(5)))
                 .andExpect(jsonPath("$.data").isArray())
                 .andExpect(jsonPath("$.data", hasSize(5)))
                 .andExpect(jsonPath("$").isNotEmpty());
-
     }
 
     @DisplayName("JUnit test for getTalentProofs method which throw exception")

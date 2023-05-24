@@ -60,7 +60,7 @@ class TalentControllerTest {
         int size = 10;
         TalentProfile talentProfile = TalentProfile.builder().build();
         List<TalentProfile> talentProfiles = new ArrayList<>();
-        for (int i = 0; i < 10; i++) {
+        for (int i = 0; i < size; i++) {
             talentProfiles.add(talentProfile);
         }
         TalentPagePagination talentPagePagination = TalentPagePagination.builder()
@@ -77,9 +77,9 @@ class TalentControllerTest {
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$.data", hasSize(10)))
+                .andExpect(jsonPath("$.data", hasSize(size)))
                 .andExpect(jsonPath("$.data").isArray())
-                .andExpect(jsonPath("$.total", is(10)))
+                .andExpect(jsonPath("$.total", is(size)))
                 .andExpect(jsonPath("$").isNotEmpty());
     }
 

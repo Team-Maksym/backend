@@ -41,7 +41,7 @@ public class SponsorController {
                             description = "Success",
                             content = @Content(
                                     mediaType = "application/json",
-                                    schema = @Schema(implementation = SessionInfo.class)
+                                    schema = @Schema(implementation = SponsorKudosInfo.class)
                             )
                     ),
                     @ApiResponse(responseCode = "401", description = "Unauthorized"),

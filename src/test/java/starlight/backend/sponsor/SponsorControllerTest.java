@@ -1,6 +1,8 @@
 package starlight.backend.sponsor;
 
+
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
@@ -14,13 +16,14 @@ import org.springframework.http.MediaType;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
+import starlight.backend.email.model.EmailProps;
 import starlight.backend.sponsor.model.request.SponsorUpdateRequest;
 import starlight.backend.sponsor.model.response.SponsorFullInfo;
 import starlight.backend.sponsor.model.response.SponsorKudosInfo;
 import starlight.backend.sponsor.service.SponsorServiceInterface;
 
-import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.is;
+import static org.hamcrest.core.StringContains.containsString;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.get;
@@ -42,7 +45,12 @@ class SponsorControllerTest {
     private Authentication auth;
     @Autowired
     private MockMvc mockMvc;
-
+    @MockBean
+    private EmailProps emailProps;
+    @BeforeEach
+    void setUp() {
+        when(emailProps.username()).thenReturn("test@example.com");
+    }
     @DisplayName("JUnit test for get Unusable Kudos for Sponsor")
     @Test
     @Order(1)
@@ -56,13 +64,12 @@ class SponsorControllerTest {
         //When //Then
         mockMvc.perform(get("/api/v1/sponsors/{sponsor-id}/kudos", sponsorId))
                 .andDo(print())
-                .andExpect(status().isOk());/*
+                .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.data").isArray())
                 .andExpect(jsonPath("$.unused_kudos", is(0)))
                 .andExpect(jsonPath("$.already_marked_kudos", is(0)))
                 .andExpect(jsonPath("$").isNotEmpty());
-                */
     }
 
     @DisplayName("JUnit test for sponsor FullInfo Returns Sponsor FullInfo")
@@ -83,12 +90,12 @@ class SponsorControllerTest {
         // When // Then
         mockMvc.perform(get("/api/v1/sponsors/{sponsor-id}", sponsorId))
                 .andDo(print())
-                .andExpect(status().isOk());/*
+                .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$").isNotEmpty())
                 .andExpect(jsonPath("$.full_name").value("John Doe"))
                 .andExpect(jsonPath("$.company").value("Master's Degree"))
-                .andExpect(jsonPath("$.avatar").value("https://example.com/new-avatar.jpg"));*/
+                .andExpect(jsonPath("$.avatar").value("https://example.com/new-avatar.jpg"));
     }
 
     @DisplayName("JUnit test for update Sponsor FullInfo Returns Sponsor FullInfo")
@@ -124,8 +131,7 @@ class SponsorControllerTest {
     void delete_ReturnsOk() throws Exception {
         //Given
         long sponsorId = 1L;
-
-        doNothing().when(sponsorService).deleteSponsor(1, auth);
+        doNothing().when(sponsorService).deleteSponsor(sponsorId, auth);
 
         // When // Then
         mockMvc.perform(delete("/api/v1/sponsors/{sponsor-id}", sponsorId))
