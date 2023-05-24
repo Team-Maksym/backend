@@ -4,24 +4,27 @@ import lombok.AllArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 import starlight.backend.exception.PageNotFoundException;
+import starlight.backend.exception.filter.FilterMustBeNotNullException;
 import starlight.backend.exception.user.UserNotFoundException;
 import starlight.backend.exception.user.talent.TalentNotFoundException;
 import starlight.backend.proof.ProofRepository;
 import starlight.backend.proof.model.entity.ProofEntity;
 import starlight.backend.security.service.SecurityServiceInterface;
+import starlight.backend.skill.SkillMapper;
 import starlight.backend.skill.model.entity.SkillEntity;
+import starlight.backend.skill.model.response.SkillList;
 import starlight.backend.skill.repository.SkillRepository;
 import starlight.backend.talent.MapperTalent;
 import starlight.backend.talent.model.request.TalentUpdateRequest;
 import starlight.backend.talent.model.response.TalentFullInfo;
 import starlight.backend.talent.model.response.TalentPagePagination;
-import starlight.backend.talent.model.response.TalentPagePaginationWithFilterSkills;
 import starlight.backend.talent.service.TalentServiceInterface;
 import starlight.backend.user.model.entity.PositionEntity;
 import starlight.backend.user.model.entity.UserEntity;
@@ -45,6 +48,7 @@ public class TalentServiceImpl implements TalentServiceInterface {
     private ProofRepository proofRepository;
     private PasswordEncoder passwordEncoder;
     private SkillRepository skillRepository;
+    private SkillMapper skillMapper;
     private final String filterParam = "skill";
 
     @Override
@@ -148,7 +152,10 @@ public class TalentServiceImpl implements TalentServiceInterface {
 
 
     @Override
-    public TalentPagePaginationWithFilterSkills talentPaginationWithFilter(String filter, int skip, int limit) {
+    public ResponseEntity<? extends Record> talentPaginationWithFilter(String filter, int skip, int limit) {
+        if (filter == null) {
+            throw new FilterMustBeNotNullException();
+        }
         var talentStream = userRepository.findAll().stream();
         if (filter != null && !filter.isEmpty()) {
             talentStream = talentStream.filter(talent -> talent.getTalentSkills().stream()
@@ -156,7 +163,11 @@ public class TalentServiceImpl implements TalentServiceInterface {
                     .toLowerCase()
                     .contains(filter.toLowerCase())))
             ;
-        } 
+        } else if (filter.equals("\\s+")){
+            List<SkillEntity> skills = skillRepository.findAll();
+            return ResponseEntity.ok(skillMapper.toSkillList(skills));
+
+        }
         Sort sort = Sort.by(Sort.Order.asc(filterParam));
         var pageable = PageRequest.of(skip, limit, sort);
 
@@ -165,6 +176,6 @@ public class TalentServiceImpl implements TalentServiceInterface {
                 .skip(pageable.getOffset())
                 .limit(pageable.getPageSize())
                 .toList();
-        return talentMapper.toTalentListWithPaginationAndFilter(sortedTalents);
+        return ResponseEntity.ok(talentMapper.toTalentListWithPaginationAndFilter(sortedTalents));
     }
 }
