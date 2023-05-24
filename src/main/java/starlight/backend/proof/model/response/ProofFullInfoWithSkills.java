@@ -7,6 +7,7 @@ import starlight.backend.skill.model.response.SkillWithCategory;
 
 import java.time.Instant;
 import java.util.LinkedList;
+import java.util.List;
 
 @Builder
 public record ProofFullInfoWithSkills(
@@ -19,6 +20,6 @@ public record ProofFullInfoWithSkills(
         @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "UTC")
         Instant dateLastUpdated,
         Status status,
-        LinkedList<SkillWithCategory> skillWithCategoryList
+        List<?> skillWithCategoryList
 ) {
 }
