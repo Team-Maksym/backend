@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.*;
 import starlight.backend.skill.model.response.SkillListWithPagination;
 import starlight.backend.skill.service.SkillServiceInterface;
 import starlight.backend.talent.model.response.TalentPagePagination;
+import starlight.backend.talent.model.response.TalentPagePaginationWithFilterSkills;
 import starlight.backend.talent.model.response.TalentWithSkills;
 import starlight.backend.talent.service.TalentServiceInterface;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -118,10 +119,11 @@ public class TalentControllerV2 {
             )
     })
     @GetMapping("/talents")
-    public TalentPagePagination pagination(@RequestParam(defaultValue = "0") @Min(0) int page,
-                                           @RequestParam(defaultValue = "10") @Positive int size) {
+    public TalentPagePaginationWithFilterSkills paginationWithFilterSkills(@RequestParam(defaultValue = "0") @Min(0) int skip,
+                                                           @RequestParam(defaultValue = "30") @Positive int limit,
+                                                           @RequestParam String filter) {
 
-        log.info("@GetMapping(\"/talents\")");
-        return talentService.talentPagination(page, size);
+        log.info("@GetMapping(\"v2/talents\")");
+        return talentService.talentPaginationWithFilter(filter, skip, limit);
     }
 }

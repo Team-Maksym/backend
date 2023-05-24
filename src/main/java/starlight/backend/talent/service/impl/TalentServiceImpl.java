@@ -15,16 +15,20 @@ import starlight.backend.exception.user.talent.TalentNotFoundException;
 import starlight.backend.proof.ProofRepository;
 import starlight.backend.proof.model.entity.ProofEntity;
 import starlight.backend.security.service.SecurityServiceInterface;
+import starlight.backend.skill.model.entity.SkillEntity;
+import starlight.backend.skill.repository.SkillRepository;
 import starlight.backend.talent.MapperTalent;
 import starlight.backend.talent.model.request.TalentUpdateRequest;
 import starlight.backend.talent.model.response.TalentFullInfo;
 import starlight.backend.talent.model.response.TalentPagePagination;
+import starlight.backend.talent.model.response.TalentPagePaginationWithFilterSkills;
 import starlight.backend.talent.service.TalentServiceInterface;
 import starlight.backend.user.model.entity.PositionEntity;
 import starlight.backend.user.model.entity.UserEntity;
 import starlight.backend.user.repository.PositionRepository;
 import starlight.backend.user.repository.UserRepository;
 
+import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
@@ -34,12 +38,14 @@ import java.util.stream.Collectors;
 @Service
 @Transactional
 public class TalentServiceImpl implements TalentServiceInterface {
-    private MapperTalent mapper;
+    private MapperTalent talentMapper;
     private UserRepository userRepository;
     private PositionRepository positionRepository;
     private SecurityServiceInterface securityService;
     private ProofRepository proofRepository;
     private PasswordEncoder passwordEncoder;
+    private SkillRepository skillRepository;
+    private final String filterParam = "skill";
 
     @Override
     public TalentPagePagination talentPagination(int page, int size) {
@@ -48,13 +54,13 @@ public class TalentServiceImpl implements TalentServiceInterface {
         );
         if (page >= pageRequest.getTotalPages())
             throw new PageNotFoundException(page);
-        return mapper.toTalentPagePagination(pageRequest);
+        return talentMapper.toTalentPagePagination(pageRequest);
     }
 
     @Override
     public TalentFullInfo talentFullInfo(long id) {
         return userRepository.findById(id)
-                .map(mapper::toTalentFullInfo)
+                .map(talentMapper::toTalentFullInfo)
                 .orElseThrow(() -> new TalentNotFoundException(id));
     }
 
@@ -88,7 +94,7 @@ public class TalentServiceImpl implements TalentServiceInterface {
                     talent.getPositions(),
                     talentUpdateRequest.positions()));
             userRepository.save(talent);
-            return mapper.toTalentFullInfo(talent);
+            return talentMapper.toTalentFullInfo(talent);
         }).orElseThrow(() -> new TalentNotFoundException(id));
     }
 
@@ -138,5 +144,27 @@ public class TalentServiceImpl implements TalentServiceInterface {
         }
         user.getProofs().clear();
         userRepository.deleteById(user.getUserId());
+    }
+
+
+    @Override
+    public TalentPagePaginationWithFilterSkills talentPaginationWithFilter(String filter, int skip, int limit) {
+        var talentStream = userRepository.findAll().stream();
+        if (filter != null && !filter.isEmpty()) {
+            talentStream = talentStream.filter(talent -> talent.getTalentSkills().stream()
+                    .anyMatch(skill -> skill.getSkill()
+                    .toLowerCase()
+                    .contains(filter.toLowerCase())))
+            ;
+        } 
+        Sort sort = Sort.by(Sort.Order.asc(filterParam));
+        var pageable = PageRequest.of(skip, limit, sort);
+
+        List<UserEntity> sortedTalents = talentStream
+                .sorted(Comparator.comparing(UserEntity::getFullName))
+                .skip(pageable.getOffset())
+                .limit(pageable.getPageSize())
+                .toList();
+        return talentMapper.toTalentListWithPaginationAndFilter(sortedTalents);
     }
 }
