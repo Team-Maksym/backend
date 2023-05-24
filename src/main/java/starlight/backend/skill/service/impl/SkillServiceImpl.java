@@ -12,7 +12,6 @@ import org.springframework.web.server.ResponseStatusException;
 import starlight.backend.exception.proof.ProofNotFoundException;
 import starlight.backend.exception.proof.UserAccesDeniedToProofException;
 import starlight.backend.exception.proof.UserCanNotEditProofNotInDraftException;
-import starlight.backend.exception.skill.SkillNotFoundException;
 import starlight.backend.exception.user.UserNotFoundException;
 import starlight.backend.exception.user.talent.TalentNotFoundException;
 import starlight.backend.proof.ProofMapper;
@@ -33,10 +32,7 @@ import starlight.backend.skill.service.SkillServiceInterface;
 import starlight.backend.talent.model.response.TalentWithSkills;
 import starlight.backend.user.repository.UserRepository;
 
-import java.util.Comparator;
-import java.util.List;
-import java.util.Objects;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 
@@ -198,23 +194,26 @@ public class SkillServiceImpl implements SkillServiceInterface {
     public TalentWithSkills getListSkillsOfTalent(long talentId, Authentication auth) {
         var talent = userRepository.findById(talentId)
                 .orElseThrow(() -> new UserNotFoundException(talentId));
-        var skills = talent.getTalentSkills();
         return skillMapper.toTalentWithSkills(talent);
     }
 
     @Override
+    @Transactional(readOnly = true)
     public ProofListWithSkills getListProofsOfSkill(long talentId, long skillId, Authentication auth) {
-        var user = userRepository.findById(talentId)
-                .orElseThrow(() -> new UserNotFoundException(talentId));
-        var skill = skillRepository.findBySkillId(skillId).orElseThrow(() -> new SkillNotFoundException(skillId));
-        List<ProofEntity> proofs = proofRepository.findBySkills_SkillIdAndSkills_Talents_UserId(skillId, talentId);
+        //List<ProofEntity> proofs = proofRepository.findBySkills_SkillIdAndSkills_Talents_UserId(skillId, talentId);
+        log.info("START");
+        List<ProofEntity> proofs1 = proofRepository.findByUser_UserId(talentId).stream()
+                .filter(proof -> proof.getSkills()
+                        .stream()
+                        .anyMatch(skill -> skill.getSkillId() == skillId))
+                .toList();
+        log.info("proofs1 {}", proofs1);
 
-
-        return proofMapper.toProofListWithSkills(user, proofs);
+        if (!securityService.checkingLoggedAndToken(talentId, auth)) {
+            log.info("toProofListWithSkills");
+            return proofMapper.toProofListWithSkills(proofs1);
+        }
+        log.info("fromFulltoProofListWithSkills");
+        return proofMapper.fromFulltoProofListWithSkills(proofs1);
     }
 }
-
-//        var proofs = skills.stream()
-//                .filter(skillEntity -> skillEntity.getSkillId() == skillId)
-//                .map(SkillEntity::getProofs)
-//                .collect(Collectors.toSet());

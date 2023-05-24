@@ -6,11 +6,9 @@ import starlight.backend.proof.model.entity.ProofEntity;
 import starlight.backend.proof.model.response.*;
 import starlight.backend.skill.model.entity.SkillEntity;
 import starlight.backend.skill.model.response.SkillWithCategory;
-import starlight.backend.user.model.entity.UserEntity;
 
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 import static org.mapstruct.ReportingPolicy.IGNORE;
@@ -82,10 +80,9 @@ public interface ProofMapper {
                 .dateCreated(proof.getDateCreated())
                 .dateLastUpdated(proof.getDateLastUpdated())
                 .description(proof.getDescription())
-                .skillWithCategoryList(proof.getSkills()
-                        .stream()
+                .skillWithCategoryList(proof.getSkills().stream()
                         .map(this::toSkillWithCategory)
-                        .collect(Collectors.toCollection(LinkedList::new))
+                        .toList()
                 )
                 .build();
     }
@@ -99,11 +96,20 @@ public interface ProofMapper {
                 .build();
     }
 
-    default ProofListWithSkills toProofListWithSkills(UserEntity user, List<ProofEntity> proofs){
+    default ProofListWithSkills fromFulltoProofListWithSkills(List<ProofEntity> proofs){
 
         return ProofListWithSkills.builder()
                 .data(proofs.stream()
                         .map(this::toProofFullInfoWithSkills)
+                        .toList())
+                .build();
+    }
+
+    default ProofListWithSkills toProofListWithSkills(List<ProofEntity> proofs) {
+
+        return ProofListWithSkills.builder()
+                .data(proofs.stream()
+                        .map(this::toProofInfoWithSkills)
                         .toList())
                 .build();
     }

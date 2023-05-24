@@ -5,6 +5,6 @@ import lombok.Builder;
 import java.util.List;
 
 @Builder
-public class ProofListWithSkills {
-    List<ProofFullInfoWithSkills> data;
-}
+public record ProofListWithSkills (
+    List<?> data
+){}
