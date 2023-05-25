@@ -91,7 +91,7 @@ public class TalentControllerV2 {
                                            Authentication auth){
 
         log.info("@GetMapping(\"/talents/{talent-id}/skills/{skills-id}/proofs\")");
-        return ResponseEntity.ok(skillService.getListProofsOfSkill(talentId, skillId, Status.valueOf(status), auth));
+        return ResponseEntity.ok(skillService.getListProofsOfSkill(talentId, skillId, status, auth));
     }
 
     @Operation(

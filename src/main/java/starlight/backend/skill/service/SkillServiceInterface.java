@@ -32,7 +32,7 @@ public interface SkillServiceInterface {
 
     TalentWithSkills getListSkillsOfTalent(long talentId, Authentication auth);
 
-    ProofListWithSkills getListProofsOfSkill(long talentId, long skillsId, Status status, Authentication auth);
+    ProofListWithSkills getListProofsOfSkill(long talentId, long skillsId, String status, Authentication auth);
 
     void deleteSkillArray(long talentId, long proofId, DeleteIdSkills skillId, Authentication auth);
 

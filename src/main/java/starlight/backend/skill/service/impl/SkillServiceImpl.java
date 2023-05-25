@@ -20,6 +20,7 @@ import starlight.backend.proof.model.entity.ProofEntity;
 import starlight.backend.proof.model.enums.Status;
 import starlight.backend.proof.model.response.ProofListWithSkills;
 import starlight.backend.proof.model.response.ProofWithSkills;
+import starlight.backend.proof.service.ProofServiceInterface;
 import starlight.backend.security.service.SecurityServiceInterface;
 import starlight.backend.skill.SkillMapper;
 import starlight.backend.skill.model.entity.SkillEntity;
@@ -48,6 +49,7 @@ public class SkillServiceImpl implements SkillServiceInterface {
     private SecurityServiceInterface securityService;
     private ProofRepository proofRepository;
     private UserRepository userRepository;
+    private ProofServiceInterface proofService;
 
     @Override
     public SkillListWithPagination getListSkillWithFiltration(String filter, int skip, int limit) {
@@ -199,19 +201,18 @@ public class SkillServiceImpl implements SkillServiceInterface {
 
     @Override
     @Transactional(readOnly = true)
-    public ProofListWithSkills getListProofsOfSkill(long talentId, long skillId, Status status, Authentication auth) {
+    public ProofListWithSkills getListProofsOfSkill(long talentId, long skillId, String status1, Authentication auth) {
+        proofService.isStatusCorrect(status1);
+        Status status = Status.valueOf(status1);
         List<ProofEntity> proofs1 = proofRepository.findByUser_UserIdAndStatus(talentId, status).stream()
                 .filter(proof -> proof.getSkills()
                         .stream()
                         .anyMatch(skill -> skill.getSkillId() == skillId))
                 .toList();
-        log.info("proofs1 {}", proofs1);
 
         if (!securityService.checkingLoggedAndToken(talentId, auth)) {
-            log.info("toProofListWithSkills");
             return proofMapper.toProofListWithSkills(proofs1);
         }
-        log.info("fromFulltoProofListWithSkills");
         return proofMapper.fromFulltoProofListWithSkills(proofs1);
     }
 }

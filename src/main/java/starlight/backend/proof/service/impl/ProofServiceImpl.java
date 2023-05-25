@@ -39,7 +39,6 @@ import java.time.Instant;
 import java.util.Arrays;
 import java.util.Objects;
 import java.util.regex.Pattern;
-import java.util.stream.Collectors;
 
 @AllArgsConstructor
 @Service
@@ -272,7 +271,8 @@ public class ProofServiceImpl implements ProofServiceInterface {
         return dateSort;
     }
 
-    private void isStatusCorrect(String status) {
+    @Override
+    public void isStatusCorrect(String status) {
         if (!Arrays.toString(Status.values())
                 .matches(".*" + Pattern.quote(status) + ".*")) {
             throw new InvalidStatusException(status);

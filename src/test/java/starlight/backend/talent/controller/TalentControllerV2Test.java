@@ -90,7 +90,7 @@ public class TalentControllerV2Test {
     public void testGetProofsOfSkill() throws Exception {
         long talentId = 1;
         long skillId = 2;
-        Status status = Status.PUBLISHED;
+        String status = "PUBLISHED";
         Authentication auth = new TestingAuthenticationToken("test@gmail.com", "Secret123",
                 List.of(new SimpleGrantedAuthority("ROLE_TALENT")));
 

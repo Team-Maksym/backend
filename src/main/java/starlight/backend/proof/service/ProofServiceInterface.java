@@ -36,4 +36,6 @@ public interface ProofServiceInterface {
     ResponseEntity<?> getLocationForAddProofWithSkill(long talentId, ProofAddWithSkillsRequest proofAddWithSkillsRequest, Authentication auth);
 
     long addProofProfileWithSkill(long talentId, ProofAddWithSkillsRequest proofAddWithSkillsRequest, Authentication auth);
+
+    void isStatusCorrect(String status);
 }
