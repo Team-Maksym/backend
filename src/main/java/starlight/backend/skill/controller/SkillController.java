@@ -53,7 +53,7 @@ public class SkillController {
     })
     @GetMapping("/skills")
     public SkillListWithPagination listWithFilter(@RequestParam(defaultValue = "0") @Min(0) int skip,
-                                                  @RequestParam(defaultValue = "30") @Positive int limit,
+                                                  @RequestParam(defaultValue = "200") @Positive int limit,
                                                   @RequestParam(defaultValue = "") String filter) {
         log.info("@GetMapping(\"/skills\")");
         return serviceService.getListSkillWithFiltration(filter, skip, limit);
