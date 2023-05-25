@@ -160,8 +160,7 @@ public class TalentServiceImpl implements TalentServiceInterface {
                 PageRequest.of(skip, limit, Sort.by(Sort.Order.asc(filterParam))));
 
         if (filter != null && !filter.isEmpty()) {
-            List<UserEntity> filteredTalents = talentStream
-                    .stream()
+            List<UserEntity> filteredTalents = talentStream.stream()
                     .filter(talent -> talent.getTalentSkills().stream()
                             .anyMatch(skill -> skill.getSkill()
                                     .toLowerCase()
@@ -171,30 +170,9 @@ public class TalentServiceImpl implements TalentServiceInterface {
                     .collect(Collectors.toList());
 
             return talentMapper.toTalentListWithPaginationAndFilter(
-                    new PageImpl<>(filteredTalents, talentStream.getPageable(), talentStream.getTotalElements()));
-
-            /*Stream<UserEntity> talentStream1 = talentStream.stream()
-                    .filter(talent -> talent.getTalentSkills().stream()
-                    .anyMatch(skill -> skill.getSkill()
-                    .toLowerCase()
-                    .contains(filter.toLowerCase())))
-            ;
-            return talentMapper.toTalentListWithPaginationAndFilter(talentStream1);
-
-             */
+                    new PageImpl<>(filteredTalents, talentStream.getPageable(),
+                            talentStream.getTotalElements()));
         }
         return talentMapper.toTalentListWithPaginationAndFilter(talentStream);
-
-        //Sort sort = Sort.by(Sort.Order.asc(filterParam));
-
-        // var pageable = PageRequest.of(skip, limit, sort);
-        /*
-        List<UserEntity> sortedTalents = talentStream
-                .sorted(Comparator.comparing(UserEntity::getFullName))
-                .skip(pageable.getOffset())
-                .limit(pageable.getPageSize())
-                .toList();
-*/
-
     }
 }

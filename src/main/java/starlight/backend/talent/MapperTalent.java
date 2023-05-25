@@ -48,7 +48,7 @@ public interface MapperTalent {
 
     default TalentPagePaginationWithFilterSkills toTalentListWithPaginationAndFilter(Page<UserEntity> sortedTalent){
         return TalentPagePaginationWithFilterSkills.builder()
-                .data(sortedTalent.stream()
+                .data(sortedTalent.getContent().stream()
                         .map(this::toTalentWithSkills)
                         .toList())
                 .total(sortedTalent.getTotalElements())
