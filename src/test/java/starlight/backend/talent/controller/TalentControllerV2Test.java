@@ -57,6 +57,7 @@ public class TalentControllerV2Test {
                 talentId,
                 "John Doe",
                 "Developer",
+                "avatarurl.com",
                 Arrays.asList(
                         new SkillWithCategory(1, "Skill 1", "Category 1"),
                         new SkillWithCategory(2, "Skill 2", "Category 2")

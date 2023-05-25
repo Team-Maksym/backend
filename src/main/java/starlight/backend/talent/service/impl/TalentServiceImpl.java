@@ -166,7 +166,8 @@ public class TalentServiceImpl implements TalentServiceInterface {
                                     .toLowerCase()
                                     .contains(filter.toLowerCase())
                             )
-                    ).collect(Collectors.toList());
+                    )
+                    .collect(Collectors.toList());
 
             return talentMapper.toTalentListWithPaginationAndFilter(
                     new PageImpl<>(filteredTalents, talentStream.getPageable(),
