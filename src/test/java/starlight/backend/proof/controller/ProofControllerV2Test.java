@@ -4,6 +4,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -17,7 +18,6 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.web.server.ResponseStatusException;
 import starlight.backend.proof.ProofMapper;
 import starlight.backend.proof.model.entity.ProofEntity;
-import starlight.backend.proof.model.response.ProofInfo;
 import starlight.backend.proof.model.response.ProofPagePagination;
 import starlight.backend.proof.service.ProofServiceInterface;
 
@@ -25,20 +25,19 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static org.hamcrest.Matchers.hasSize;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.when;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-@ExtendWith(SpringExtension.class)
+@ExtendWith(MockitoExtension.class)
 @WebMvcTest(controllers = ProofControllerV2.class)
-@AutoConfigureMockMvc(addFilters = false)
 class ProofControllerV2Test {
     @MockBean
     private ProofServiceInterface proofService;
-    @MockBean
-    private ProofMapper mapper;
     @MockBean
     private Authentication auth;
     @Autowired
@@ -65,6 +64,8 @@ class ProofControllerV2Test {
                 .total(5)
                 .build();
         given(proofService.getTalentAllProofsWithKudoses(auth, talentId, page, size, sort, status))
+                .willReturn(proofPagePagination);
+        given(proofService.getTalentAllProofsWithKudoses(any(Authentication.class), eq(talentId), eq(page), eq(size), eq(sort), eq(status)))
                 .willReturn(proofPagePagination);
 
         // When // Then

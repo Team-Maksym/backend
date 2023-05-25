@@ -1,4 +1,4 @@
-package starlight.backend.proof;
+package starlight.backend.proof.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.DisplayName;
@@ -18,6 +18,7 @@ import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.web.server.ResponseStatusException;
 import starlight.backend.exception.PageNotFoundException;
+import starlight.backend.proof.ProofMapper;
 import starlight.backend.proof.controller.ProofControllerV1;
 import starlight.backend.proof.model.enums.Status;
 import starlight.backend.proof.model.request.ProofAddRequest;
