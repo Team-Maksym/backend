@@ -10,5 +10,6 @@ public record TalentWithSkills(
         long id,
         String fullName,
         String position,
+        String avatar,
         List<SkillWithCategory> skill
 ) {}

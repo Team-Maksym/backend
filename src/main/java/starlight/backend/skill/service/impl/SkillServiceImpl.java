@@ -200,8 +200,6 @@ public class SkillServiceImpl implements SkillServiceInterface {
     @Override
     @Transactional(readOnly = true)
     public ProofListWithSkills getListProofsOfSkill(long talentId, long skillId, Authentication auth) {
-        //List<ProofEntity> proofs = proofRepository.findBySkills_SkillIdAndSkills_Talents_UserId(skillId, talentId);
-        log.info("START");
         List<ProofEntity> proofs1 = proofRepository.findByUser_UserId(talentId).stream()
                 .filter(proof -> proof.getSkills()
                         .stream()

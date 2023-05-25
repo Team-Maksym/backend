@@ -46,12 +46,12 @@ public interface MapperTalent {
                 .build();
     }
 
-    default TalentPagePaginationWithFilterSkills toTalentListWithPaginationAndFilter(List<UserEntity> sortedTalent){
+    default TalentPagePaginationWithFilterSkills toTalentListWithPaginationAndFilter(Page<UserEntity> sortedTalent){
         return TalentPagePaginationWithFilterSkills.builder()
                 .data(sortedTalent.stream()
                         .map(this::toTalentWithSkills)
                         .toList())
-                .total(sortedTalent.size())
+                .total(sortedTalent.getTotalElements())
                 .build();
     }
 
@@ -59,6 +59,7 @@ public interface MapperTalent {
         return TalentWithSkills.builder()
                 .id(user.getUserId())
                 .fullName(user.getFullName())
+                .avatar(user.getAvatar())
                 .position(user.getPositions().stream()
                         .findAny()
                         .map(PositionEntity::getPosition)
