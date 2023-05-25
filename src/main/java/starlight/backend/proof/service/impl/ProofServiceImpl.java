@@ -92,12 +92,14 @@ public class ProofServiceImpl implements ProofServiceInterface {
     public long addProofProfileWithSkill(long talentId,
                                          ProofAddWithSkillsRequest proofAddWithSkillsRequest,
                                          Authentication auth) {
+        
         var talent = userRepository.findById(talentId)
                 .orElseThrow(() -> new ProofNotFoundException(talentId));
         talent.setTalentSkills(skillService.existsSkill(
                 talent.getTalentSkills(),
                 proofAddWithSkillsRequest.skills()));
         userRepository.save(talent);
+
         var proof = repository.save(ProofEntity.builder()
                 .title(proofAddWithSkillsRequest.title())
                 .description(proofAddWithSkillsRequest.description())
