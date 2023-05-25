@@ -15,6 +15,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import starlight.backend.proof.model.enums.Status;
 import starlight.backend.skill.model.response.SkillListWithPagination;
 import starlight.backend.skill.service.SkillServiceInterface;
 import starlight.backend.talent.model.response.TalentPagePagination;
@@ -68,7 +69,7 @@ public class TalentControllerV2 {
 
     @Operation(
             summary = "Get proofs of skill",
-            description = "On this you can see the proofs of a specific skill."
+            description = "On this you can see the proofs of a specific skill and status of proofs."
     )
     @ApiResponses(value = {
             @ApiResponse(
@@ -86,10 +87,11 @@ public class TalentControllerV2 {
     @GetMapping("/talents/{talent-id}/skills/{skill-id}/proofs")
     public ResponseEntity<ProofListWithSkills> getProofsOfSkill(@PathVariable("talent-id") long talentId,
                                            @PathVariable("skill-id") long skillId,
+                                           @RequestParam(defaultValue = "PUBLISHED") String status,
                                            Authentication auth){
 
         log.info("@GetMapping(\"/talents/{talent-id}/skills/{skills-id}/proofs\")");
-        return ResponseEntity.ok(skillService.getListProofsOfSkill(talentId, skillId, auth));
+        return ResponseEntity.ok(skillService.getListProofsOfSkill(talentId, skillId, Status.valueOf(status), auth));
     }
 
     @Operation(
