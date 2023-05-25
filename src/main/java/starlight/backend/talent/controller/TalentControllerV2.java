@@ -119,11 +119,11 @@ public class TalentControllerV2 {
             )
     })
     @GetMapping("/talents")
-    public ResponseEntity<?> paginationWithFilterSkills(@RequestParam(defaultValue = "0") @Min(0) int skip,
+    public TalentPagePaginationWithFilterSkills paginationWithFilterSkills(@RequestParam(defaultValue = "0") @Min(0) int skip,
                                                            @RequestParam(defaultValue = "10") @Positive int limit,
                                                            @RequestParam(defaultValue = "") String filter) {
 
         log.info("@GetMapping(\"v2/talents\")");
-        return ResponseEntity.ok(talentService.talentPaginationWithFilter(filter, skip, limit));
+        return talentService.talentPaginationWithFilter(filter, skip, limit);
     }
 }

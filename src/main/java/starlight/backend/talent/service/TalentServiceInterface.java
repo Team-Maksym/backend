@@ -6,6 +6,7 @@ import starlight.backend.skill.model.response.SkillList;
 import starlight.backend.talent.model.request.TalentUpdateRequest;
 import starlight.backend.talent.model.response.TalentFullInfo;
 import starlight.backend.talent.model.response.TalentPagePagination;
+import starlight.backend.talent.model.response.TalentPagePaginationWithFilterSkills;
 
 public interface TalentServiceInterface {
     TalentPagePagination talentPagination(int page, int size);
@@ -16,5 +17,5 @@ public interface TalentServiceInterface {
 
     void deleteTalentProfile(long talentId, Authentication auth);
 
-    ResponseEntity<? extends Record> talentPaginationWithFilter(String filter, int skip, int limit);
+    TalentPagePaginationWithFilterSkills talentPaginationWithFilter(String filter, int skip, int limit);
 }

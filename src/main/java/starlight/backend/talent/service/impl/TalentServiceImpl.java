@@ -25,6 +25,7 @@ import starlight.backend.talent.MapperTalent;
 import starlight.backend.talent.model.request.TalentUpdateRequest;
 import starlight.backend.talent.model.response.TalentFullInfo;
 import starlight.backend.talent.model.response.TalentPagePagination;
+import starlight.backend.talent.model.response.TalentPagePaginationWithFilterSkills;
 import starlight.backend.talent.service.TalentServiceInterface;
 import starlight.backend.user.model.entity.PositionEntity;
 import starlight.backend.user.model.entity.UserEntity;
@@ -152,7 +153,7 @@ public class TalentServiceImpl implements TalentServiceInterface {
 
 
     @Override
-    public ResponseEntity<? extends Record> talentPaginationWithFilter(String filter, int skip, int limit) {
+    public TalentPagePaginationWithFilterSkills talentPaginationWithFilter(String filter, int skip, int limit) {
         if (filter == null) {
             throw new FilterMustBeNotNullException();
         }
@@ -165,7 +166,7 @@ public class TalentServiceImpl implements TalentServiceInterface {
             ;
         } else if (filter.equals("\\s+")){
             var talents = talentStream.toList();
-            return ResponseEntity.ok(talentMapper.toTalentListWithPaginationAndFilter(talents));
+            return talentMapper.toTalentListWithPaginationAndFilter(talents);
         }
         Sort sort = Sort.by(Sort.Order.asc(filterParam));
         var pageable = PageRequest.of(skip, limit, sort);
@@ -175,6 +176,6 @@ public class TalentServiceImpl implements TalentServiceInterface {
                 .skip(pageable.getOffset())
                 .limit(pageable.getPageSize())
                 .toList();
-        return ResponseEntity.ok(talentMapper.toTalentListWithPaginationAndFilter(sortedTalents));
+        return talentMapper.toTalentListWithPaginationAndFilter(sortedTalents);
     }
 }
