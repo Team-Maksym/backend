@@ -170,8 +170,7 @@ public class TalentServiceImpl implements TalentServiceInterface {
                     .collect(Collectors.toList());
 
             return talentMapper.toTalentListWithPaginationAndFilter(
-                    new PageImpl<>(filteredTalents, talentStream.getPageable(),
-                            talentStream.getTotalElements()));
+                    new PageImpl<>(filteredTalents, PageRequest.of(skip, limit), filteredTalents.size()));
         }
         return talentMapper.toTalentListWithPaginationAndFilter(talentStream);
     }
