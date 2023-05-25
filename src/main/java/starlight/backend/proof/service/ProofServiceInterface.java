@@ -37,5 +37,4 @@ public interface ProofServiceInterface {
 
     long addProofProfileWithSkill(long talentId, ProofAddWithSkillsRequest proofAddWithSkillsRequest, Authentication auth);
 
-    void isStatusCorrect(String status);
 }

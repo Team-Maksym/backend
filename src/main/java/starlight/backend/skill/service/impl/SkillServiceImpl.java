@@ -20,7 +20,6 @@ import starlight.backend.proof.model.entity.ProofEntity;
 import starlight.backend.proof.model.enums.Status;
 import starlight.backend.proof.model.response.ProofListWithSkills;
 import starlight.backend.proof.model.response.ProofWithSkills;
-import starlight.backend.proof.service.ProofServiceInterface;
 import starlight.backend.security.service.SecurityServiceInterface;
 import starlight.backend.skill.SkillMapper;
 import starlight.backend.skill.model.entity.SkillEntity;
@@ -31,9 +30,13 @@ import starlight.backend.skill.model.response.SkillListWithPagination;
 import starlight.backend.skill.repository.SkillRepository;
 import starlight.backend.skill.service.SkillServiceInterface;
 import starlight.backend.talent.model.response.TalentWithSkills;
+import starlight.backend.talent.service.TalentServiceInterface;
 import starlight.backend.user.repository.UserRepository;
 
-import java.util.*;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Objects;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 
@@ -49,7 +52,7 @@ public class SkillServiceImpl implements SkillServiceInterface {
     private SecurityServiceInterface securityService;
     private ProofRepository proofRepository;
     private UserRepository userRepository;
-    private ProofServiceInterface proofService;
+    private TalentServiceInterface talentService;
 
     @Override
     public SkillListWithPagination getListSkillWithFiltration(String filter, int skip, int limit) {
@@ -201,18 +204,25 @@ public class SkillServiceImpl implements SkillServiceInterface {
 
     @Override
     @Transactional(readOnly = true)
-    public ProofListWithSkills getListProofsOfSkill(long talentId, long skillId, String status1, Authentication auth) {
-        proofService.isStatusCorrect(status1);
-        Status status = Status.valueOf(status1);
-        List<ProofEntity> proofs1 = proofRepository.findByUser_UserIdAndStatus(talentId, status).stream()
+    public ProofListWithSkills getListProofsOfSkill(long talentId, long skillId, String requestedStatus, Authentication auth) {
+        talentService.isStatusCorrect(requestedStatus);
+        Status status = Status.valueOf(requestedStatus);
+        List<ProofEntity> proofs;
+        if (!securityService.checkingLoggedAndToken(talentId, auth)) {
+            proofs = proofRepository.findByUser_UserIdAndStatus(talentId, Status.PUBLISHED).stream()
+                    .filter(proof -> proof.getSkills()
+                            .stream()
+                            .anyMatch(skill -> skill.getSkillId() == skillId))
+                    .toList();
+            return proofMapper.toProofListWithSkills(proofs);
+        }
+
+        proofs = proofRepository.findByUser_UserIdAndStatus(talentId, status).stream()
                 .filter(proof -> proof.getSkills()
                         .stream()
                         .anyMatch(skill -> skill.getSkillId() == skillId))
                 .toList();
 
-        if (!securityService.checkingLoggedAndToken(talentId, auth)) {
-            return proofMapper.toProofListWithSkills(proofs1);
-        }
-        return proofMapper.fromFulltoProofListWithSkills(proofs1);
+        return proofMapper.fromFulltoProofListWithSkills(proofs);
     }
 }

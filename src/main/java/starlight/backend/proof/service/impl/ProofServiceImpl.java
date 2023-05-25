@@ -271,8 +271,7 @@ public class ProofServiceImpl implements ProofServiceInterface {
         return dateSort;
     }
 
-    @Override
-    public void isStatusCorrect(String status) {
+    private void isStatusCorrect(String status) {
         if (!Arrays.toString(Status.values())
                 .matches(".*" + Pattern.quote(status) + ".*")) {
             throw new InvalidStatusException(status);

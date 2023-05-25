@@ -18,4 +18,6 @@ public interface TalentServiceInterface {
     void deleteTalentProfile(long talentId, Authentication auth);
 
     TalentPagePaginationWithFilterSkills talentPaginationWithFilter(String filter, int skip, int limit);
+
+    void isStatusCorrect(String status);
 }

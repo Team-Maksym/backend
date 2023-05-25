@@ -13,10 +13,12 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 import starlight.backend.exception.PageNotFoundException;
 import starlight.backend.exception.filter.FilterMustBeNotNullException;
+import starlight.backend.exception.proof.InvalidStatusException;
 import starlight.backend.exception.user.UserNotFoundException;
 import starlight.backend.exception.user.talent.TalentNotFoundException;
 import starlight.backend.proof.ProofRepository;
 import starlight.backend.proof.model.entity.ProofEntity;
+import starlight.backend.proof.model.enums.Status;
 import starlight.backend.security.service.SecurityServiceInterface;
 import starlight.backend.skill.SkillMapper;
 import starlight.backend.skill.repository.SkillRepository;
@@ -31,9 +33,11 @@ import starlight.backend.user.model.entity.UserEntity;
 import starlight.backend.user.repository.PositionRepository;
 import starlight.backend.user.repository.UserRepository;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 @AllArgsConstructor
@@ -173,5 +177,13 @@ public class TalentServiceImpl implements TalentServiceInterface {
                     new PageImpl<>(filteredTalents, PageRequest.of(skip, limit), filteredTalents.size()));
         }
         return talentMapper.toTalentListWithPaginationAndFilter(talentStream);
+    }
+
+    @Override
+    public void isStatusCorrect(String status) {
+        if (!Arrays.toString(Status.values())
+                .matches(".*" + Pattern.quote(status) + ".*")) {
+            throw new InvalidStatusException(status);
+        }
     }
 }
