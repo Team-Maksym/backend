@@ -4,17 +4,23 @@ import lombok.AllArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 import starlight.backend.exception.PageNotFoundException;
+import starlight.backend.exception.filter.FilterMustBeNotNullException;
 import starlight.backend.exception.user.UserNotFoundException;
 import starlight.backend.exception.user.talent.TalentNotFoundException;
 import starlight.backend.proof.ProofRepository;
 import starlight.backend.proof.model.entity.ProofEntity;
 import starlight.backend.security.service.SecurityServiceInterface;
+import starlight.backend.skill.SkillMapper;
+import starlight.backend.skill.model.entity.SkillEntity;
+import starlight.backend.skill.model.response.SkillList;
+import starlight.backend.skill.repository.SkillRepository;
 import starlight.backend.talent.MapperTalent;
 import starlight.backend.talent.model.request.TalentUpdateRequest;
 import starlight.backend.talent.model.response.TalentFullInfo;
@@ -25,6 +31,7 @@ import starlight.backend.user.model.entity.UserEntity;
 import starlight.backend.user.repository.PositionRepository;
 import starlight.backend.user.repository.UserRepository;
 
+import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
@@ -34,12 +41,15 @@ import java.util.stream.Collectors;
 @Service
 @Transactional
 public class TalentServiceImpl implements TalentServiceInterface {
-    private MapperTalent mapper;
+    private MapperTalent talentMapper;
     private UserRepository userRepository;
     private PositionRepository positionRepository;
     private SecurityServiceInterface securityService;
     private ProofRepository proofRepository;
     private PasswordEncoder passwordEncoder;
+    private SkillRepository skillRepository;
+    private SkillMapper skillMapper;
+    private final String filterParam = "skill";
 
     @Override
     public TalentPagePagination talentPagination(int page, int size) {
@@ -48,13 +58,13 @@ public class TalentServiceImpl implements TalentServiceInterface {
         );
         if (page >= pageRequest.getTotalPages())
             throw new PageNotFoundException(page);
-        return mapper.toTalentPagePagination(pageRequest);
+        return talentMapper.toTalentPagePagination(pageRequest);
     }
 
     @Override
     public TalentFullInfo talentFullInfo(long id) {
         return userRepository.findById(id)
-                .map(mapper::toTalentFullInfo)
+                .map(talentMapper::toTalentFullInfo)
                 .orElseThrow(() -> new TalentNotFoundException(id));
     }
 
@@ -88,7 +98,7 @@ public class TalentServiceImpl implements TalentServiceInterface {
                     talent.getPositions(),
                     talentUpdateRequest.positions()));
             userRepository.save(talent);
-            return mapper.toTalentFullInfo(talent);
+            return talentMapper.toTalentFullInfo(talent);
         }).orElseThrow(() -> new TalentNotFoundException(id));
     }
 
@@ -138,5 +148,34 @@ public class TalentServiceImpl implements TalentServiceInterface {
         }
         user.getProofs().clear();
         userRepository.deleteById(user.getUserId());
+    }
+
+
+    @Override
+    public ResponseEntity<? extends Record> talentPaginationWithFilter(String filter, int skip, int limit) {
+        if (filter == null) {
+            throw new FilterMustBeNotNullException();
+        }
+        var talentStream = userRepository.findAll().stream();
+        if (filter != null && !filter.isEmpty()) {
+            talentStream = talentStream.filter(talent -> talent.getTalentSkills().stream()
+                    .anyMatch(skill -> skill.getSkill()
+                    .toLowerCase()
+                    .contains(filter.toLowerCase())))
+            ;
+        } else if (filter.equals("\\s+")){
+            List<SkillEntity> skills = skillRepository.findAll();
+            return ResponseEntity.ok(skillMapper.toSkillList(skills));
+
+        }
+        Sort sort = Sort.by(Sort.Order.asc(filterParam));
+        var pageable = PageRequest.of(skip, limit, sort);
+
+        List<UserEntity> sortedTalents = talentStream
+                .sorted(Comparator.comparing(UserEntity::getFullName))
+                .skip(pageable.getOffset())
+                .limit(pageable.getPageSize())
+                .toList();
+        return ResponseEntity.ok(talentMapper.toTalentListWithPaginationAndFilter(sortedTalents));
     }
 }

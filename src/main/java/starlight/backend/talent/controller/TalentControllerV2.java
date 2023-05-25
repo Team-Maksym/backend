@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.*;
 import starlight.backend.skill.model.response.SkillListWithPagination;
 import starlight.backend.skill.service.SkillServiceInterface;
 import starlight.backend.talent.model.response.TalentPagePagination;
+import starlight.backend.talent.model.response.TalentPagePaginationWithFilterSkills;
 import starlight.backend.talent.model.response.TalentWithSkills;
 import starlight.backend.talent.service.TalentServiceInterface;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -93,7 +94,7 @@ public class TalentControllerV2 {
 
     @Operation(
             summary = "Get all talents",
-            description = "Get list of all talents. The response is list of talent objects with fields 'id','full_name', 'position' and 'avatar'."
+            description = "Get list of all talents. The response is list of talent objects with fields 'id','full_name', 'position', 'avatar' and '[skills]'. \nEmpty field of filter return all skills."
     )
     @ApiResponses(value = {
             @ApiResponse(
@@ -118,10 +119,11 @@ public class TalentControllerV2 {
             )
     })
     @GetMapping("/talents")
-    public TalentPagePagination pagination(@RequestParam(defaultValue = "0") @Min(0) int page,
-                                           @RequestParam(defaultValue = "10") @Positive int size) {
+    public ResponseEntity<?> paginationWithFilterSkills(@RequestParam(defaultValue = "0") @Min(0) int skip,
+                                                           @RequestParam(defaultValue = "30") @Positive int limit,
+                                                           @RequestParam String filter) {
 
-        log.info("@GetMapping(\"/talents\")");
-        return talentService.talentPagination(page, size);
+        log.info("@GetMapping(\"v2/talents\")");
+        return ResponseEntity.ok(talentService.talentPaginationWithFilter(filter, skip, limit));
     }
 }

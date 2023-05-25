@@ -60,6 +60,7 @@ class SecurityConfiguration {
                 /////////////////////////Production////////////////////////////////////////////////
                 .requestMatchers("/api/v1/skills").permitAll()
                 .requestMatchers("/api/v1/talents").permitAll()
+                .requestMatchers("/api/v2/talents").permitAll()
                 .requestMatchers("/api/v1/proofs").permitAll()
                 .requestMatchers("/api/v2/proofs").permitAll()
                 .requestMatchers(POST, "/api/v1/talents/login").permitAll()
