@@ -33,6 +33,7 @@ import starlight.backend.talent.model.response.TalentWithSkills;
 import starlight.backend.talent.service.TalentServiceInterface;
 import starlight.backend.user.repository.UserRepository;
 
+import java.time.Instant;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
@@ -89,6 +90,7 @@ public class SkillServiceImpl implements SkillServiceInterface {
         if (!proof.getStatus().equals(Status.DRAFT)) {
             throw new UserCanNotEditProofNotInDraftException();
         } else {
+            proof.setDateLastUpdated(Instant.now());
             proof.setSkills(existsSkill(
                     proof.getSkills(),
                     skills.skills()));
