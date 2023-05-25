@@ -53,7 +53,7 @@ public class TalentServiceImpl implements TalentServiceInterface {
     private PasswordEncoder passwordEncoder;
     private SkillRepository skillRepository;
     private SkillMapper skillMapper;
-    private final String filterParam = "fullName";
+    private final String filterParam = "userId";
 
     @Override
     public TalentPagePagination talentPagination(int page, int size) {
@@ -157,13 +157,10 @@ public class TalentServiceImpl implements TalentServiceInterface {
 
     @Override
     public TalentPagePaginationWithFilterSkills talentPaginationWithFilter(String filter, int skip, int limit) {
-        if (filter == null) {
-            throw new FilterMustBeNotNullException();
-        }
         var talentStream = userRepository.findAll(
-                PageRequest.of(skip, limit, Sort.by(Sort.Order.asc(filterParam))));
+                PageRequest.of(skip, limit, Sort.by(filterParam).descending()));
 
-        if (filter != null && !filter.isEmpty()) {
+        if (!filter.isEmpty()) {
             List<UserEntity> filteredTalents = talentStream.stream()
                     .filter(talent -> talent.getTalentSkills().stream()
                             .anyMatch(skill -> skill.getSkill()
@@ -172,9 +169,10 @@ public class TalentServiceImpl implements TalentServiceInterface {
                             )
                     )
                     .collect(Collectors.toList());
-
             return talentMapper.toTalentListWithPaginationAndFilter(
-                    new PageImpl<>(filteredTalents, PageRequest.of(skip, limit), filteredTalents.size()));
+                    new PageImpl<>(filteredTalents, PageRequest.of(skip, limit), filteredTalents.size())
+            );
+
         }
         return talentMapper.toTalentListWithPaginationAndFilter(talentStream);
     }
