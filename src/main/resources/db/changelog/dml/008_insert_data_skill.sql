@@ -348,3 +348,7 @@ UPDATE skill_entity SET category = 'boardGame'WHERE skill_id IN (124);
 
 -- changeset kate:16
 UPDATE skill_entity SET category = 'sport'WHERE skill_id IN (123);
+
+-- changeset kate:19
+UPDATE skill_entity SET category = 'write'WHERE skill IN ('Prose');
+UPDATE skill_entity SET category = 'language'WHERE skill IN ('German','Spanish','Hindi');
