@@ -164,9 +164,8 @@ public class TalentServiceImpl implements TalentServiceInterface {
                     .contains(filter.toLowerCase())))
             ;
         } else if (filter.equals("\\s+")){
-            List<SkillEntity> skills = skillRepository.findAll();
-            return ResponseEntity.ok(skillMapper.toSkillList(skills));
-
+            var talents = talentStream.toList();
+            return ResponseEntity.ok(talentMapper.toTalentListWithPaginationAndFilter(talents));
         }
         Sort sort = Sort.by(Sort.Order.asc(filterParam));
         var pageable = PageRequest.of(skip, limit, sort);
