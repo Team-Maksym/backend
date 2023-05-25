@@ -120,8 +120,8 @@ public class TalentControllerV2 {
     })
     @GetMapping("/talents")
     public ResponseEntity<?> paginationWithFilterSkills(@RequestParam(defaultValue = "0") @Min(0) int skip,
-                                                           @RequestParam(defaultValue = "30") @Positive int limit,
-                                                           @RequestParam String filter) {
+                                                           @RequestParam(defaultValue = "10") @Positive int limit,
+                                                           @RequestParam(defaultValue = "") String filter) {
 
         log.info("@GetMapping(\"v2/talents\")");
         return ResponseEntity.ok(talentService.talentPaginationWithFilter(filter, skip, limit));
