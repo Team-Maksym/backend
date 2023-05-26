@@ -210,21 +210,18 @@ public class SkillServiceImpl implements SkillServiceInterface {
         talentService.isStatusCorrect(requestedStatus);
         Status status = Status.valueOf(requestedStatus);
         List<ProofEntity> proofs;
+        if(!proofRepository.existsByUser_UserIdAndSkills_SkillId(talentId,skillId)){
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "don`t found proof by talentId and skillId!");
+        }
         if (!securityService.checkingLoggedAndToken(talentId, auth)) {
-            proofs = proofRepository.findByUser_UserIdAndStatus(talentId, Status.PUBLISHED).stream()
-                    .filter(proof -> proof.getSkills()
-                            .stream()
-                            .anyMatch(skill -> skill.getSkillId() == skillId))
-                    .toList();
+            proofs = proofRepository.findByUser_UserIdAndSkills_SkillIdAndStatus(talentId, skillId, Status.PUBLISHED);
             return proofMapper.toProofListWithSkills(proofs);
         }
-
-        proofs = proofRepository.findByUser_UserIdAndStatus(talentId, status).stream()
-                .filter(proof -> proof.getSkills()
-                        .stream()
-                        .anyMatch(skill -> skill.getSkillId() == skillId))
-                .toList();
-
+        if (requestedStatus.equals(Status.ALL.getStatus())) {
+            proofs = proofRepository.findByUser_UserIdAndSkills_SkillId(talentId, skillId);
+            return proofMapper.fromFulltoProofListWithSkills(proofs);
+        }
+        proofs = proofRepository.findByUser_UserIdAndSkills_SkillIdAndStatus(talentId, skillId, status);
         return proofMapper.fromFulltoProofListWithSkills(proofs);
     }
 }
