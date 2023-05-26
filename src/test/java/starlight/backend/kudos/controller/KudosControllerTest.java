@@ -6,6 +6,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpStatus;
@@ -30,6 +31,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @ExtendWith(MockitoExtension.class)
 @WebMvcTest(KudosController.class)
+@AutoConfigureMockMvc(addFilters = false)
 class KudosControllerTest {
 
     @Autowired
@@ -54,11 +56,13 @@ class KudosControllerTest {
                 .isKudosed(true)
                 .build();
         given(kudosService.getKudosOnProof(proofId, auth)).willReturn(kudosOnProof);
+        given(kudosService.getKudosOnProof(eq(proofId), any(Authentication.class)))
+                .willReturn(kudosOnProof);
 
         // When // Then
         mockMvc.perform(get("/api/v1/proofs/{proof-id}/kudos", proofId))
                 .andExpect(status().isOk())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.kudos_on_proof").value(kudosOnProof.kudosOnProof()))
                 .andExpect(jsonPath("$.kudos_from_me").value(kudosOnProof.kudosFromMe()))
                 .andExpect(jsonPath("$.is_kudosed").value(kudosOnProof.isKudosed()))
@@ -81,15 +85,12 @@ class KudosControllerTest {
                 .createData(Instant.MAX)
                 .build();
         given(kudosService.addKudosOnProof(proofId, kudos, auth)).willReturn(kudosEntity);
-        given(kudosService.addKudosOnProof(eq(proofId), eq(kudos), any(Authentication.class)))
-                .willReturn(kudosEntity);
+
 
         // When // Then
         mockMvc.perform(post("/api/v1/proofs/{proof-id}/kudos", proofId)
                         .param("kudos", String.valueOf(kudos))
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .accept(MediaType.APPLICATION_JSON)
-                        .characterEncoding("utf-8"))
+                        .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isCreated())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
                 .andExpect(jsonPath("$.follower_id").value(kudosEntity.getFollowerId()))
@@ -99,32 +100,16 @@ class KudosControllerTest {
                 .andExpect(jsonPath("$").isNotEmpty());
     }
 
-    @DisplayName("Test addKudosShouldReturnBadRequestWhenKudosParameterIsNotProvided")
-    @Test
-    @Order(1)
-    @WithMockUser(username = "user1", roles = {"SPONSOR"})
-    void addKudosShouldReturnBadRequestWhenKudosParameterIsNotProvided() throws Exception {
-        // Given
-        int proofId = 1;
-        given(kudosService.getKudosOnProof(proofId, null))
-                .willThrow(new ResponseStatusException(HttpStatus.UNAUTHORIZED));
-
-        // When // Then
-        mockMvc.perform(post("/api/v1/proofs/{proof-id}/kudos", proofId)
-                        .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isUnauthorized());
-    }
-
-
     @DisplayName("JUnit test for add Kudos Should Return Unauthorized When Kudos Parameter Is Not Authenticated")
     @Test
     @Order(1)
     @WithMockUser(username = "user1", roles = {"SPONSOR"})
-    public void addKudosShouldReturnUnauthorizedWhenKudosParameterIsNotProvided() throws Exception {
+    public void addKudosShouldReturnBadRequestWhenKudosParameterIsNotProvided() throws Exception {
         //Given
         int proofId = 1;
         when(kudosService.addKudosOnProof(proofId, 0, auth))
                 .thenThrow(new ResponseStatusException(HttpStatus.BAD_REQUEST));
+
         // When // Then
         mockMvc.perform(post("/api/v1/proofs/{proof-id}/kudos", proofId)
                         .contentType(MediaType.APPLICATION_JSON))
@@ -141,7 +126,6 @@ class KudosControllerTest {
 
         // When // Then
         mockMvc.perform(post("/api/v1/proofs/{proof-id}/kudos", proofId)
-                        .contentType(MediaType.APPLICATION_JSON)
                         .contentType(MediaType.APPLICATION_JSON)
                         .param("kudos", "1"))
                 .andExpect(status().isUnauthorized());

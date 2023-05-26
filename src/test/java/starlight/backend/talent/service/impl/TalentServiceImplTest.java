@@ -1,26 +1,67 @@
 package starlight.backend.talent.service.impl;
 
-/*
-@RunWith(SpringRunner.class)
-@SpringBootTest
+
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.Mockito;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.web.server.ResponseStatusException;
+import starlight.backend.exception.PageNotFoundException;
+import starlight.backend.exception.user.UserNotFoundException;
+import starlight.backend.exception.user.talent.TalentNotFoundException;
+import starlight.backend.proof.ProofRepository;
+import starlight.backend.proof.model.entity.ProofEntity;
+import starlight.backend.security.service.SecurityServiceInterface;
+import starlight.backend.talent.MapperTalent;
+import starlight.backend.talent.model.request.TalentUpdateRequest;
+import starlight.backend.talent.model.response.TalentFullInfo;
+import starlight.backend.talent.model.response.TalentPagePagination;
+import starlight.backend.user.model.entity.UserEntity;
+import starlight.backend.user.repository.PositionRepository;
+import starlight.backend.user.repository.UserRepository;
+
+import java.util.*;
+
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.hibernate.validator.internal.util.Contracts.assertNotNull;
+import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.*;
+
+@ExtendWith(MockitoExtension.class)
 class TalentServiceImplTest {
-    @MockBean
+
+    @Mock
     private MapperTalent mapper;
-    @MockBean
-    private UserRepository repository;
-    @MockBean
+
+    @Mock
+    private UserRepository userRepository;
+
+    @Mock
     private PositionRepository positionRepository;
-    @MockBean
-    private KudosRepository kudosRepository;
-    @MockBean
-    private ProofRepository proofRepository;
-    @MockBean
+
+    @Mock
     private SecurityServiceInterface securityService;
-    @MockBean
+
+    @Mock
+    private ProofRepository proofRepository;
+
+    @Mock
     private PasswordEncoder passwordEncoder;
-    @MockBean
-    private Authentication auth;
-    @Autowired
+
+    @InjectMocks
     private TalentServiceImpl talentService;
     private UserEntity user;
 
@@ -34,147 +75,147 @@ class TalentServiceImplTest {
                 .build();
     }
 
-    @DisplayName("JUnit test for pagination (talents) method")
     @Test
-    void talentPagination_WithValidPageNumber_ShouldGetPage() {
+    @DisplayName("Test talentPagination: Valid page")
+    void testTalentPagination_ValidPage() {
         // Given
         int page = 0;
         int size = 10;
-        List<UserEntity> users = Arrays.asList(user, user);
-        Page<UserEntity> pageRequest = new PageImpl<>(users);
-        TalentPagePagination expectedPagination = TalentPagePagination.builder().build();
-        given(repository.findAll(any(Pageable.class))).willReturn(pageRequest);
-        given(mapper.toTalentPagePagination(pageRequest)).willReturn(expectedPagination);
+
+        PageRequest pageRequest = PageRequest.of(page, size, Sort.by("userId").descending());
+        Page<UserEntity> userPage = new PageImpl<>(Collections.emptyList(), pageRequest, 20);
+
+        when(userRepository.findAll(pageRequest)).thenReturn(userPage);
+        when(mapper.toTalentPagePagination(userPage)).thenReturn(TalentPagePagination.builder().build());
 
         // When
-        TalentPagePagination resultPagination = talentService.talentPagination(page, size);
+        TalentPagePagination result = talentService.talentPagination(page, size);
 
         // Then
-        assertThat(resultPagination).isEqualTo(expectedPagination);
+        assertNotNull(result);
+        verify(userRepository, times(1)).findAll(pageRequest);
+        verify(mapper, times(1)).toTalentPagePagination(userPage);
     }
 
-    @DisplayName("JUnit test for pagination (talents) method which throw exception")
     @Test
-    void talentPagination_WithInvalidPageNumber_ShouldThrowPageNotFoundException() {
+    @DisplayName("Test talentPagination: Invalid page")
+    void testTalentPagination_InvalidPage() {
         // Given
-        int page = 10;
+        int page = 5;
         int size = 10;
-        Page<UserEntity> pageRequest = new PageImpl<>(Collections.emptyList());
-        given(repository.findAll(any(Pageable.class))).willReturn(pageRequest);
 
-        // When // Then
-        assertThatThrownBy(() -> talentService.talentPagination(page, size))
-                .isInstanceOf(PageNotFoundException.class)
-                .hasMessage("No such page " + page);
+        PageRequest pageRequest = PageRequest.of(page, size, Sort.by("userId").descending());
+        Page<UserEntity> userPage = new PageImpl<>(Collections.emptyList(), pageRequest, 50);
+
+        when(userRepository.findAll(pageRequest)).thenReturn(userPage);
+
+        // When/Then
+        assertThrows(PageNotFoundException.class, () -> talentService.talentPagination(page, size));
+        verify(userRepository, times(1)).findAll(pageRequest);
     }
 
-    @DisplayName("JUnit test for get full info about talent method")
     @Test
-    void talentFullInfo() {
+    @DisplayName("Test talentFullInfo: Existing talent")
+    void testTalentFullInfo_ExistingTalent() {
         // Given
-        TalentFullInfo expectedFullInfo = TalentFullInfo.builder().build();
-        given(repository.findById(user.getUserId())).willReturn(Optional.of(user));
-        given(mapper.toTalentFullInfo(user)).willReturn(expectedFullInfo);
+        long id = 1L;
+        UserEntity userEntity = new UserEntity();
+        TalentFullInfo talentFullInfo = TalentFullInfo.builder().build();
+
+        when(userRepository.findById(id)).thenReturn(Optional.of(userEntity));
+        when(mapper.toTalentFullInfo(userEntity)).thenReturn(talentFullInfo);
 
         // When
-        TalentFullInfo resultFullInfo = talentService.talentFullInfo(user.getUserId());
+        TalentFullInfo result = talentService.talentFullInfo(id);
 
         // Then
-        assertThat(resultFullInfo).isEqualTo(expectedFullInfo);
+        assertEquals(talentFullInfo, result);
+        verify(userRepository, times(1)).findById(id);
+        verify(mapper, times(1)).toTalentFullInfo(userEntity);
     }
 
-    @DisplayName("JUnit test for get full info about talent method which throw exception")
     @Test
-    void talentFullInfo_WithInvalidId_ShouldThrowTalentNotFoundException() {
+    @DisplayName("Test talentFullInfo: Non-existing talent")
+    void testTalentFullInfo_NonExistingTalent() {
         // Given
-        given(repository.findById(user.getUserId())).willReturn(Optional.empty());
+        long id = 1L;
 
-        // When // Then
-        assertThatThrownBy(() -> talentService.talentFullInfo(user.getUserId()))
-                .isInstanceOf(TalentNotFoundException.class)
-                .hasMessage("Talent not found by id " + user.getUserId());
+        when(userRepository.findById(id)).thenReturn(Optional.empty());
+
+        // When/Then
+        assertThrows(TalentNotFoundException.class, () -> talentService.talentFullInfo(id));
+        verify(userRepository, times(1)).findById(id);
     }
 
-    @DisplayName("JUnit test for update info about talent method")
     @Test
-    void updateTalentProfile() {
+    @DisplayName("Test updateTalentProfile: Valid update")
+    void testUpdateTalentProfile_ValidUpdate() {
         // Given
-        TalentUpdateRequest updateRequest = TalentUpdateRequest.builder()
-                .fullName("Joly Moth")
-                .password("Secret123")
-                .birthday(LocalDate.of(1995, 1, 1))
-                .avatar("https://example.com/new-avatar.jpg")
-                .education("Master's Degree")
-                .experience("5 years")
-                .positions(List.of("Senior Software Engineer"))
-                .build();
+        long id = 1L;
+        TalentUpdateRequest updateRequest = TalentUpdateRequest.builder().build();
+        Authentication authentication = Mockito.mock(Authentication.class);
+        UserEntity userEntity = new UserEntity();
+        userEntity.setUserId(id);
 
-        TalentFullInfo updatedTalentInfo = TalentFullInfo.builder().build();
-        when(repository.findById(user.getUserId())).thenReturn(Optional.of(user));
-        when(securityService.checkingLoggedAndToken(user.getUserId(), auth)).thenReturn(true);
-        when(passwordEncoder.encode(updateRequest.password())).thenReturn(user.getPassword());
-        when(mapper.toTalentFullInfo(any())).thenReturn(updatedTalentInfo);
+        when(securityService.checkingLoggedAndToken(id, authentication)).thenReturn(true);
+        when(userRepository.findById(id)).thenReturn(Optional.of(userEntity));
+        when(mapper.toTalentFullInfo(userEntity)).thenReturn(TalentFullInfo.builder().build());
+
         // When
-        TalentFullInfo result = talentService.updateTalentProfile(user.getUserId(), updateRequest, auth);
+        TalentFullInfo result = talentService.updateTalentProfile(id, updateRequest, authentication);
 
         // Then
-        assertEquals(updatedTalentInfo, result);
-        assertEquals(updateRequest.password(), user.getPassword());
-        if (updateRequest.fullName() != null) {
-            assertEquals(updateRequest.fullName(), user.getFullName());
-        } else {
-            assertEquals("Jon Snow", user.getFullName());
-        }
-        if (updateRequest.positions() != null && !updateRequest.positions().isEmpty()) {
-            assertEquals(updateRequest.positions(), user.getPositions().stream()
-                    .map(PositionEntity::getPosition).collect(Collectors.toList()));
-        } else {
-            assertEquals(List.of("Senior Software Engineer"), user.getPositions().stream()
-                    .map(PositionEntity::getPosition).collect(Collectors.toList()));
-        }
-        assertEquals(updateRequest.avatar(), user.getAvatar());
-        assertEquals(updateRequest.education(), user.getEducation());
-        assertEquals(updateRequest.experience(), user.getExperience());
-
-        verify(repository, times(1)).findById(user.getUserId());
+        assertNotNull(result);
+        verify(securityService, times(1)).checkingLoggedAndToken(id, authentication);
+        verify(userRepository, times(1)).findById(id);
+        verify(mapper, times(1)).toTalentFullInfo(userEntity);
+        verify(userRepository, times(1)).save(userEntity);
     }
 
-    @DisplayName("JUnit test for update info about talent method which throw exception Unauthorized")
     @Test
-    void updateTalentProfile_WithInvalidId_ShouldThrowUnauthorizedException() {
+    @DisplayName("Test updateTalentProfile: Unauthorized update")
+    void testUpdateTalentProfile_UnauthorizedUpdate() {
         // Given
-        TalentUpdateRequest updateRequest = TalentUpdateRequest.builder()
-                .fullName("Jon Snow")
-                .password("Secret123")
-                .avatar("https://example.com/new-avatar.jpg")
-                .education("New University")
-                .experience("New Experience")
-                .positions(Collections.singletonList("Manager"))
-                .build();
+        long id = 1L;
+        TalentUpdateRequest updateRequest = TalentUpdateRequest.builder().build();
+        Authentication authentication = Mockito.mock(Authentication.class);
 
-        when(repository.findById(user.getUserId())).thenReturn(Optional.of(user));
-        when(passwordEncoder.encode(updateRequest.password())).thenReturn(user.getPassword());
-        when(securityService.checkingLoggedAndToken(user.getUserId(), null)).thenReturn(false);
+        when(securityService.checkingLoggedAndToken(id, authentication)).thenReturn(false);
 
-        // When // Then
-        assertThatThrownBy(() -> talentService.updateTalentProfile(user.getUserId(), updateRequest, null))
-                .isInstanceOf(ResponseStatusException.class)
-                .hasMessage("401 UNAUTHORIZED \"you cannot change another talent\"");
+        // When/Then
+        assertThrows(ResponseStatusException.class, () -> talentService.updateTalentProfile(id, updateRequest, authentication));
+        verify(securityService, times(1)).checkingLoggedAndToken(id, authentication);
+        verify(userRepository, never()).findById(anyLong());
+        verify(mapper, never()).toTalentFullInfo(any(UserEntity.class));
+        verify(userRepository, never()).save(any(UserEntity.class));
+    }
+
+    @Test
+    @DisplayName("Test updateTalentProfile: Non-existing talent")
+    void testUpdateTalentProfile_NonExistingTalent() {
+        // Given
+        long id = 1L;
+        TalentUpdateRequest updateRequest = TalentUpdateRequest.builder().build();
+        Authentication authentication = Mockito.mock(Authentication.class);
+
+        when(securityService.checkingLoggedAndToken(id, authentication)).thenReturn(true);
+        when(userRepository.findById(id)).thenReturn(Optional.empty());
+
+        // When/Then
+        assertThrows(TalentNotFoundException.class, () -> talentService.updateTalentProfile(id, updateRequest, authentication));
+        verify(securityService, times(1)).checkingLoggedAndToken(id, authentication);
+        verify(userRepository, times(1)).findById(id);
+        verify(mapper, never()).toTalentFullInfo(any(UserEntity.class));
+        verify(userRepository, never()).save(any(UserEntity.class));
     }
 
     @DisplayName("Delete talent profile successfully")
     @Test
     void deleteTalentProfile() {
         // Given
-        given(repository.findById(user.getUserId())).willReturn(Optional.of(user));
+        Authentication auth = Mockito.mock(Authentication.class);
+        given(userRepository.findById(user.getUserId())).willReturn(Optional.of(user));
         when(securityService.checkingLoggedAndToken(user.getUserId(), auth)).thenReturn(true);
-        Set<KudosEntity> kudosList = new HashSet<>();
-        KudosEntity kudos = new KudosEntity();
-        kudos.setKudosId(1L);
-        kudos.setOwner(user);
-        kudos.setProof(new ProofEntity());
-        kudosList.add(kudos);
-        user.setKudos(kudosList);
         Set<ProofEntity> proofList = new HashSet<>();
         ProofEntity proof = new ProofEntity();
         proof.setProofId(1L);
@@ -183,19 +224,15 @@ class TalentServiceImplTest {
         proofList.add(proof);
         user.setProofs(proofList);
         user.setAuthorities(new HashSet<>(Arrays.asList("TALENT_ROLE")));
-        when(kudosRepository.findByOwner_UserId(user.getUserId())).thenReturn(Collections.emptyList());
         when(proofRepository.findByUser_UserId(user.getUserId())).thenReturn(Collections.emptyList());
-        doNothing().when(repository).deleteById(user.getUserId());
-        doNothing().when(kudosRepository).deleteById(kudos.getKudosId());
-        doNothing().when(proofRepository).deleteById(proof.getProofId());
+        doNothing().when(userRepository).deleteById(user.getUserId());
 
         // When
         talentService.deleteTalentProfile(user.getUserId(), auth);
 
         // Then
         verify(securityService).checkingLoggedAndToken(user.getUserId(), auth);
-        verify(repository, times(1)).findById(user.getUserId());
-        verify(kudosRepository, times(1)).findByOwner_UserId(user.getUserId());
+        verify(userRepository, times(1)).findById(user.getUserId());
         verify(proofRepository, times(1)).findByUser_UserId(user.getUserId());
         assertTrue(user.getProofs().isEmpty());
     }
@@ -211,5 +248,39 @@ class TalentServiceImplTest {
                 .isInstanceOf(ResponseStatusException.class)
                 .hasMessage("401 UNAUTHORIZED \"you cannot delete another talent\"");
     }
+
+    @Test
+    @DisplayName("Test deleteTalentProfile: Unauthorized deletion")
+    void testDeleteTalentProfile_UnauthorizedDeletion() {
+        // Given
+        long talentId = 1L;
+        Authentication authentication = Mockito.mock(Authentication.class);
+
+        when(securityService.checkingLoggedAndToken(talentId, authentication)).thenReturn(false);
+
+        // When/Then
+        assertThrows(ResponseStatusException.class, () -> talentService.deleteTalentProfile(talentId, authentication));
+        verify(securityService, times(1)).checkingLoggedAndToken(talentId, authentication);
+        verify(userRepository, never()).findById(anyLong());
+        verify(proofRepository, never()).findByUser_UserId(anyLong());
+        verify(userRepository, never()).deleteById(anyLong());
+    }
+
+    @Test
+    @DisplayName("Test deleteTalentProfile: Non-existing talent")
+    void testDeleteTalentProfile_NonExistingTalent() {
+        // Given
+        long talentId = 1L;
+        Authentication authentication = Mockito.mock(Authentication.class);
+
+        when(securityService.checkingLoggedAndToken(talentId, authentication)).thenReturn(true);
+        when(userRepository.findById(talentId)).thenReturn(Optional.empty());
+
+        // When/Then
+        assertThrows(UserNotFoundException.class, () -> talentService.deleteTalentProfile(talentId, authentication));
+        verify(securityService, times(1)).checkingLoggedAndToken(talentId, authentication);
+        verify(userRepository, times(1)).findById(talentId);
+        verify(proofRepository, never()).findByUser_UserId(anyLong());
+        verify(userRepository, never()).deleteById(anyLong());
+    }
 }
-*/

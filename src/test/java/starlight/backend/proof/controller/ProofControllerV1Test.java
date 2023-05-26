@@ -11,15 +11,13 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.web.server.ResponseStatusException;
 import starlight.backend.exception.PageNotFoundException;
-import starlight.backend.proof.ProofMapper;
-import starlight.backend.proof.controller.ProofControllerV1;
 import starlight.backend.proof.model.enums.Status;
 import starlight.backend.proof.model.request.ProofAddRequest;
 import starlight.backend.proof.model.response.ProofFullInfo;
@@ -34,13 +32,13 @@ import java.util.List;
 
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
+import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.*;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 
 @ExtendWith(MockitoExtension.class)
 @WebMvcTest(controllers = ProofControllerV1.class)
@@ -48,8 +46,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 class ProofControllerV1Test {
     @MockBean
     private ProofServiceImpl service;
-    @MockBean
-    private ProofMapper mapperTalent;
     @Autowired
     private ObjectMapper objectMapper;
     @MockBean
@@ -169,15 +165,14 @@ class ProofControllerV1Test {
 
     @DisplayName("JUnit test for get list of talent proofs method")
     @Test
-    @Order(1)
     @WithMockUser(username = "user1", roles = {"TALENT"})
     void getTalentProofs() throws Exception {
-        //Given
-        long talentId = 1;
-        String status = "ALL";
+        // Given
+        long talentId = 1L;
         int page = 0;
         int size = 5;
         boolean sort = true;
+        String status = "ALL";
         ProofInfo proofInfo = ProofInfo.builder().build();
         List<ProofInfo> proofs = new ArrayList<>();
         for (int i = 0; i < 5; i++) {
@@ -187,22 +182,23 @@ class ProofControllerV1Test {
                 .data(proofs)
                 .total(5)
                 .build();
-        when(service.getTalentAllProofs(auth, talentId, page, size, sort, status)).thenReturn(proofPagePagination);
+        given(service.getTalentAllProofs(auth, talentId, page, size, sort, status)).willReturn(proofPagePagination);
 
-        //When //Then
+        // When / Then
         mockMvc.perform(get("/api/v1/talents/{talent-id}/proofs", talentId)
                         .param("page", String.valueOf(page))
                         .param("size", String.valueOf(size))
                         .param("sort", String.valueOf(sort))
+                        .param("status", status)
                         .contentType(MediaType.APPLICATION_JSON))
                 .andDo(print())
-                .andExpect(status().isOk());
-                /*.andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.data", hasSize(5)))
                 .andExpect(jsonPath("$.data").isArray())
                 .andExpect(jsonPath("$.total", is(5)))
                 .andExpect(jsonPath("$").isNotEmpty());
- */   }
+    }
 
     @DisplayName("JUnit test for get full info about talent proof method")
     @Test
@@ -220,18 +216,21 @@ class ProofControllerV1Test {
                 .status(Status.PUBLISHED)
                 .build();
         when(service.getProofFullInfo(auth, proofId)).thenReturn(expectedTalentProof);
+        given(service.getProofFullInfo(any(Authentication.class), eq(proofId)))
+                .willReturn(expectedTalentProof);
 
         // When //Then
         mockMvc.perform(get("/api/v1/proofs/{proof-id}", proofId))
                 .andDo(print())
-                .andExpect(status().isOk());
-               /* .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.title").value(expectedTalentProof.title()))
                 .andExpect(jsonPath("$.description").value(expectedTalentProof.description()))
                 .andExpect(jsonPath("$.link").value(expectedTalentProof.link()))
                 .andExpect(jsonPath("$.date_сreated").value(String.valueOf(expectedTalentProof.dateCreated())))
                 .andExpect(jsonPath("$.date_last_updated").value(String.valueOf(expectedTalentProof.dateLastUpdated())))
                 .andExpect(jsonPath("$.status").value(String.valueOf(expectedTalentProof.status())));
-  */  }
 
+        verify(service).getProofFullInfo(auth, proofId);
+    }
 }

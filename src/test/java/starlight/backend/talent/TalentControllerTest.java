@@ -122,7 +122,7 @@ class TalentControllerTest {
         when(service.talentFullInfo(talentId)).thenReturn(expectedTalent);
 
         // When //Then
-        MvcResult mvcResult =mockMvc.perform(get("/api/v1/talents/{talent-id}", talentId))
+        MvcResult mvcResult = mockMvc.perform(get("/api/v1/talents/{talent-id}", talentId))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))

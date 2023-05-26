@@ -189,7 +189,6 @@ public class ProofControllerV1 {
             @ApiResponse(responseCode = "401", description = "Unauthorized"),
             @ApiResponse(responseCode = "404", description = "Not found")
     })
-//    @PreAuthorize("hasRole('TALENT')")
     @GetMapping("/proofs/{proof-id}")
     public ProofFullInfo getFullProof(@PathVariable("proof-id") long proofId,
                                          Authentication auth) {
