@@ -13,6 +13,7 @@ import starlight.backend.advice.model.entity.DelayedDeleteEntity;
 import starlight.backend.advice.model.enums.DeletingEntityType;
 import starlight.backend.advice.repository.DelayDeleteRepository;
 import starlight.backend.advice.service.AdviceService;
+import starlight.backend.email.model.EmailProps;
 import starlight.backend.email.service.EmailService;
 import starlight.backend.exception.YouAreInDeletingProcess;
 import starlight.backend.exception.user.sponsor.SponsorAlreadyOnDeleteList;
@@ -39,6 +40,7 @@ import java.util.UUID;
 @Transactional
 @Slf4j
 public class SponsorServiceImpl implements SponsorServiceInterface {
+    private EmailProps emailProps;
     private SponsorRepository sponsorRepository;
     private SecurityServiceInterface securityService;
     private DelayDeleteRepository delayDeleteRepository;
@@ -134,7 +136,7 @@ public class SponsorServiceImpl implements SponsorServiceInterface {
 
     @Override
     @Transactional
-    public void deleteSponsor(long sponsorId, Authentication auth) {
+    public ResponseEntity<String> deleteSponsor(long sponsorId, Authentication auth) {
         if (!sponsorRepository.existsBySponsorId(sponsorId)) {
             throw new SponsorNotFoundException(sponsorId);
         }
@@ -157,6 +159,19 @@ public class SponsorServiceImpl implements SponsorServiceInterface {
             sponsor.setStatus(SponsorStatus.DELETING);
             sponsorRepository.save(sponsor);
         });
+        return ResponseEntity.ok(
+                "Dear sponsor,\n" +
+                        "We are sorry to see you go.\n" +
+                        "Your sponsor profile has been deleted after 7 days!\n" +
+                        "If you want to restore your account, " +
+                        "please sign in and send recovery request.\n" +
+                        "Thank you for your support\n" +
+                        "If you have any questions, please contact us at:\n" +
+                        emailProps.username() + "\n" +
+                        "We are looking forward to hearing from you.\n" +
+                        "Best regards,\n" +
+                        "Starlight Team"
+        );
     }
 
     @Override

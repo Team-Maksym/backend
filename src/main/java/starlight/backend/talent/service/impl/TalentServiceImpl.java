@@ -1,6 +1,8 @@
 package starlight.backend.talent.service.impl;
 
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
@@ -14,32 +16,48 @@ import starlight.backend.exception.user.talent.TalentNotFoundException;
 import starlight.backend.exception.user.UserNotFoundException;
 import starlight.backend.proof.ProofRepository;
 import starlight.backend.proof.model.entity.ProofEntity;
+import starlight.backend.exception.filter.FilterMustBeNotNullException;
+import starlight.backend.exception.proof.InvalidStatusException;
+import starlight.backend.exception.user.UserNotFoundException;
+import starlight.backend.exception.user.talent.TalentNotFoundException;
+import starlight.backend.proof.ProofRepository;
+import starlight.backend.proof.model.entity.ProofEntity;
+import starlight.backend.proof.model.enums.Status;
 import starlight.backend.security.service.SecurityServiceInterface;
+import starlight.backend.skill.SkillMapper;
+import starlight.backend.skill.repository.SkillRepository;
 import starlight.backend.talent.MapperTalent;
 import starlight.backend.talent.model.request.TalentUpdateRequest;
 import starlight.backend.talent.model.response.TalentFullInfo;
 import starlight.backend.talent.model.response.TalentPagePagination;
+import starlight.backend.talent.model.response.TalentPagePaginationWithFilterSkills;
 import starlight.backend.talent.service.TalentServiceInterface;
 import starlight.backend.user.model.entity.PositionEntity;
 import starlight.backend.user.model.entity.UserEntity;
 import starlight.backend.user.repository.PositionRepository;
 import starlight.backend.user.repository.UserRepository;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 @AllArgsConstructor
 @Service
 @Transactional
+@Slf4j
 public class TalentServiceImpl implements TalentServiceInterface {
-    private MapperTalent mapper;
+    private MapperTalent talentMapper;
     private UserRepository userRepository;
     private PositionRepository positionRepository;
     private SecurityServiceInterface securityService;
     private ProofRepository proofRepository;
     private PasswordEncoder passwordEncoder;
+    private SkillRepository skillRepository;
+    private SkillMapper skillMapper;
+    private final String filterParam = "userId";
 
     @Override
     public TalentPagePagination talentPagination(int page, int size) {
@@ -48,13 +66,13 @@ public class TalentServiceImpl implements TalentServiceInterface {
         );
         if (page >= pageRequest.getTotalPages())
             throw new PageNotFoundException(page);
-        return mapper.toTalentPagePagination(pageRequest);
+        return talentMapper.toTalentPagePagination(pageRequest);
     }
 
     @Override
     public TalentFullInfo talentFullInfo(long id) {
         return userRepository.findById(id)
-                .map(mapper::toTalentFullInfo)
+                .map(talentMapper::toTalentFullInfo)
                 .orElseThrow(() -> new TalentNotFoundException(id));
     }
 
@@ -88,7 +106,7 @@ public class TalentServiceImpl implements TalentServiceInterface {
                     talent.getPositions(),
                     talentUpdateRequest.positions()));
             userRepository.save(talent);
-            return mapper.toTalentFullInfo(talent);
+            return talentMapper.toTalentFullInfo(talent);
         }).orElseThrow(() -> new TalentNotFoundException(id));
     }
 
@@ -132,12 +150,42 @@ public class TalentServiceImpl implements TalentServiceInterface {
         user.getAuthorities().clear();
         if (!user.getProofs().isEmpty()) {
             for (ProofEntity proof : proofRepository.findByUser_UserId(talentId)) {
-                proof.setKudos(null);
                 proof.setUser(null);
                 proofRepository.deleteById(proof.getProofId());
             }
         }
         user.getProofs().clear();
         userRepository.deleteById(user.getUserId());
+    }
+
+
+    @Override
+    public TalentPagePaginationWithFilterSkills talentPaginationWithFilter(String filter, int skip, int limit) {
+        var talentStream = userRepository.findAll(
+                PageRequest.of(skip, limit, Sort.by(filterParam).descending()));
+
+        if (!filter.isEmpty()) {
+            List<UserEntity> filteredTalents = talentStream.stream()
+                    .filter(talent -> talent.getTalentSkills().stream()
+                            .anyMatch(skill -> skill.getSkill()
+                                    .toLowerCase()
+                                    .contains(filter.toLowerCase())
+                            )
+                    )
+                    .collect(Collectors.toList());
+            return talentMapper.toTalentListWithPaginationAndFilter(
+                    new PageImpl<>(filteredTalents, PageRequest.of(skip, limit), filteredTalents.size())
+            );
+
+        }
+        return talentMapper.toTalentListWithPaginationAndFilter(talentStream);
+    }
+
+    @Override
+    public void isStatusCorrect(String status) {
+        if (!Arrays.toString(Status.values())
+                .matches(".*" + Pattern.quote(status) + ".*")) {
+            throw new InvalidStatusException(status);
+        }
     }
 }

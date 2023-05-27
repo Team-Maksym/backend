@@ -9,6 +9,7 @@ import starlight.backend.exception.EmailAlreadyOccupiedException;
 import starlight.backend.exception.PageNotFoundException;
 import starlight.backend.exception.YouAreInDeletingProcess;
 import starlight.backend.exception.kudos.*;
+import starlight.backend.exception.proof.InvalidStatusException;
 import starlight.backend.exception.proof.ProofNotFoundException;
 import starlight.backend.exception.proof.UserAccesDeniedToProofException;
 import starlight.backend.exception.proof.UserCanNotEditProofNotInDraftException;
@@ -26,6 +27,7 @@ public class AdviceController {
             PageNotFoundException.class,
             UserCanNotEditProofNotInDraftException.class,
             UserAccesDeniedToProofException.class,
+            InvalidStatusException.class,
             UserCannotAddKudosToTheirAccount.class,
             KudosRequestMustBeNotZeroException.class,
     })
@@ -55,6 +57,8 @@ public class AdviceController {
     @ExceptionHandler({
             ProofNotFoundException.class,
             TalentNotFoundException.class,
+            UserNotFoundInDelayedDeleteRepository.class,
+            UserNotFoundWithUUIDException.class,
             SponsorNotFoundException.class,
             UserNotFoundInDelayedDeleteRepository.class,
             UserNotFoundWithUUIDException.class,

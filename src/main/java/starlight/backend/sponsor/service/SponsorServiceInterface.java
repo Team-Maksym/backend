@@ -12,7 +12,7 @@ public interface SponsorServiceInterface {
     SponsorFullInfo getSponsorFullInfo(long sponsorId, Authentication auth);
     SponsorFullInfo updateSponsorProfile(long id, SponsorUpdateRequest sponsorUpdateRequest, Authentication auth);
 
-    void deleteSponsor(long sponsorId, Authentication authentication);
+    ResponseEntity<String> deleteSponsor(long sponsorId, Authentication authentication);
 
     String getSponsorMail(long sponsorId, Authentication auth);
 

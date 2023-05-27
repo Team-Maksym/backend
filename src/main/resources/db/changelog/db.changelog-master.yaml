@@ -74,3 +74,31 @@ databaseChangeLog:
   - changeSet:
       id: 12
       author: serhii
+
+  - changeSet:
+      id: 13
+      author: kate
+
+  - include:
+      file: dml/008_insert_data_skill.sql
+      relativeToChangelogFile: true
+
+  - changeSet:
+      id: 14
+      author: kate
+
+  - changeSet:
+      id: 16
+      author: kate
+
+  - changeSet:
+      id: 17
+      author: sasha
+
+  - changeSet:
+      id: 18
+      author: sasha
+
+  - changeSet:
+      id: 19
+      author: kate

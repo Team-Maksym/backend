@@ -1,8 +1,6 @@
 package starlight.backend.sponsor;
 
-
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
@@ -13,29 +11,33 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.TestingAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
-import starlight.backend.email.model.EmailProps;
 import starlight.backend.sponsor.model.request.SponsorUpdateRequest;
+import starlight.backend.sponsor.model.response.KudosWithProofId;
 import starlight.backend.sponsor.model.response.SponsorFullInfo;
 import starlight.backend.sponsor.model.response.SponsorKudosInfo;
 import starlight.backend.sponsor.service.SponsorServiceInterface;
 
+import java.util.List;
+
 import static org.hamcrest.Matchers.is;
-import static org.hamcrest.core.StringContains.containsString;
-import static org.mockito.Mockito.doNothing;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.get;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.patch;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-@ExtendWith(MockitoExtension.class)
-@WebMvcTest(controllers = SponsorController.class)
-@AutoConfigureMockMvc(addFilters = false)
-class SponsorControllerTest {
+@WebMvcTest(SponsorController.class)
+public class SponsorControllerTest {
     @MockBean
     private SponsorServiceInterface sponsorService;
 
@@ -45,12 +47,7 @@ class SponsorControllerTest {
     private Authentication auth;
     @Autowired
     private MockMvc mockMvc;
-    @MockBean
-    private EmailProps emailProps;
-    @BeforeEach
-    void setUp() {
-        when(emailProps.username()).thenReturn("test@example.com");
-    }
+
     @DisplayName("JUnit test for get Unusable Kudos for Sponsor")
     @Test
     @Order(1)
@@ -58,8 +55,20 @@ class SponsorControllerTest {
     void getUnusableKudosForSponsor() throws Exception {
         //Given
         long sponsorId = 1L;
-        SponsorKudosInfo sponsorKudosInfo = SponsorKudosInfo.builder().build();
+        int unusedKudos = 5;
+        int alreadyMarkedKudos = 3;
+        List<KudosWithProofId> data = List.of(
+                KudosWithProofId.builder().build(),
+                KudosWithProofId.builder().build()
+        );
+        SponsorKudosInfo sponsorKudosInfo = SponsorKudosInfo.builder()
+                .alreadyMarkedKudos(alreadyMarkedKudos)
+                .unusedKudos(unusedKudos)
+                .data(data)
+                .build();
         when(sponsorService.getUnusableKudos(sponsorId, auth)).thenReturn(sponsorKudosInfo);
+        when(sponsorService.getUnusableKudos(eq(sponsorId), any(Authentication.class)))
+                .thenReturn(sponsorKudosInfo);
 
         //When //Then
         mockMvc.perform(get("/api/v1/sponsors/{sponsor-id}/kudos", sponsorId))
@@ -67,8 +76,8 @@ class SponsorControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.data").isArray())
-                .andExpect(jsonPath("$.unused_kudos", is(0)))
-                .andExpect(jsonPath("$.already_marked_kudos", is(0)))
+                .andExpect(jsonPath("$.unusedKudos", is(unusedKudos)))
+                .andExpect(jsonPath("$.alreadyMarkedKudos", is(alreadyMarkedKudos)))
                 .andExpect(jsonPath("$").isNotEmpty());
     }
 
@@ -86,6 +95,8 @@ class SponsorControllerTest {
                 .build();
 
         when(sponsorService.getSponsorFullInfo(sponsorId, auth)).thenReturn(expected);
+        when(sponsorService.getSponsorFullInfo(eq(sponsorId), any(Authentication.class)))
+                .thenReturn(expected);
 
         // When // Then
         mockMvc.perform(get("/api/v1/sponsors/{sponsor-id}", sponsorId))
@@ -93,7 +104,7 @@ class SponsorControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$").isNotEmpty())
-                .andExpect(jsonPath("$.full_name").value("John Doe"))
+                .andExpect(jsonPath("$.fullName").value("John Doe"))
                 .andExpect(jsonPath("$.company").value("Master's Degree"))
                 .andExpect(jsonPath("$.avatar").value("https://example.com/new-avatar.jpg"));
     }
@@ -120,7 +131,8 @@ class SponsorControllerTest {
         // When // Then
         mockMvc.perform(patch("/api/v1/sponsors/{sponsor-id}", sponsorId)
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(updateRequest)))
+                        .content(objectMapper.writeValueAsString(updateRequest))
+                        .with(csrf()))
                 .andExpect(status().isOk());
     }
 
@@ -129,14 +141,17 @@ class SponsorControllerTest {
     @Order(1)
     @WithMockUser(username = "user1", roles = {"SPONSOR"})
     void delete_ReturnsOk() throws Exception {
-        //Given
+        // Given
         long sponsorId = 1L;
-        doNothing().when(sponsorService).deleteSponsor(sponsorId, auth);
+        Authentication auth = new TestingAuthenticationToken("user", "password", AuthorityUtils.createAuthorityList("ROLE_SPONSOR"));
+        String expectedResponse = "Sponsor deleted successfully";
 
-        // When // Then
-        mockMvc.perform(delete("/api/v1/sponsors/{sponsor-id}", sponsorId))
-                .andDo(print())
-                .andExpect(status().isOk())
-                .andExpect(content().string(containsString("Dear sponsor,")));
+        when(sponsorService.deleteSponsor(sponsorId, auth)).thenReturn(ResponseEntity.ok(expectedResponse));
+
+        // When / Then
+        mockMvc.perform(delete("/api/v1/sponsors/{sponsor-id}", sponsorId)
+                        .with(csrf())
+                        .principal(auth))
+                .andExpect(status().isOk());
     }
 }

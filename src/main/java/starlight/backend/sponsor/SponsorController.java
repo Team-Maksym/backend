@@ -28,7 +28,6 @@ import starlight.backend.sponsor.service.SponsorServiceInterface;
 @Tag(name = "Sponsor", description = "Sponsor related endpoints")
 public class SponsorController {
     private SponsorServiceInterface sponsorService;
-    private EmailProps emailProps;
 
     @Operation(
             summary = "Get unusable Sponsor's kudos",
@@ -116,20 +115,7 @@ public class SponsorController {
     @ResponseStatus(HttpStatus.OK)
     public ResponseEntity<String> deleteSponsor(@PathVariable("sponsor-id") long sponsorId, Authentication auth) {
         log.info("@DeleteMapping(\"/sponsors/{sponsor-id}\")");
-        sponsorService.deleteSponsor(sponsorId, auth);
-        return ResponseEntity.ok(
-                "Dear sponsor,\n" +
-                        "We are sorry to see you go.\n" +
-                        "Your sponsor profile has been deleted after 7 days!\n" +
-                        "If you want to restore your account, " +
-                        "please sign in and send recovery request.\n" +
-                        "Thank you for your support\n" +
-                        "If you have any questions, please contact us at:\n" +
-                        emailProps.username() + "\n" +
-                        "We are looking forward to hearing from you.\n" +
-                        "Best regards,\n" +
-                        "Starlight Team"
-        );
+        return sponsorService.deleteSponsor(sponsorId, auth);
     }
 
     @Operation(

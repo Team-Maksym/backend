@@ -12,12 +12,15 @@ import org.springframework.security.oauth2.jwt.JwtEncoderParameters;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import starlight.backend.exception.EmailAlreadyOccupiedException;
+import starlight.backend.exception.EmailAlreadyOccupiedException;
 import starlight.backend.exception.user.sponsor.SponsorNotFoundException;
 import starlight.backend.security.MapperSecurity;
 import starlight.backend.security.model.UserDetailsImpl;
 import starlight.backend.security.model.enums.Role;
 import starlight.backend.security.model.request.NewUser;
 import starlight.backend.security.model.response.SessionInfo;
+import starlight.backend.security.service.SecurityServiceInterface;
+import starlight.backend.user.model.entity.UserEntity;
 import starlight.backend.security.service.SecurityServiceInterface;
 import starlight.backend.sponsor.SponsorRepository;
 import starlight.backend.sponsor.model.entity.SponsorEntity;
@@ -115,6 +118,11 @@ public class SecurityServiceImpl implements SecurityServiceInterface {
                 .build());
     }
 
+    private String getUserIdByEmail(String email) {
+        var user = repository.findByEmail(email)
+                .orElseThrow(() -> new UsernameNotFoundException(email + " not found user by email"));
+        return user.getUserId().toString();
+    }
     @Override
     @Transactional(readOnly = true)
     public String getJWTToken(UserDetailsImpl authentication, long id) {
