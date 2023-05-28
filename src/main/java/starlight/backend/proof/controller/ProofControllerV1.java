@@ -92,13 +92,7 @@ public class ProofControllerV1 {
     @ApiResponses(value = {
             @ApiResponse(
                     responseCode = "200",
-                    description = "Success",
-                    content = @Content(
-                            mediaType = MediaType.APPLICATION_JSON_VALUE,
-                            schema = @Schema(
-                                    implementation = TalentFullInfo.class
-                            )
-                    )
+                    description = "Success"
             ),
             @ApiResponse(responseCode = "401", description = "Unauthorized"),
             @ApiResponse(responseCode = "403", description = "Forbidden"),
@@ -154,7 +148,7 @@ public class ProofControllerV1 {
                     content = @Content(
                             mediaType = MediaType.APPLICATION_JSON_VALUE,
                             schema = @Schema(
-                                    implementation = TalentPagePagination.class
+                                    implementation = ProofPagePagination.class
                             )
                     )
             ),
@@ -181,7 +175,7 @@ public class ProofControllerV1 {
                     content = @Content(
                             mediaType = MediaType.APPLICATION_JSON_VALUE,
                             schema = @Schema(
-                                    implementation = TalentPagePagination.class
+                                    implementation =  ProofFullInfo.class
                             )
                     )
             ),

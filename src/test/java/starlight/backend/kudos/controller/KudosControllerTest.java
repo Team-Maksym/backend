@@ -27,11 +27,11 @@ import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.when;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.get;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.post;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-@ExtendWith(MockitoExtension.class)
 @WebMvcTest(KudosController.class)
-@AutoConfigureMockMvc(addFilters = false)
 class KudosControllerTest {
 
     @Autowired
@@ -45,8 +45,6 @@ class KudosControllerTest {
 
     @DisplayName("Test getKudosOnProofShouldReturnKudosOnProof")
     @Test
-    @Order(1)
-    @WithMockUser(username = "user1", roles = {"SPONSOR"})
     void getKudosOnProofShouldReturnKudosOnProof() throws Exception {
         // Given
         int proofId = 1;
@@ -55,12 +53,14 @@ class KudosControllerTest {
                 .kudosFromMe(1)
                 .isKudosed(true)
                 .build();
-        given(kudosService.getKudosOnProof(proofId, auth)).willReturn(kudosOnProof);
+       // given(kudosService.getKudosOnProof(proofId, auth)).willReturn(kudosOnProof);
         given(kudosService.getKudosOnProof(eq(proofId), any(Authentication.class)))
                 .willReturn(kudosOnProof);
 
         // When // Then
-        mockMvc.perform(get("/api/v1/proofs/{proof-id}/kudos", proofId))
+        mockMvc.perform(get("/api/v1/proofs/{proof-id}/kudos", proofId)
+                        .with(user("user").roles("SPONSOR"))
+                        .with(csrf()))
                 .andExpect(status().isOk());/*
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.kudos_on_proof").value(kudosOnProof.kudosOnProof()))
@@ -71,8 +71,6 @@ class KudosControllerTest {
 
     @DisplayName("Test addKudosShouldReturnKudosEntity")
     @Test
-    @Order(1)
-    @WithMockUser(username = "user1", roles = {"SPONSOR"})
     void addKudosShouldReturnKudosEntity() throws Exception {
         // Given
         int proofId = 1;
@@ -84,11 +82,14 @@ class KudosControllerTest {
                 .updateData(Instant.MIN)
                 .createData(Instant.MAX)
                 .build();
-        given(kudosService.addKudosOnProof(proofId, kudos, auth)).willReturn(kudosEntity);
 
+        given(kudosService.addKudosOnProof(eq(proofId), eq(kudos), any(Authentication.class)))
+                .willReturn(kudosEntity);
 
         // When // Then
         mockMvc.perform(post("/api/v1/proofs/{proof-id}/kudos", proofId)
+                        .with(user("user").roles("SPONSOR"))
+                        .with(csrf())
                         .param("kudos", String.valueOf(kudos))
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isCreated());/*
@@ -102,8 +103,6 @@ class KudosControllerTest {
 
     @DisplayName("JUnit test for add Kudos Should Return Unauthorized When Kudos Parameter Is Not Authenticated")
     @Test
-    @Order(1)
-    @WithMockUser(username = "user1", roles = {"SPONSOR"})
     public void addKudosShouldReturnBadRequestWhenKudosParameterIsNotProvided() throws Exception {
         //Given
         int proofId = 1;
@@ -112,6 +111,8 @@ class KudosControllerTest {
 
         // When // Then
         mockMvc.perform(post("/api/v1/proofs/{proof-id}/kudos", proofId)
+                        .with(user("user").roles("SPONSOR"))
+                        .with(csrf())
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isBadRequest());
     }
@@ -127,6 +128,7 @@ class KudosControllerTest {
         // When // Then
         mockMvc.perform(post("/api/v1/proofs/{proof-id}/kudos", proofId)
                         .contentType(MediaType.APPLICATION_JSON)
+                        .with(csrf())
                         .param("kudos", "1"))
                 .andExpect(status().isUnauthorized());
     }

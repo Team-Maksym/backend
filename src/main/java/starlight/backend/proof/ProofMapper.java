@@ -65,16 +65,6 @@ public interface ProofMapper {
                 .build();
     }
 
-    default ProofPagePagination toProofPagePaginationWithProofFullInfo(Page<ProofEntity> proofs) {
-        return ProofPagePagination.builder()
-                .total(proofs.getTotalElements())
-                .data(proofs.getContent()
-                        .stream()
-                        .map(this::toProofFullInfo)
-                        .toList())
-                .build();
-    }
-
     default ProofPagePagination toProofPagePaginationWithProofFullInfoWithKudoses(Page<ProofEntity> proofs) {
         return ProofPagePagination.builder()
                 .total(proofs.getTotalElements())
