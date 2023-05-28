@@ -211,7 +211,7 @@ public class SkillServiceImpl implements SkillServiceInterface {
         Status status = Status.valueOf(requestedStatus);
         List<ProofEntity> proofs;
         if(!proofRepository.existsByUser_UserIdAndSkills_SkillId(talentId,skillId)){
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "don`t found proof by talentId and skillId!");
+            return proofMapper.toProofListWithSkills(List.of(new ProofEntity()));
         }
         if (!securityService.checkingLoggedAndToken(talentId, auth)) {
             proofs = proofRepository.findByUser_UserIdAndSkills_SkillIdAndStatus(talentId, skillId, Status.PUBLISHED);

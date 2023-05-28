@@ -15,6 +15,21 @@ import starlight.backend.exception.proof.UserCanNotEditProofNotInDraftException;
 import starlight.backend.exception.user.UserNotFoundInDelayedDeleteRepository;
 import starlight.backend.exception.user.UserNotFoundWithUUIDException;
 import starlight.backend.exception.user.talent.TalentNotFoundException;
+import starlight.backend.exception.AuthorizationFailureException;
+import starlight.backend.exception.EmailAlreadyOccupiedException;
+import starlight.backend.exception.PageNotFoundException;
+import starlight.backend.exception.YouAreInDeletingProcess;
+import starlight.backend.exception.kudos.*;
+import starlight.backend.exception.proof.InvalidStatusException;
+import starlight.backend.exception.proof.ProofNotFoundException;
+import starlight.backend.exception.proof.UserAccesDeniedToProofException;
+import starlight.backend.exception.proof.UserCanNotEditProofNotInDraftException;
+import starlight.backend.exception.user.UserNotFoundInDelayedDeleteRepository;
+import starlight.backend.exception.user.UserNotFoundWithUUIDException;
+import starlight.backend.exception.user.sponsor.SponsorAlreadyOnDeleteList;
+import starlight.backend.exception.user.sponsor.SponsorCanNotSeeAnotherSponsor;
+import starlight.backend.exception.user.sponsor.SponsorNotFoundException;
+import starlight.backend.exception.user.talent.TalentNotFoundException;
 
 @RestControllerAdvice
 public class AdviceController {
@@ -24,6 +39,9 @@ public class AdviceController {
             UserCanNotEditProofNotInDraftException.class,
             UserAccesDeniedToProofException.class,
             InvalidStatusException.class,
+            UserCannotAddKudosToTheirAccount.class,
+            KudosRequestMustBeNotZeroException.class,
+            InvalidStatusException.class,
     })
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ErrorDTO badRequest(Exception exception) {
@@ -31,6 +49,9 @@ public class AdviceController {
     }
 
     @ExceptionHandler({
+            EmailAlreadyOccupiedException.class,
+            ProofAlreadyHaveKudosFromUser.class,
+            SponsorAlreadyOnDeleteList.class,
             EmailAlreadyOccupiedException.class,
     })
     @ResponseStatus(HttpStatus.CONFLICT)
@@ -51,9 +72,26 @@ public class AdviceController {
             TalentNotFoundException.class,
             UserNotFoundInDelayedDeleteRepository.class,
             UserNotFoundWithUUIDException.class,
+            SponsorNotFoundException.class,
+            UserNotFoundInDelayedDeleteRepository.class,
+            UserNotFoundWithUUIDException.class,
+            UserNotFoundInDelayedDeleteRepository.class,
+            UserNotFoundWithUUIDException.class,
     })
     @ResponseStatus(HttpStatus.NOT_FOUND)
     public ErrorDTO notExists(Exception exception) {
+        return new ErrorDTO(exception.getMessage());
+    }
+
+    @ExceptionHandler({
+            TalentCanNotAddKudos.class,
+            NotEnoughKudosException.class,
+            SponsorCanNotSeeAnotherSponsor.class,
+            YouCanNotReturnMoreKudosThanGaveException.class,
+            YouAreInDeletingProcess.class,
+    })
+    @ResponseStatus(HttpStatus.FORBIDDEN)
+    public ErrorDTO forbidden(Exception exception) {
         return new ErrorDTO(exception.getMessage());
     }
 

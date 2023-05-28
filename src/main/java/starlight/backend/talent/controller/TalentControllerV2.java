@@ -85,13 +85,13 @@ public class TalentControllerV2 {
             @ApiResponse(responseCode = "401", description = "Unauthorized")
     })
     @GetMapping("/talents/{talent-id}/skills/{skill-id}/proofs")
-    public ResponseEntity<ProofListWithSkills> getProofsOfSkill(@PathVariable("talent-id") long talentId,
+    public ProofListWithSkills getProofsOfSkill(@PathVariable("talent-id") long talentId,
                                            @PathVariable("skill-id") long skillId,
                                            @RequestParam(defaultValue = "ALL") String status,
                                            Authentication auth){
 
         log.info("@GetMapping(\"/talents/{talent-id}/skills/{skills-id}/proofs\")");
-        return ResponseEntity.ok(skillService.getListProofsOfSkill(talentId, skillId, status, auth));
+        return skillService.getListProofsOfSkill(talentId, skillId, status, auth);
     }
 
     @Operation(

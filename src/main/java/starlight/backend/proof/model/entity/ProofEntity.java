@@ -7,12 +7,14 @@ import lombok.*;
 import org.hibernate.validator.constraints.Length;
 import org.hibernate.validator.constraints.URL;
 import org.springframework.validation.annotation.Validated;
+import starlight.backend.kudos.model.entity.KudosEntity;
 import starlight.backend.proof.model.enums.Status;
 import starlight.backend.skill.model.entity.SkillEntity;
 import starlight.backend.user.model.entity.UserEntity;
 
 import java.time.Instant;
 import java.util.List;
+import java.util.Set;
 
 import static jakarta.persistence.GenerationType.IDENTITY;
 
@@ -55,6 +57,10 @@ public class ProofEntity {
             inverseJoinColumns = @JoinColumn(name = "skill_id"))
     @JsonManagedReference
     private List<SkillEntity> skills;
+
+    @OneToMany(mappedBy = "proof")
+    @JsonManagedReference
+    private Set<KudosEntity> kudos;
 
     public void setDateLastUpdated(Instant now) {
         this.dateLastUpdated = now;

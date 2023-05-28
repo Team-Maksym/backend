@@ -7,5 +7,5 @@ import java.util.List;
 @Builder
 public record ProofPagePagination(
         long total,
-        List<ProofInfo> data
+        List<?> data
 ) {}

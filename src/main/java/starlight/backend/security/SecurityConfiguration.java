@@ -25,6 +25,7 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import starlight.backend.security.model.UserDetailsImpl;
+import starlight.backend.sponsor.SponsorRepository;
 import starlight.backend.user.repository.UserRepository;
 
 import java.security.KeyPair;
@@ -40,7 +41,6 @@ import static org.springframework.security.web.util.matcher.AntPathRequestMatche
 @EnableMethodSecurity
 @Configuration
 class SecurityConfiguration {
-
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http.authorizeHttpRequests(c -> c
@@ -55,15 +55,25 @@ class SecurityConfiguration {
                 .requestMatchers(antMatcher("/webjars/**")).permitAll()
                 /////////////////////////DevOps////////////////////////////////////////////////////
                 .requestMatchers("/error").permitAll()
+                /////////////////////////Email/////////////////////////////////////////////////////
+                .requestMatchers("/api/v1/sponsors/forgot-password").permitAll()
+                .requestMatchers("/api/v1/sponsors/recovery-password").permitAll()
                 /////////////////////////Actuator//////////////////////////////////////////////////
                 .requestMatchers(antMatcher("/actuator/**")).permitAll()
                 /////////////////////////Production////////////////////////////////////////////////
                 .requestMatchers("/api/v1/skills").permitAll()
                 .requestMatchers("/api/v1/talents").permitAll()
+                .requestMatchers("/api/v1/sponsors").permitAll()
+                .requestMatchers("/api/v2/talents").permitAll()
                 .requestMatchers("/api/v2/talents").permitAll()
                 .requestMatchers("/api/v1/proofs").permitAll()
                 .requestMatchers("/api/v2/proofs").permitAll()
                 .requestMatchers(POST, "/api/v1/talents/login").permitAll()
+                .requestMatchers(POST, "/api/v1/sponsors/login").permitAll()
+                .requestMatchers(antMatcher("/api/v1/proofs/**")).permitAll()
+                .requestMatchers("/api/v1/sponsors/recovery-account").permitAll()
+                .requestMatchers(antMatcher("/api/v1/proofs/**")).permitAll()
+                .requestMatchers("/api/v2/talents").permitAll()
                 .requestMatchers(antMatcher("/api/v1/proofs/**")).permitAll()
                 .requestMatchers("/api/v2/talents").permitAll()
                 /////////////////////////Another///////////////////////////////////////////////////
@@ -80,6 +90,7 @@ class SecurityConfiguration {
                         .accessDeniedHandler(new BearerTokenAccessDeniedHandler()));
         return http.build();
     }
+
     @Bean
     public WebMvcConfigurer corsConfigurer() {
         return new WebMvcConfigurer() {
@@ -129,11 +140,18 @@ class SecurityConfiguration {
 
     @Bean
     UserDetailsService userDetailsService(
-            UserRepository repository
+            UserRepository userRepository, SponsorRepository sponsorRepository
     ) {
-        return email -> repository.findByEmail(email)
-                .map(user -> new UserDetailsImpl(user.getEmail(), user.getPassword()))
-                .orElseThrow(() -> new UsernameNotFoundException(email + " not found user by email"));
+        return email -> {
+            if (userRepository.existsByEmail(email)) {
+                return userRepository.findByEmail(email)
+                        .map(user -> new UserDetailsImpl(user.getEmail(), user.getPassword()))
+                        .orElseThrow(() -> new UsernameNotFoundException(email + " not found user by email"));
+            } else {
+                return sponsorRepository.findByEmail(email)
+                        .map(sponsor -> new UserDetailsImpl(sponsor.getEmail(), sponsor.getPassword()))
+                        .orElseThrow(() -> new UsernameNotFoundException(email + " not found user by email"));
+            }
+        };
     }
-
 }

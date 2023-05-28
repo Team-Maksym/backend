@@ -7,6 +7,11 @@ import starlight.backend.skill.model.response.SkillWithCategory;
 import starlight.backend.talent.model.response.*;
 import starlight.backend.user.model.entity.PositionEntity;
 import starlight.backend.user.model.entity.UserEntity;
+import starlight.backend.talent.model.response.TalentFullInfo;
+import starlight.backend.talent.model.response.TalentPagePagination;
+import starlight.backend.talent.model.response.TalentProfile;
+import starlight.backend.user.model.entity.PositionEntity;
+import starlight.backend.user.model.entity.UserEntity;
 
 import java.util.List;
 
