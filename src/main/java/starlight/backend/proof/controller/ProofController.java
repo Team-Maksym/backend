@@ -1,4 +1,4 @@
-package starlight.backend.proof;
+package starlight.backend.proof.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -17,16 +17,14 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import starlight.backend.exception.EmailAlreadyOccupiedException;
 import starlight.backend.exception.PageNotFoundException;
-import starlight.backend.exception.TalentAlreadyOccupiedException;
-import starlight.backend.proof.model.enums.Status;
 import starlight.backend.proof.model.request.ProofAddRequest;
-import starlight.backend.proof.model.response.ProofFullInfo;
 import starlight.backend.proof.model.request.ProofUpdateRequest;
+import starlight.backend.proof.model.response.ProofFullInfo;
 import starlight.backend.proof.model.response.ProofPagePagination;
 import starlight.backend.proof.service.ProofServiceInterface;
 import starlight.backend.talent.model.response.TalentFullInfo;
-
 import starlight.backend.talent.model.response.TalentPagePagination;
 
 @Slf4j
@@ -37,8 +35,6 @@ import starlight.backend.talent.model.response.TalentPagePagination;
 @Tag(name = "Proof", description = "Proof API")
 public class ProofController {
     private ProofServiceInterface proofService;
-    private ProofRepository proofRepository;
-    private final ProofMapper proofMapper;
 
     @Operation(
             summary = "Get all proofs",
@@ -159,7 +155,7 @@ public class ProofController {
                     content = @Content(
                             mediaType = MediaType.APPLICATION_JSON_VALUE,
                             schema = @Schema(
-                                    implementation = TalentAlreadyOccupiedException.class
+                                    implementation = EmailAlreadyOccupiedException.class
                             )
                     )
             )
@@ -212,11 +208,11 @@ public class ProofController {
     @PatchMapping("/talents/{talent-id}/proofs/{proof-id}")
     @PreAuthorize("hasRole('TALENT')")
     public ProofFullInfo updateProofFullInfo(@PathVariable("talent-id") long talentId,
-                                                       @PathVariable("proof-id") long proofId,
-                                                       @RequestBody ProofUpdateRequest proofUpdateRequest,
-                                                       Authentication auth) {
+                                             @PathVariable("proof-id") long proofId,
+                                             @RequestBody ProofUpdateRequest proofUpdateRequest,
+                                             Authentication auth) {
         log.info("@PatchMapping(\"/talents/{talent-id}/proofs/{proof-id}\")");
-        return proofService.proofUpdateRequest(talentId,proofId, proofUpdateRequest, auth);
+        return proofService.proofUpdateRequest(talentId, proofId, proofUpdateRequest, auth);
     }
 
     @Operation(summary = "Return list of all proofs for talent by talent_id")
@@ -319,7 +315,7 @@ public class ProofController {
     @PreAuthorize("hasRole('TALENT')")
     @GetMapping("/proofs/{proof-id}")
     public ProofFullInfo getFullProof(@PathVariable("proof-id") long proofId,
-                                         Authentication auth) {
+                                      Authentication auth) {
         log.info("@GetMapping(\"/proofs/{proof-id}\")");
         return proofService.getProofFullInfo(auth, proofId);
     }

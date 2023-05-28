@@ -9,15 +9,16 @@ import org.hibernate.validator.constraints.Length;
 import org.hibernate.validator.constraints.URL;
 import org.springframework.validation.annotation.Validated;
 import starlight.backend.proof.model.entity.ProofEntity;
+import starlight.backend.skill.model.entity.SkillEntity;
 
 import java.time.LocalDate;
 import java.util.Collection;
+import java.util.List;
 import java.util.Set;
 
 import static jakarta.persistence.GenerationType.IDENTITY;
 
 @Builder
-@ToString
 @Getter
 @Setter
 @AllArgsConstructor
@@ -50,6 +51,14 @@ public class UserEntity {
             inverseJoinColumns = @JoinColumn(name = "position_id"))
     @JsonManagedReference
     private Set<PositionEntity> positions;
+
+    @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH})
+    @JoinTable(
+            name = "talent_skill",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "skill_id"))
+    @JsonManagedReference
+    private List<SkillEntity> talentSkills;
 
     @ElementCollection(fetch = FetchType.EAGER)
     private Collection<String> authorities;

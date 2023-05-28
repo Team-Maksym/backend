@@ -1,4 +1,4 @@
-package starlight.backend.talent;
+package starlight.backend.talent.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -15,13 +15,11 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import starlight.backend.exception.TalentAlreadyOccupiedException;
+import starlight.backend.exception.EmailAlreadyOccupiedException;
 import starlight.backend.talent.model.request.TalentUpdateRequest;
 import starlight.backend.talent.model.response.TalentFullInfo;
 import starlight.backend.talent.model.response.TalentPagePagination;
 import starlight.backend.talent.service.TalentServiceInterface;
-
-import java.util.Optional;
 
 @RestController
 @AllArgsConstructor
@@ -29,7 +27,7 @@ import java.util.Optional;
 @RequestMapping("/api/v1")
 @Tag(name = "Talent", description = "Talent API")
 @Slf4j
-public class TalentController {
+public class TalentControllerV1 {
     private TalentServiceInterface talentService;
 
     @Operation(
@@ -101,9 +99,8 @@ public class TalentController {
                     )
             )
     })
-    @PreAuthorize("hasRole('TALENT')")
     @GetMapping("/talents/{talent-id}")
-    public Optional<TalentFullInfo> searchTalentById(@PathVariable("talent-id") long talentId) {
+    public TalentFullInfo searchTalentById(@PathVariable("talent-id") long talentId) {
         log.info("@GetMapping(\"/talents/{talent-id}\")");
         return talentService.talentFullInfo(talentId);
     }
@@ -218,7 +215,7 @@ public class TalentController {
                     content = @Content(
                             mediaType = MediaType.APPLICATION_JSON_VALUE,
                             schema = @Schema(
-                                    implementation = TalentAlreadyOccupiedException.class
+                                    implementation = EmailAlreadyOccupiedException.class
                             )
                     )
             )

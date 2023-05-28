@@ -4,9 +4,17 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
-import starlight.backend.exception.*;
-
-import java.sql.SQLException;
+import starlight.backend.exception.AuthorizationFailureException;
+import starlight.backend.exception.EmailAlreadyOccupiedException;
+import starlight.backend.exception.PageNotFoundException;
+import starlight.backend.exception.YouAreInDeletingProcess;
+import starlight.backend.exception.proof.InvalidStatusException;
+import starlight.backend.exception.proof.ProofNotFoundException;
+import starlight.backend.exception.proof.UserAccesDeniedToProofException;
+import starlight.backend.exception.proof.UserCanNotEditProofNotInDraftException;
+import starlight.backend.exception.user.UserNotFoundInDelayedDeleteRepository;
+import starlight.backend.exception.user.UserNotFoundWithUUIDException;
+import starlight.backend.exception.user.talent.TalentNotFoundException;
 
 @RestControllerAdvice
 public class AdviceController {
@@ -15,24 +23,45 @@ public class AdviceController {
             PageNotFoundException.class,
             UserCanNotEditProofNotInDraftException.class,
             UserAccesDeniedToProofException.class,
+            InvalidStatusException.class,
     })
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ErrorDTO badRequest(Exception exception) {
         return new ErrorDTO(exception.getMessage());
     }
 
-    @ExceptionHandler(TalentAlreadyOccupiedException.class)
+    @ExceptionHandler({
+            EmailAlreadyOccupiedException.class,
+    })
     @ResponseStatus(HttpStatus.CONFLICT)
     public ErrorDTO alreadyIs(Exception exception) {
         return new ErrorDTO(exception.getMessage());
     }
 
     @ExceptionHandler({
+            AuthorizationFailureException.class,
+    })
+    @ResponseStatus(HttpStatus.UNAUTHORIZED)
+    public ErrorDTO authFailure(Exception exception) {
+        return new ErrorDTO(exception.getMessage());
+    }
+
+    @ExceptionHandler({
             ProofNotFoundException.class,
             TalentNotFoundException.class,
+            UserNotFoundInDelayedDeleteRepository.class,
+            UserNotFoundWithUUIDException.class,
     })
     @ResponseStatus(HttpStatus.NOT_FOUND)
     public ErrorDTO notExists(Exception exception) {
+        return new ErrorDTO(exception.getMessage());
+    }
+
+    @ExceptionHandler({
+            YouAreInDeletingProcess.class,
+    })
+    @ResponseStatus(HttpStatus.FORBIDDEN)
+    public ErrorDTO forbidden(Exception exception) {
         return new ErrorDTO(exception.getMessage());
     }
     // @ExceptionHandler({

@@ -10,13 +10,13 @@ import org.springframework.security.oauth2.jwt.JwtEncoder;
 import org.springframework.security.oauth2.jwt.JwtEncoderParameters;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import starlight.backend.exception.TalentAlreadyOccupiedException;
+import starlight.backend.exception.EmailAlreadyOccupiedException;
 import starlight.backend.security.MapperSecurity;
 import starlight.backend.security.model.UserDetailsImpl;
-import starlight.backend.security.service.SecurityServiceInterface;
-import starlight.backend.user.model.entity.UserEntity;
 import starlight.backend.security.model.request.NewUser;
 import starlight.backend.security.model.response.SessionInfo;
+import starlight.backend.security.service.SecurityServiceInterface;
+import starlight.backend.user.model.entity.UserEntity;
 import starlight.backend.user.repository.UserRepository;
 
 import java.time.Instant;
@@ -51,7 +51,7 @@ public class SecurityServiceImpl implements SecurityServiceInterface {
 
     private UserEntity saveNewUser(NewUser newUser) {
         if (repository.existsByEmail(newUser.email())) {
-            throw new TalentAlreadyOccupiedException(newUser.email());
+            throw new EmailAlreadyOccupiedException(newUser.email());
         }
         return repository.save(UserEntity.builder()
                 .fullName(newUser.fullName())
@@ -60,10 +60,10 @@ public class SecurityServiceImpl implements SecurityServiceInterface {
                 .build());
     }
 
-    private String getUserIdByEmail(String email){
-       var user = repository.findByEmail(email)
+    private String getUserIdByEmail(String email) {
+        var user = repository.findByEmail(email)
                 .orElseThrow(() -> new UsernameNotFoundException(email + " not found user by email"));
-       return user.getUserId().toString();
+        return user.getUserId().toString();
     }
 
     @Transactional(readOnly = true)
