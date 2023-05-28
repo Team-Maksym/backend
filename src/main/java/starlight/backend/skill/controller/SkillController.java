@@ -16,13 +16,12 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import starlight.backend.skill.model.request.AddSkill;
 import starlight.backend.proof.model.response.ProofWithSkills;
+import starlight.backend.skill.model.request.AddSkill;
 import starlight.backend.skill.model.request.DeleteIdSkills;
 import starlight.backend.skill.model.response.SkillList;
 import starlight.backend.skill.model.response.SkillListWithPagination;
 import starlight.backend.skill.service.SkillServiceInterface;
-import starlight.backend.talent.model.response.TalentWithSkills;
 
 
 @Slf4j
@@ -153,9 +152,9 @@ public class SkillController {
     @PreAuthorize("hasRole('TALENT')")
     @DeleteMapping("/talents/{talent-id}/proofs/{proof-id}/skills")
     public void deleteSkillArray(@PathVariable("talent-id") long talentId,
-                            @PathVariable("proof-id") long proofId,
-                            @RequestBody DeleteIdSkills skillId,
-                            Authentication auth) {
+                                 @PathVariable("proof-id") long proofId,
+                                 @RequestBody DeleteIdSkills skillId,
+                                 Authentication auth) {
         log.info("@DeleteMapping(\"/talents/{talent-id}/proofs/{proof-id}/skills\")");
         serviceService.deleteSkillArray(talentId, proofId, skillId, auth);
     }

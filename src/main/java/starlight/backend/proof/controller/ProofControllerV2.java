@@ -17,12 +17,8 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import starlight.backend.proof.model.request.ProofAddRequest;
 import starlight.backend.proof.model.request.ProofAddWithSkillsRequest;
-import starlight.backend.proof.model.request.ProofUpdateRequest;
-import starlight.backend.proof.model.response.ProofFullInfo;
 import starlight.backend.proof.model.response.ProofFullInfoWithSkills;
-import starlight.backend.proof.model.response.ProofPagePagination;
 import starlight.backend.proof.model.response.ProofPagePaginationWithSkills;
 import starlight.backend.proof.service.ProofServiceInterface;
 import starlight.backend.talent.model.response.TalentPagePagination;
@@ -55,11 +51,12 @@ public class ProofControllerV2 {
     })
     @GetMapping("/proofs")
     public ProofPagePaginationWithSkills pagination(@RequestParam(defaultValue = "0") @Min(0) int page,
-                                          @RequestParam(defaultValue = "5") @Positive int size,
-                                          @RequestParam(defaultValue = "true") boolean sort) {
+                                                    @RequestParam(defaultValue = "5") @Positive int size,
+                                                    @RequestParam(defaultValue = "true") boolean sort) {
         log.info("@GetMapping(\"/proofs\")");
         return proofService.proofsPaginationWithSkills(page, size, sort);
     }
+
     @Operation(summary = "Return list of all proofs with skills for talent by talent_id",
             description = "Return list of all proofs for talent with sponsors who placed kudos on proofs"
     )

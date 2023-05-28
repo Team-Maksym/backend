@@ -16,10 +16,13 @@ public interface SecurityServiceInterface {
         return Objects.equals(auth.getName(), String.valueOf(userId));
     }
 
-    boolean isSponsorActive (Authentication auth);
+    boolean isSponsorActive(Authentication auth);
+
     String getJWTToken(UserDetailsImpl authentication, long id);
+
     String createScope(UserDetailsImpl authentication);
 
     SessionInfo loginSponsor(Authentication auth);
+
     SessionInfo registerSponsor(NewUser newUser);
 }

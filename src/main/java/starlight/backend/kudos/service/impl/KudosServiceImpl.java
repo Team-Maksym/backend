@@ -53,6 +53,7 @@ public class KudosServiceImpl implements KudosServiceInterface {
                 .toList();
         return !kudosList.isEmpty();
     }
+
     @Override
     @Transactional(readOnly = true)
     public KudosOnProof getKudosOnProof(long proofId, Authentication auth) {

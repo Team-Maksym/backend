@@ -18,19 +18,8 @@ import starlight.backend.exception.proof.ProofNotFoundException;
 import starlight.backend.exception.proof.UserAccesDeniedToProofException;
 import starlight.backend.exception.proof.UserCanNotEditProofNotInDraftException;
 import starlight.backend.exception.user.talent.TalentNotFoundException;
-import starlight.backend.exception.PageNotFoundException;
-import starlight.backend.exception.proof.ProofNotFoundException;
-import starlight.backend.exception.proof.UserAccesDeniedToProofException;
-import starlight.backend.exception.proof.UserCanNotEditProofNotInDraftException;
-import starlight.backend.exception.user.talent.TalentNotFoundException;
 import starlight.backend.kudos.model.entity.KudosEntity;
 import starlight.backend.kudos.repository.KudosRepository;
-import starlight.backend.exception.PageNotFoundException;
-import starlight.backend.exception.proof.InvalidStatusException;
-import starlight.backend.exception.proof.ProofNotFoundException;
-import starlight.backend.exception.proof.UserAccesDeniedToProofException;
-import starlight.backend.exception.proof.UserCanNotEditProofNotInDraftException;
-import starlight.backend.exception.user.talent.TalentNotFoundException;
 import starlight.backend.proof.ProofMapper;
 import starlight.backend.proof.ProofRepository;
 import starlight.backend.proof.model.entity.ProofEntity;
@@ -250,31 +239,6 @@ public class ProofServiceImpl implements ProofServiceInterface {
         var pageRequest = getPaginationForTheTalent(talentId, page,
                 size, sort, Status.PUBLISHED.name());
         return mapper.toProofPagePagination(pageRequest);
-    }
-
-    @Override
-    @Transactional(readOnly = true)
-    public ProofPagePaginationWithSkills getTalentAllProofsWithSkills(Authentication auth, long talentId,
-                                                                      int page, int size, boolean sort, String status) {
-        isStatusCorrect(status);
-        if (securityService.checkingLoggedAndToken(talentId, auth)) {
-            Page<ProofEntity> pageRequest = getPaginationForTheTalent(talentId, page, size, sort, status);
-            return mapper.toProofPagePaginationWithSkills(pageRequest);
-        }
-        var pageRequest = getPaginationForTheTalent(talentId, page,
-                size, sort, Status.PUBLISHED.name());
-        return mapper.toProofPagePaginationWithSkills(pageRequest);
-    }
-
-    private Page<ProofEntity> getPaginationForTheTalent(long talentId, int page, int size,
-                                                        boolean sort, String status) {
-        isStatusCorrect(status);
-        return (status.equals(Status.ALL.getStatus())) ?
-                repository.findByUser_UserId(talentId,
-                        PageRequest.of(page, size, doSort(sort, DATA_CREATED)))
-                :
-                repository.findByUser_UserIdAndStatus(talentId, Status.valueOf(status),
-                        PageRequest.of(page, size, doSort(sort, DATA_CREATED)));
     }
 
     @Override

@@ -1,7 +1,6 @@
 package starlight.backend.skill.service;
 
 import org.springframework.security.core.Authentication;
-import starlight.backend.proof.model.enums.Status;
 import starlight.backend.proof.model.response.ProofListWithSkills;
 import starlight.backend.proof.model.response.ProofWithSkills;
 import starlight.backend.skill.model.entity.SkillEntity;

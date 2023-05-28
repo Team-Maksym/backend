@@ -65,17 +65,12 @@ class SecurityConfiguration {
                 .requestMatchers("/api/v1/talents").permitAll()
                 .requestMatchers("/api/v1/sponsors").permitAll()
                 .requestMatchers("/api/v2/talents").permitAll()
-                .requestMatchers("/api/v2/talents").permitAll()
                 .requestMatchers("/api/v1/proofs").permitAll()
                 .requestMatchers("/api/v2/proofs").permitAll()
                 .requestMatchers(POST, "/api/v1/talents/login").permitAll()
                 .requestMatchers(POST, "/api/v1/sponsors/login").permitAll()
                 .requestMatchers(antMatcher("/api/v1/proofs/**")).permitAll()
                 .requestMatchers("/api/v1/sponsors/recovery-account").permitAll()
-                .requestMatchers(antMatcher("/api/v1/proofs/**")).permitAll()
-                .requestMatchers("/api/v2/talents").permitAll()
-                .requestMatchers(antMatcher("/api/v1/proofs/**")).permitAll()
-                .requestMatchers("/api/v2/talents").permitAll()
                 /////////////////////////Another///////////////////////////////////////////////////
                 .anyRequest().authenticated()
         );

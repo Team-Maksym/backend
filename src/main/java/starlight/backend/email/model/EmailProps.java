@@ -6,6 +6,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 @Builder
 @ConfigurationProperties(prefix = "spring.mail")
 public record EmailProps(
-        String username
+        String username,
+        String password
 ) {
 }

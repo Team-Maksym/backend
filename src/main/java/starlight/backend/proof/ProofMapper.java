@@ -11,17 +11,6 @@ import starlight.backend.skill.model.response.SkillWithCategory;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.stream.Collectors;
-import starlight.backend.proof.model.response.*;
-import starlight.backend.skill.model.entity.SkillEntity;
-import starlight.backend.skill.model.response.SkillWithCategory;
-
-import java.util.LinkedList;
-import java.util.List;
-import java.util.stream.Collectors;
-import starlight.backend.proof.model.response.*;
-
-import java.util.LinkedList;
-import java.util.stream.Collectors;
 
 import static org.mapstruct.ReportingPolicy.IGNORE;
 
@@ -144,7 +133,7 @@ public interface ProofMapper {
                 .build();
     }
 
-    default ProofListWithSkills fromFulltoProofListWithSkills(List<ProofEntity> proofs){
+    default ProofListWithSkills fromFulltoProofListWithSkills(List<ProofEntity> proofs) {
 
         return ProofListWithSkills.builder()
                 .data(proofs.stream()

@@ -22,6 +22,7 @@ public class UserDetailsImpl implements UserDetails {
         this.role = role.TALENT;
         this.status = status.ACTIVE;
     }
+
     public UserDetailsImpl(String username, String password, Role role, SponsorStatus status) {
         this.username = username;
         this.password = password;

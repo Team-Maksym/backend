@@ -34,7 +34,7 @@ public class AdviceServiceImpl implements AdviceService {
             }
             //Тут можно имплементировать распределение логики на удаления аккаунтов с разными ролями в системе
             var accountEntityID = account.getEntityId();
-            if (sponsorRepository.findBySponsorId(accountEntityID).isEmpty()){
+            if (sponsorRepository.findBySponsorId(accountEntityID).isEmpty()) {
                 //Если спонсора уже нету в системе, то удаляем из DelayDeleteRepository
                 delayDeleteRepository.deleteById(accountEntityID);
                 continue;
@@ -61,7 +61,7 @@ public class AdviceServiceImpl implements AdviceService {
 
     @Override
     public UUID getUUID(long entityId) {
-        if (!delayDeleteRepository.existsByEntityId(entityId)){
+        if (!delayDeleteRepository.existsByEntityId(entityId)) {
             throw new UserNotFoundException(entityId);
         }
         return delayDeleteRepository.findByEntityId(entityId).orElseThrow(() -> new UserNotFoundException(entityId)).getUserDeletingProcessUuid();

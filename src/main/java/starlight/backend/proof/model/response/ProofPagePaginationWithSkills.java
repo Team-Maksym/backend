@@ -8,4 +8,5 @@ import java.util.List;
 public record ProofPagePaginationWithSkills(
         long total,
         List<ProofInfoWithSkills> data
-) {}
+) {
+}

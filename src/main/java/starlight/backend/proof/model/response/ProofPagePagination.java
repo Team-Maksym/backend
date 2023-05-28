@@ -8,4 +8,5 @@ import java.util.List;
 public record ProofPagePagination(
         long total,
         List<?> data
-) {}
+) {
+}

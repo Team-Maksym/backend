@@ -11,24 +11,16 @@ import jakarta.validation.constraints.Positive;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import starlight.backend.proof.model.enums.Status;
+import starlight.backend.proof.model.response.ProofListWithSkills;
 import starlight.backend.skill.model.response.SkillListWithPagination;
 import starlight.backend.skill.service.SkillServiceInterface;
 import starlight.backend.talent.model.response.TalentPagePagination;
 import starlight.backend.talent.model.response.TalentPagePaginationWithFilterSkills;
 import starlight.backend.talent.model.response.TalentWithSkills;
 import starlight.backend.talent.service.TalentServiceInterface;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-import starlight.backend.proof.model.response.ProofListWithSkills;
-
-import static org.springframework.http.ResponseEntity.ok;
 
 @RestController
 @AllArgsConstructor

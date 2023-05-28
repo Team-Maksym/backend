@@ -78,6 +78,7 @@ public class SecurityController {
         log.info("@PostMapping(\"/talents\")");
         return service.register(newUser);
     }
+
     @Operation(
             summary = "Login in system",
             description = "Login in system",

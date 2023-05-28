@@ -1,13 +1,17 @@
 package starlight.backend.config;
 
+import lombok.AllArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
+import starlight.backend.email.model.EmailProps;
 
 import java.util.Properties;
 
 @Configuration
+@AllArgsConstructor
 public class JavaMailSender {
+    EmailProps emailProps;
 
     @Bean
     public org.springframework.mail.javamail.JavaMailSender getJavaMailSender() {
@@ -15,8 +19,8 @@ public class JavaMailSender {
         mailSender.setHost("smtp-mail.outlook.com");
         mailSender.setPort(587);
 
-        mailSender.setUsername("java.team.maksym@gmail.com");
-        mailSender.setPassword("SoftServe123!");
+        mailSender.setUsername(emailProps.username());
+        mailSender.setPassword(emailProps.password());
 
         Properties props = mailSender.getJavaMailProperties();
         props.put("mail.transport.protocol", "smtp");
