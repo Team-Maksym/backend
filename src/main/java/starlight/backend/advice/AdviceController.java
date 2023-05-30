@@ -13,6 +13,7 @@ import starlight.backend.exception.proof.InvalidStatusException;
 import starlight.backend.exception.proof.ProofNotFoundException;
 import starlight.backend.exception.proof.UserAccesDeniedToProofException;
 import starlight.backend.exception.proof.UserCanNotEditProofNotInDraftException;
+import starlight.backend.exception.user.UserCanNotEditThisProfile;
 import starlight.backend.exception.user.UserNotFoundInDelayedDeleteRepository;
 import starlight.backend.exception.user.UserNotFoundWithUUIDException;
 import starlight.backend.exception.user.sponsor.SponsorAlreadyOnDeleteList;
@@ -78,6 +79,7 @@ public class AdviceController {
             SponsorCanNotSeeAnotherSponsor.class,
             YouCanNotReturnMoreKudosThanGaveException.class,
             YouAreInDeletingProcess.class,
+            UserCanNotEditThisProfile.class,
     })
     @ResponseStatus(HttpStatus.FORBIDDEN)
     public ErrorDTO forbidden(Exception exception) {

@@ -17,6 +17,7 @@ import starlight.backend.exception.proof.InvalidStatusException;
 import starlight.backend.exception.proof.ProofNotFoundException;
 import starlight.backend.exception.proof.UserAccesDeniedToProofException;
 import starlight.backend.exception.proof.UserCanNotEditProofNotInDraftException;
+import starlight.backend.exception.user.UserNotFoundException;
 import starlight.backend.exception.user.talent.TalentNotFoundException;
 import starlight.backend.kudos.model.entity.KudosEntity;
 import starlight.backend.kudos.repository.KudosRepository;
@@ -173,6 +174,8 @@ public class ProofServiceImpl implements ProofServiceInterface {
         }
         var proofEntity = repository.findById(id)
                 .orElseThrow(() -> new ProofNotFoundException(id));
+        var talent = userRepository.findById(talentId)
+                .orElseThrow(() -> new UserNotFoundException(id));
         if (!proofEntity.getStatus().equals(Status.DRAFT)
                 && proofUpdateRequest.status().equals(Status.DRAFT)) {
             throw new UserCanNotEditProofNotInDraftException();
@@ -184,6 +187,13 @@ public class ProofServiceImpl implements ProofServiceInterface {
                 || proofUpdateRequest.status().equals(Status.PUBLISHED)) {
             proofEntity.setStatus(proofUpdateRequest.status());
         }
+        proofEntity.setSkills(skillService.existsSkill(
+                proofEntity.getSkills(),
+                proofUpdateRequest.skills()));
+        talent.setTalentSkills(skillService.existsSkill(
+                proofEntity.getSkills(),
+                proofUpdateRequest.skills()));
+        userRepository.save(talent);
         proofEntity.setDateLastUpdated(Instant.now());
         repository.save(proofEntity);
         return mapper.toProofFullInfo(proofEntity);

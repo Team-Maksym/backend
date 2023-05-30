@@ -12,6 +12,8 @@ import org.springframework.web.server.ResponseStatusException;
 import starlight.backend.exception.proof.ProofNotFoundException;
 import starlight.backend.exception.proof.UserAccesDeniedToProofException;
 import starlight.backend.exception.proof.UserCanNotEditProofNotInDraftException;
+import starlight.backend.exception.skill.SkillNotFoundException;
+import starlight.backend.exception.user.UserCanNotEditThisProfile;
 import starlight.backend.exception.user.UserNotFoundException;
 import starlight.backend.exception.user.talent.TalentNotFoundException;
 import starlight.backend.proof.ProofMapper;
@@ -156,6 +158,23 @@ public class SkillServiceImpl implements SkillServiceInterface {
             var proof = proofRepository.findById(proofId)
                     .orElseThrow(() -> new ProofNotFoundException(proofId));
             proof.getSkills().remove(skill);
+        }
+    }
+
+    @Override
+    public void deleteSkills(long talentId, DeleteIdSkills deleteSkillId, Authentication auth) {
+        if (!securityService.checkingLoggedAndToken(talentId, auth)) {
+            throw new UserCanNotEditThisProfile(talentId);
+        }
+        for (long skillId : deleteSkillId.skillsId()) {
+            if (!userRepository.existsByTalentSkills_SkillId(skillId)) {
+                throw new SkillNotFoundException(skillId);
+            }
+            var skill = skillRepository.findById(skillId)
+                    .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "don`t found this skill"));
+            var user = userRepository.findById(talentId)
+                    .orElseThrow(() -> new UserNotFoundException(talentId));
+            user.getTalentSkills().remove(skill);
         }
     }
 

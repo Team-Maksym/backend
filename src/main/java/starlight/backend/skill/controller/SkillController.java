@@ -158,4 +158,28 @@ public class SkillController {
         log.info("@DeleteMapping(\"/talents/{talent-id}/proofs/{proof-id}/skills\")");
         serviceService.deleteSkillArray(talentId, proofId, skillId, auth);
     }
+
+    @Operation(
+            summary = "Delete array of skills on talent account",
+            description = "Delete array of skills on talent account."
+    )
+    @ApiResponses(value = {
+            @ApiResponse(
+                    responseCode = "200",
+                    content = @Content(
+                            mediaType = MediaType.APPLICATION_JSON_VALUE
+                    )
+            ),
+            @ApiResponse(responseCode = "404", description = "Not found"),
+            @ApiResponse(responseCode = "401", description = "Unauthorized"),
+            @ApiResponse(responseCode = "400", description = "Bad Request")
+    })
+    @PreAuthorize("hasRole('TALENT')")
+    @DeleteMapping("talents/{talent-id}/skills")
+    public void deleteSkills(@PathVariable("talent-id") long talentId,
+                                @RequestBody DeleteIdSkills skillId,
+                                Authentication auth) {
+        log.info("@DeleteMapping(\"talents/{talent-id}/skills\")");
+        serviceService.deleteSkills(talentId,skillId,auth);
+    }
 }

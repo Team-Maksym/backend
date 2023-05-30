@@ -35,4 +35,5 @@ public interface SkillServiceInterface {
 
     void deleteSkillArray(long talentId, long proofId, DeleteIdSkills skillId, Authentication auth);
 
+    void deleteSkills(long talentId, DeleteIdSkills skillId, Authentication auth);
 }
