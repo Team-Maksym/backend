@@ -5,6 +5,6 @@ public class UserAccesDeniedToDeleteThisUserException extends RuntimeException{
         super("User cannot delete this user" + userId);
     }
     public UserAccesDeniedToDeleteThisUserException(Long userId) {
-        super("User cannot delete this user" + userId);
+        super("User cannot delete this user. UserId = " + userId);
     }
 }

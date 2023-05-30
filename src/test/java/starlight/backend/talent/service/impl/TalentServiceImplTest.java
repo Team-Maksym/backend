@@ -17,6 +17,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.server.ResponseStatusException;
 import starlight.backend.exception.PageNotFoundException;
+import starlight.backend.exception.user.UserAccesDeniedToDeleteThisUserException;
 import starlight.backend.exception.user.UserNotFoundException;
 import starlight.backend.exception.user.talent.TalentNotFoundException;
 import starlight.backend.kudos.repository.KudosRepository;
@@ -251,8 +252,8 @@ class TalentServiceImplTest {
 
         // When // Then
         assertThatThrownBy(() -> talentService.deleteTalentProfile(user.getUserId(), null))
-                .isInstanceOf(ResponseStatusException.class)
-                .hasMessage("401 UNAUTHORIZED \"you cannot delete another talent\"");
+                .isInstanceOf(UserAccesDeniedToDeleteThisUserException.class)
+                .hasMessage("User cannot delete this user. UserId = " + user.getUserId());
     }
 
     @Test
@@ -265,7 +266,7 @@ class TalentServiceImplTest {
         when(securityService.checkingLoggedAndToken(talentId, authentication)).thenReturn(false);
 
         // When/Then
-        assertThrows(ResponseStatusException.class, () -> talentService.deleteTalentProfile(talentId, authentication));
+        assertThrows(UserAccesDeniedToDeleteThisUserException.class, () -> talentService.deleteTalentProfile(talentId, authentication));
         verify(securityService, times(1)).checkingLoggedAndToken(talentId, authentication);
         verify(userRepository, never()).findById(anyLong());
         verify(proofRepository, never()).findByUser_UserId(anyLong());
