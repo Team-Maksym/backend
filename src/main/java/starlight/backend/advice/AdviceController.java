@@ -14,6 +14,7 @@ import starlight.backend.exception.proof.ProofNotFoundException;
 import starlight.backend.exception.proof.UserAccesDeniedToProofException;
 import starlight.backend.exception.proof.UserCanNotEditProofNotInDraftException;
 import starlight.backend.exception.user.UserCanNotEditThisProfile;
+import starlight.backend.exception.user.UserNotFoundException;
 import starlight.backend.exception.user.UserNotFoundInDelayedDeleteRepository;
 import starlight.backend.exception.user.UserNotFoundWithUUIDException;
 import starlight.backend.exception.user.sponsor.SponsorAlreadyOnDeleteList;
@@ -63,10 +64,7 @@ public class AdviceController {
             UserNotFoundInDelayedDeleteRepository.class,
             UserNotFoundWithUUIDException.class,
             SponsorNotFoundException.class,
-            UserNotFoundInDelayedDeleteRepository.class,
-            UserNotFoundWithUUIDException.class,
-            UserNotFoundInDelayedDeleteRepository.class,
-            UserNotFoundWithUUIDException.class,
+            UserNotFoundException.class,
     })
     @ResponseStatus(HttpStatus.NOT_FOUND)
     public ErrorDTO notExists(Exception exception) {
