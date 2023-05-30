@@ -20,6 +20,7 @@ import starlight.backend.proof.ProofMapper;
 import starlight.backend.proof.ProofRepository;
 import starlight.backend.proof.model.entity.ProofEntity;
 import starlight.backend.proof.model.enums.Status;
+import starlight.backend.proof.model.response.ProofInfoWithSkills;
 import starlight.backend.proof.model.response.ProofListWithSkills;
 import starlight.backend.proof.model.response.ProofWithSkills;
 import starlight.backend.security.service.SecurityServiceInterface;
@@ -36,10 +37,7 @@ import starlight.backend.talent.service.TalentServiceInterface;
 import starlight.backend.user.repository.UserRepository;
 
 import java.time.Instant;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Objects;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 
@@ -230,7 +228,7 @@ public class SkillServiceImpl implements SkillServiceInterface {
         Status status = Status.valueOf(requestedStatus);
         List<ProofEntity> proofs;
         if(!proofRepository.existsByUser_UserIdAndSkills_SkillId(talentId,skillId)){
-            return proofMapper.toProofListWithSkills(List.of(new ProofEntity()));
+            return ProofListWithSkills.builder().data(Collections.emptyList()).build();
         }
         if (!securityService.checkingLoggedAndToken(talentId, auth)) {
             proofs = proofRepository.findByUser_UserIdAndSkills_SkillIdAndStatus(talentId, skillId, Status.PUBLISHED);
