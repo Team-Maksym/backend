@@ -6,6 +6,8 @@ import org.hibernate.validator.constraints.Length;
 import org.hibernate.validator.constraints.URL;
 import starlight.backend.proof.model.enums.Status;
 
+import java.util.List;
+
 @Builder
 public record ProofUpdateRequest(
         @Length(max = 255)
@@ -19,7 +21,9 @@ public record ProofUpdateRequest(
         @URL
         String link,
 
-        Status status
+        Status status,
+
+        List<String> skills
 ) {
 }
 

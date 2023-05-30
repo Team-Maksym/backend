@@ -2,6 +2,7 @@ package starlight.backend.proof;
 
 import org.mapstruct.Mapper;
 import org.springframework.data.domain.Page;
+import starlight.backend.kudos.model.entity.KudosEntity;
 import starlight.backend.proof.model.entity.ProofEntity;
 import starlight.backend.proof.model.response.*;
 import starlight.backend.skill.model.entity.SkillEntity;
@@ -60,8 +61,44 @@ public interface ProofMapper {
                 .build();
     }
 
+    default ProofPagePagination toProofPagePaginationWithProofFullInfoWithKudoses(Page<ProofEntity> proofs) {
+        return ProofPagePagination.builder()
+                .total(proofs.getTotalElements())
+                .data(proofs.getContent()
+                        .stream()
+                        .map(this::toProofFullInfoWithKudoses)
+                        .toList())
+                .build();
+    }
+
+    default ProofFullInfoWithKudoses toProofFullInfoWithKudoses(ProofEntity proof) {
+        return ProofFullInfoWithKudoses.builder()
+                .id(proof.getProofId())
+                .title(proof.getTitle())
+                .link(proof.getLink())
+                .status(proof.getStatus())
+                .dateCreated(proof.getDateCreated())
+                .dateLastUpdated(proof.getDateLastUpdated())
+                .description(proof.getDescription())
+                .sponsorOnProofShortInfoList(proof.getKudos()
+                        .stream()
+                        .map(this::toSponsorOnProofShortInfo)
+                        .collect(Collectors.toCollection(LinkedList::new))
+                )
+                .build();
+    }
+
+    default SponsorOnProofShortInfo toSponsorOnProofShortInfo(KudosEntity kudosEntity) {
+        return SponsorOnProofShortInfo.builder()
+                .sponsorName(kudosEntity.getOwner().getFullName())
+                .sponsorAvatarUrl(kudosEntity.getOwner().getAvatar())
+                .countKudos(kudosEntity.getCountKudos())
+                .build();
+    }
+
     default ProofFullInfo toProofFullInfo(ProofEntity proof) {
         return ProofFullInfo.builder()
+                .id(proof.getProofId())
                 .title(proof.getTitle())
                 .link(proof.getLink())
                 .status(proof.getStatus())
@@ -96,7 +133,7 @@ public interface ProofMapper {
                 .build();
     }
 
-    default ProofListWithSkills fromFulltoProofListWithSkills(List<ProofEntity> proofs){
+    default ProofListWithSkills fromFulltoProofListWithSkills(List<ProofEntity> proofs) {
 
         return ProofListWithSkills.builder()
                 .data(proofs.stream()

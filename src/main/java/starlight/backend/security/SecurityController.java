@@ -13,9 +13,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
-import starlight.backend.security.service.SecurityServiceInterface;
 import starlight.backend.security.model.request.NewUser;
 import starlight.backend.security.model.response.SessionInfo;
+import starlight.backend.security.service.SecurityServiceInterface;
 
 
 @AllArgsConstructor
@@ -41,21 +41,14 @@ public class SecurityController {
                                     schema = @Schema(implementation = SessionInfo.class)
                             )
                     ),
-                    @ApiResponse(
-                            responseCode = "401",
-                            description = "Unauthorized",
-                            content = @Content(
-                                    mediaType = "application/json",
-                                    schema = @Schema(implementation = SessionInfo.class)
-                            )
-                    )
+                    @ApiResponse(responseCode = "401", description = "Unauthorized")
             }
     )
     @PostMapping("/talents/login")
     @ResponseStatus(HttpStatus.OK)
-    public SessionInfo login(Authentication authentication) {
+    public SessionInfo login(Authentication auth) {
         log.info("@PostMapping(\"/talents/login\")");
-        return service.loginInfo(authentication.getName());
+        return service.loginInfo(auth);
     }
 
     @Operation(
@@ -75,35 +68,67 @@ public class SecurityController {
                                     )
                             )
                     ),
-                    @ApiResponse(
-                            responseCode = "400",
-                            description = "Validation error",
-                            content = @Content(
-                                    mediaType = MediaType.APPLICATION_JSON_VALUE,
-                                    schema = @Schema(
-                                            implementation = Exception.class
-                                    )
-                            )
-                    ),
-                    @ApiResponse(
-                            responseCode = "409",
-                            description = "Conflict",
-                            content = @Content(
-                                    mediaType = MediaType.APPLICATION_JSON_VALUE,
-                                    schema = @Schema(
-                                            name = "Exception",
-                                            implementation = Exception.class
-                                    )
-                            )
-                    )
+                    @ApiResponse(responseCode = "400", description = "Validation error"),
+                    @ApiResponse(responseCode = "409", description = "Conflict")
             }
     )
     @PostMapping("/talents")
     @ResponseStatus(HttpStatus.CREATED)
     public SessionInfo register(@Valid @RequestBody NewUser newUser) {
-
         log.info("@PostMapping(\"/talents\")");
-
         return service.register(newUser);
+    }
+
+    @Operation(
+            summary = "Login in system",
+            description = "Login in system",
+            tags = {"Security"}
+    )
+    @ApiResponses(
+            value = {
+                    @ApiResponse(
+                            responseCode = "200",
+                            description = "Success",
+                            content = @Content(
+                                    mediaType = "application/json",
+                                    schema = @Schema(implementation = SessionInfo.class)
+                            )
+                    ),
+                    @ApiResponse(responseCode = "401", description = "Unauthorized")
+            }
+    )
+    @PostMapping("/sponsors/login")
+    @ResponseStatus(HttpStatus.OK)
+    public SessionInfo loginSponsor(Authentication auth) {
+        log.info("@PostMapping(\"/sponsors/login\")");
+        return service.loginSponsor(auth);
+    }
+
+    @Operation(
+            summary = "Create a new sponsor",
+            description = "Create a new sponsor",
+            tags = {"Security"}
+    )
+    @ApiResponses(
+            value = {
+                    @ApiResponse(
+                            responseCode = "201",
+                            description = "Created",
+                            content = @Content(
+                                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                                    schema = @Schema(
+                                            implementation = SessionInfo.class
+                                    )
+                            )
+                    ),
+                    @ApiResponse(responseCode = "400", description = "Validation error"),
+                    @ApiResponse(responseCode = "409", description = "Conflict")
+            }
+    )
+    @PostMapping("/sponsors")
+    @ResponseStatus(HttpStatus.CREATED)
+    public SessionInfo registerSponsor(@Valid @RequestBody NewUser newUser) {
+        log.info("@PostMapping(\"/sponsors\")");
+        return service.registerSponsor(newUser);
     }
 }

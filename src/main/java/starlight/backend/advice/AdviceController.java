@@ -8,12 +8,15 @@ import starlight.backend.exception.AuthorizationFailureException;
 import starlight.backend.exception.EmailAlreadyOccupiedException;
 import starlight.backend.exception.PageNotFoundException;
 import starlight.backend.exception.YouAreInDeletingProcess;
+import starlight.backend.exception.kudos.*;
 import starlight.backend.exception.proof.InvalidStatusException;
 import starlight.backend.exception.proof.ProofNotFoundException;
 import starlight.backend.exception.proof.UserAccesDeniedToProofException;
 import starlight.backend.exception.proof.UserCanNotEditProofNotInDraftException;
-import starlight.backend.exception.user.UserNotFoundInDelayedDeleteRepository;
-import starlight.backend.exception.user.UserNotFoundWithUUIDException;
+import starlight.backend.exception.user.*;
+import starlight.backend.exception.user.sponsor.SponsorAlreadyOnDeleteList;
+import starlight.backend.exception.user.sponsor.SponsorCanNotSeeAnotherSponsor;
+import starlight.backend.exception.user.sponsor.SponsorNotFoundException;
 import starlight.backend.exception.user.talent.TalentNotFoundException;
 
 @RestControllerAdvice
@@ -24,6 +27,9 @@ public class AdviceController {
             UserCanNotEditProofNotInDraftException.class,
             UserAccesDeniedToProofException.class,
             InvalidStatusException.class,
+            UserCannotAddKudosToTheirAccount.class,
+            KudosRequestMustBeNotZeroException.class,
+            InvalidStatusException.class,
     })
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ErrorDTO badRequest(Exception exception) {
@@ -31,6 +37,9 @@ public class AdviceController {
     }
 
     @ExceptionHandler({
+            EmailAlreadyOccupiedException.class,
+            ProofAlreadyHaveKudosFromUser.class,
+            SponsorAlreadyOnDeleteList.class,
             EmailAlreadyOccupiedException.class,
     })
     @ResponseStatus(HttpStatus.CONFLICT)
@@ -40,6 +49,7 @@ public class AdviceController {
 
     @ExceptionHandler({
             AuthorizationFailureException.class,
+            UserAccesDeniedToDeleteThisUserException.class,
     })
     @ResponseStatus(HttpStatus.UNAUTHORIZED)
     public ErrorDTO authFailure(Exception exception) {
@@ -51,6 +61,8 @@ public class AdviceController {
             TalentNotFoundException.class,
             UserNotFoundInDelayedDeleteRepository.class,
             UserNotFoundWithUUIDException.class,
+            SponsorNotFoundException.class,
+            UserNotFoundException.class,
     })
     @ResponseStatus(HttpStatus.NOT_FOUND)
     public ErrorDTO notExists(Exception exception) {
@@ -58,58 +70,64 @@ public class AdviceController {
     }
 
     @ExceptionHandler({
+            TalentCanNotAddKudos.class,
+            NotEnoughKudosException.class,
+            SponsorCanNotSeeAnotherSponsor.class,
+            YouCanNotReturnMoreKudosThanGaveException.class,
             YouAreInDeletingProcess.class,
+            UserCanNotEditThisProfile.class,
     })
     @ResponseStatus(HttpStatus.FORBIDDEN)
     public ErrorDTO forbidden(Exception exception) {
         return new ErrorDTO(exception.getMessage());
     }
-    // @ExceptionHandler({
-    //         Exception.class
-    // })
-    // @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-    // public ErrorDTO exception(Exception e) {
-    //     if (e instanceof SQLException) {
-    //         if (!ignoreSQLException(
-    //                 ((SQLException) e).
-    //                         getSQLState())) {
 
-    //             e.printStackTrace(System.err);
-    //             System.err.println("SQLState: " +
-    //                     ((SQLException) e).getSQLState());
+// @ExceptionHandler({
+//         Exception.class
+// })
+// @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+// public ErrorDTO exception(Exception e) {
+//     if (e instanceof SQLException) {
+//         if (!ignoreSQLException(
+//                 ((SQLException) e).
+//                         getSQLState())) {
 
-    //             System.err.println("Error Code: " +
-    //                     ((SQLException) e).getErrorCode());
+//             e.printStackTrace(System.err);
+//             System.err.println("SQLState: " +
+//                     ((SQLException) e).getSQLState());
 
-    //             System.err.println("Message: " + e.getMessage());
+//             System.err.println("Error Code: " +
+//                     ((SQLException) e).getErrorCode());
 
-    //             Throwable t = e.getCause();
-    //             while (t != null) {
-    //                 System.out.println("Cause: " + t);
-    //                 t = t.getCause();
-    //             }
-    //         }
-    //     }
-    //     return new ErrorDTO(e.getMessage());
-    // }
+//             System.err.println("Message: " + e.getMessage());
 
-    // public static boolean ignoreSQLException(String sqlState) {
+//             Throwable t = e.getCause();
+//             while (t != null) {
+//                 System.out.println("Cause: " + t);
+//                 t = t.getCause();
+//             }
+//         }
+//     }
+//     return new ErrorDTO(e.getMessage());
+// }
 
-    //     if (sqlState == null) {
-    //         System.out.println("The SQL state is not defined!");
-    //         return false;
-    //     }
+// public static boolean ignoreSQLException(String sqlState) {
 
-    //     // X0Y32: Jar file already exists in schema
-    //     if (sqlState.equalsIgnoreCase("X0Y32"))
-    //         return true;
+//     if (sqlState == null) {
+//         System.out.println("The SQL state is not defined!");
+//         return false;
+//     }
 
-    //     // 42Y55: Table already exists in schema
-    //     if (sqlState.equalsIgnoreCase("42Y55"))
-    //         return true;
+//     // X0Y32: Jar file already exists in schema
+//     if (sqlState.equalsIgnoreCase("X0Y32"))
+//         return true;
 
-    //     return false;
-    // }
+//     // 42Y55: Table already exists in schema
+//     if (sqlState.equalsIgnoreCase("42Y55"))
+//         return true;
+
+//     return false;
+// }
 
     record ErrorDTO(String message) {
     }

@@ -3,10 +3,8 @@ package starlight.backend.proof.model.response;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Builder;
 import starlight.backend.proof.model.enums.Status;
-import starlight.backend.skill.model.response.SkillWithCategory;
 
 import java.time.Instant;
-import java.util.LinkedList;
 import java.util.List;
 
 @Builder

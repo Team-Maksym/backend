@@ -8,8 +8,6 @@ import starlight.backend.talent.model.response.*;
 import starlight.backend.user.model.entity.PositionEntity;
 import starlight.backend.user.model.entity.UserEntity;
 
-import java.util.List;
-
 import static org.mapstruct.ReportingPolicy.IGNORE;
 
 @Mapper(componentModel = "spring", unmappedTargetPolicy = IGNORE)

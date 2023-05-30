@@ -37,4 +37,7 @@ public interface ProofServiceInterface {
 
     long addProofProfileWithSkill(long talentId, ProofAddWithSkillsRequest proofAddWithSkillsRequest, Authentication auth);
 
+    ProofPagePagination getTalentAllProofsWithKudoses(Authentication auth, long talentId,
+                                                      int page, int size, boolean sort, String status);
+
 }

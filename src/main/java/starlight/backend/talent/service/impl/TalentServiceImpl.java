@@ -12,10 +12,12 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 import starlight.backend.exception.PageNotFoundException;
-import starlight.backend.exception.filter.FilterMustBeNotNullException;
 import starlight.backend.exception.proof.InvalidStatusException;
+import starlight.backend.exception.proof.UserAccesDeniedToProofException;
+import starlight.backend.exception.user.UserAccesDeniedToDeleteThisUserException;
 import starlight.backend.exception.user.UserNotFoundException;
 import starlight.backend.exception.user.talent.TalentNotFoundException;
+import starlight.backend.kudos.repository.KudosRepository;
 import starlight.backend.proof.ProofRepository;
 import starlight.backend.proof.model.entity.ProofEntity;
 import starlight.backend.proof.model.enums.Status;
@@ -33,10 +35,7 @@ import starlight.backend.user.model.entity.UserEntity;
 import starlight.backend.user.repository.PositionRepository;
 import starlight.backend.user.repository.UserRepository;
 
-import java.util.Arrays;
-import java.util.List;
-import java.util.Objects;
-import java.util.Set;
+import java.util.*;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
@@ -45,6 +44,7 @@ import java.util.stream.Collectors;
 @Transactional
 @Slf4j
 public class TalentServiceImpl implements TalentServiceInterface {
+    private KudosRepository kudosRepository;
     private MapperTalent talentMapper;
     private UserRepository userRepository;
     private PositionRepository positionRepository;
@@ -114,7 +114,9 @@ public class TalentServiceImpl implements TalentServiceInterface {
 
     private Set<PositionEntity> validationPosition(Set<PositionEntity> talentPositions,
                                                    List<String> positions) {
-        if (positions != null && !positions.isEmpty()) {
+        if (positions == null) {
+            return Collections.emptySet();
+        }
             Set<PositionEntity> newPosition = positions.stream()
                     .map(position -> {
                         if (position != null && !position.isEmpty()) {
@@ -130,23 +132,27 @@ public class TalentServiceImpl implements TalentServiceInterface {
                     })
                     .filter(Objects::nonNull)
                     .collect(Collectors.toSet());
+            newPosition.addAll(talentPositions);
             return !newPosition.isEmpty() ? newPosition : talentPositions;
-        }
-        return talentPositions;
+//            TODO: add delete endpoint for delete positions
     }
 
     @Override
     public void deleteTalentProfile(long talentId, Authentication auth) {
         if (!securityService.checkingLoggedAndToken(talentId, auth)) {
-            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "you cannot delete another talent");
+            throw new UserAccesDeniedToDeleteThisUserException(talentId);
         }
         UserEntity user = userRepository.findById(talentId)
                 .orElseThrow(() -> new UserNotFoundException(talentId));
-        user.setPositions(null);
+        user.getPositions().clear();
         user.getAuthorities().clear();
+        user.getTalentSkills().clear();
         if (!user.getProofs().isEmpty()) {
             for (ProofEntity proof : proofRepository.findByUser_UserId(talentId)) {
                 proof.setUser(null);
+                proof.getSkills().clear();
+                proof.getKudos().clear();
+                kudosRepository.deleteAll(proof.getKudos());
                 proofRepository.deleteById(proof.getProofId());
             }
         }

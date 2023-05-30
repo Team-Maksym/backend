@@ -17,7 +17,10 @@ import starlight.backend.exception.proof.InvalidStatusException;
 import starlight.backend.exception.proof.ProofNotFoundException;
 import starlight.backend.exception.proof.UserAccesDeniedToProofException;
 import starlight.backend.exception.proof.UserCanNotEditProofNotInDraftException;
+import starlight.backend.exception.user.UserNotFoundException;
 import starlight.backend.exception.user.talent.TalentNotFoundException;
+import starlight.backend.kudos.model.entity.KudosEntity;
+import starlight.backend.kudos.repository.KudosRepository;
 import starlight.backend.proof.ProofMapper;
 import starlight.backend.proof.ProofRepository;
 import starlight.backend.proof.model.entity.ProofEntity;
@@ -49,6 +52,7 @@ public class ProofServiceImpl implements ProofServiceInterface {
     private ProofRepository repository;
     private UserRepository userRepository;
     private ProofMapper mapper;
+    private KudosRepository kudosRepository;
     private SecurityServiceInterface securityService;
     private SkillServiceInterface skillService;
 
@@ -92,7 +96,7 @@ public class ProofServiceImpl implements ProofServiceInterface {
     public long addProofProfileWithSkill(long talentId,
                                          ProofAddWithSkillsRequest proofAddWithSkillsRequest,
                                          Authentication auth) {
-        
+
         var talent = userRepository.findById(talentId)
                 .orElseThrow(() -> new ProofNotFoundException(talentId));
         talent.setTalentSkills(skillService.existsSkill(
@@ -115,6 +119,20 @@ public class ProofServiceImpl implements ProofServiceInterface {
                         .toList())
                 .build());
         return proof.getProofId();
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public ProofPagePagination getTalentAllProofsWithKudoses(Authentication auth, long talentId,
+                                                             int page, int size, boolean sort, String status) {
+        if (securityService.checkingLoggedAndToken(talentId, auth)) {
+            Page<ProofEntity> pageRequest = getPaginationForTheTalent(talentId, page, size, sort, status);
+            return mapper.toProofPagePaginationWithProofFullInfoWithKudoses(pageRequest);
+        }
+        var pageRequest = getPaginationForTheTalent(talentId, page,
+                size, sort, Status.PUBLISHED.name());
+
+        return mapper.toProofPagePaginationWithProofFullInfoWithKudoses(pageRequest);
     }
 
     @Override
@@ -156,6 +174,8 @@ public class ProofServiceImpl implements ProofServiceInterface {
         }
         var proofEntity = repository.findById(id)
                 .orElseThrow(() -> new ProofNotFoundException(id));
+        var talent = userRepository.findById(talentId)
+                .orElseThrow(() -> new UserNotFoundException(id));
         if (!proofEntity.getStatus().equals(Status.DRAFT)
                 && proofUpdateRequest.status().equals(Status.DRAFT)) {
             throw new UserCanNotEditProofNotInDraftException();
@@ -167,6 +187,13 @@ public class ProofServiceImpl implements ProofServiceInterface {
                 || proofUpdateRequest.status().equals(Status.PUBLISHED)) {
             proofEntity.setStatus(proofUpdateRequest.status());
         }
+        proofEntity.setSkills(skillService.existsSkill(
+                proofEntity.getSkills(),
+                proofUpdateRequest.skills()));
+        talent.setTalentSkills(skillService.existsSkill(
+                proofEntity.getSkills(),
+                proofUpdateRequest.skills()));
+        userRepository.save(talent);
         proofEntity.setDateLastUpdated(Instant.now());
         repository.save(proofEntity);
         return mapper.toProofFullInfo(proofEntity);
@@ -202,6 +229,12 @@ public class ProofServiceImpl implements ProofServiceInterface {
         ProofEntity proof = repository.findById(proofId)
                 .orElseThrow(() -> new ProofNotFoundException(proofId));
         proof.setUser(null);
+        for (KudosEntity kudos : kudosRepository.findByProof_ProofId(proofId)) {
+            kudos.setProof(null);
+            kudos.setOwner(null);
+            kudosRepository.deleteById(kudos.getKudosId());
+        }
+        proof.getKudos().clear();
         repository.deleteById(proofId);
     }
 

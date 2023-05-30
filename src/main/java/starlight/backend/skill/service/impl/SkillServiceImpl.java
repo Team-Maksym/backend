@@ -12,12 +12,15 @@ import org.springframework.web.server.ResponseStatusException;
 import starlight.backend.exception.proof.ProofNotFoundException;
 import starlight.backend.exception.proof.UserAccesDeniedToProofException;
 import starlight.backend.exception.proof.UserCanNotEditProofNotInDraftException;
+import starlight.backend.exception.skill.SkillNotFoundException;
+import starlight.backend.exception.user.UserCanNotEditThisProfile;
 import starlight.backend.exception.user.UserNotFoundException;
 import starlight.backend.exception.user.talent.TalentNotFoundException;
 import starlight.backend.proof.ProofMapper;
 import starlight.backend.proof.ProofRepository;
 import starlight.backend.proof.model.entity.ProofEntity;
 import starlight.backend.proof.model.enums.Status;
+import starlight.backend.proof.model.response.ProofInfoWithSkills;
 import starlight.backend.proof.model.response.ProofListWithSkills;
 import starlight.backend.proof.model.response.ProofWithSkills;
 import starlight.backend.security.service.SecurityServiceInterface;
@@ -34,10 +37,7 @@ import starlight.backend.talent.service.TalentServiceInterface;
 import starlight.backend.user.repository.UserRepository;
 
 import java.time.Instant;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Objects;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 
@@ -160,6 +160,23 @@ public class SkillServiceImpl implements SkillServiceInterface {
     }
 
     @Override
+    public void deleteSkills(long talentId, DeleteIdSkills deleteSkillId, Authentication auth) {
+        if (!securityService.checkingLoggedAndToken(talentId, auth)) {
+            throw new UserCanNotEditThisProfile(talentId);
+        }
+        for (long skillId : deleteSkillId.skillsId()) {
+            if (!userRepository.existsByTalentSkills_SkillId(skillId)) {
+                throw new SkillNotFoundException(skillId);
+            }
+            var skill = skillRepository.findById(skillId)
+                    .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "don`t found this skill"));
+            var user = userRepository.findById(talentId)
+                    .orElseThrow(() -> new UserNotFoundException(talentId));
+            user.getTalentSkills().remove(skill);
+        }
+    }
+
+    @Override
     public TalentWithSkills addSkillToTalent(long talentId, AddSkill skills, Authentication auth) {
         if (!securityService.checkingLoggedAndToken(talentId, auth)) {
             throw new UserAccesDeniedToProofException();
@@ -211,7 +228,7 @@ public class SkillServiceImpl implements SkillServiceInterface {
         Status status = Status.valueOf(requestedStatus);
         List<ProofEntity> proofs;
         if(!proofRepository.existsByUser_UserIdAndSkills_SkillId(talentId,skillId)){
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "don`t found proof by talentId and skillId!");
+            return ProofListWithSkills.builder().data(Collections.emptyList()).build();
         }
         if (!securityService.checkingLoggedAndToken(talentId, auth)) {
             proofs = proofRepository.findByUser_UserIdAndSkills_SkillIdAndStatus(talentId, skillId, Status.PUBLISHED);
