@@ -15,6 +15,7 @@ import starlight.backend.exception.PageNotFoundException;
 import starlight.backend.exception.proof.InvalidStatusException;
 import starlight.backend.exception.user.UserNotFoundException;
 import starlight.backend.exception.user.talent.TalentNotFoundException;
+import starlight.backend.kudos.repository.KudosRepository;
 import starlight.backend.proof.ProofRepository;
 import starlight.backend.proof.model.entity.ProofEntity;
 import starlight.backend.proof.model.enums.Status;
@@ -44,6 +45,7 @@ import java.util.stream.Collectors;
 @Transactional
 @Slf4j
 public class TalentServiceImpl implements TalentServiceInterface {
+    private final KudosRepository kudosRepository;
     private MapperTalent talentMapper;
     private UserRepository userRepository;
     private PositionRepository positionRepository;
@@ -143,10 +145,13 @@ public class TalentServiceImpl implements TalentServiceInterface {
                 .orElseThrow(() -> new UserNotFoundException(talentId));
         user.getPositions().clear();
         user.getAuthorities().clear();
+        user.getTalentSkills().clear();
         if (!user.getProofs().isEmpty()) {
             for (ProofEntity proof : proofRepository.findByUser_UserId(talentId)) {
                 proof.setUser(null);
+                proof.getSkills().clear();
                 proof.getKudos().clear();
+                kudosRepository.deleteAll(proof.getKudos());
                 proofRepository.deleteById(proof.getProofId());
             }
         }
