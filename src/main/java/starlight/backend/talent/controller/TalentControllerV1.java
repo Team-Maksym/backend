@@ -86,7 +86,11 @@ public class TalentControllerV1 {
         return talentService.talentFullInfo(talentId);
     }
 
-    @Operation(summary = "Update talent by id")
+    @Operation(
+            summary = "Update talent by id",
+            description = "Update a talent from id." +
+                    " The response is talent object with fields 'full_name', 'email', 'birthday', 'avatar', 'education', 'experience'," +
+                    " 'positions'[] (Send null if you want clear position list; Empty do nothing), 'skills'[].")
     @ApiResponses(value = {
             @ApiResponse(
                     responseCode = "200",

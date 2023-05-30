@@ -13,10 +13,7 @@ import starlight.backend.exception.proof.InvalidStatusException;
 import starlight.backend.exception.proof.ProofNotFoundException;
 import starlight.backend.exception.proof.UserAccesDeniedToProofException;
 import starlight.backend.exception.proof.UserCanNotEditProofNotInDraftException;
-import starlight.backend.exception.user.UserCanNotEditThisProfile;
-import starlight.backend.exception.user.UserNotFoundException;
-import starlight.backend.exception.user.UserNotFoundInDelayedDeleteRepository;
-import starlight.backend.exception.user.UserNotFoundWithUUIDException;
+import starlight.backend.exception.user.*;
 import starlight.backend.exception.user.sponsor.SponsorAlreadyOnDeleteList;
 import starlight.backend.exception.user.sponsor.SponsorCanNotSeeAnotherSponsor;
 import starlight.backend.exception.user.sponsor.SponsorNotFoundException;
@@ -52,6 +49,7 @@ public class AdviceController {
 
     @ExceptionHandler({
             AuthorizationFailureException.class,
+            UserAccesDeniedToDeleteThisUserException.class,
     })
     @ResponseStatus(HttpStatus.UNAUTHORIZED)
     public ErrorDTO authFailure(Exception exception) {

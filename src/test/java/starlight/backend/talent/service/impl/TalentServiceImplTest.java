@@ -19,9 +19,11 @@ import org.springframework.web.server.ResponseStatusException;
 import starlight.backend.exception.PageNotFoundException;
 import starlight.backend.exception.user.UserNotFoundException;
 import starlight.backend.exception.user.talent.TalentNotFoundException;
+import starlight.backend.kudos.repository.KudosRepository;
 import starlight.backend.proof.ProofRepository;
 import starlight.backend.proof.model.entity.ProofEntity;
 import starlight.backend.security.service.SecurityServiceInterface;
+import starlight.backend.skill.model.entity.SkillEntity;
 import starlight.backend.talent.MapperTalent;
 import starlight.backend.talent.model.request.TalentUpdateRequest;
 import starlight.backend.talent.model.response.TalentFullInfo;
@@ -45,7 +47,8 @@ class TalentServiceImplTest {
 
     @Mock
     private MapperTalent mapper;
-
+    @Mock
+    private KudosRepository kudosRepository;
     @Mock
     private UserRepository userRepository;
 
@@ -209,34 +212,36 @@ class TalentServiceImplTest {
         verify(userRepository, never()).save(any(UserEntity.class));
     }
 
-//    TODO: fix this test
-//    @DisplayName("Delete talent profile successfully")
-//    @Test
-//    void deleteTalentProfile() {
-//        // Given
-//        long talentId = 1L;
-//        Authentication auth = Mockito.mock(Authentication.class);
-//        given(userRepository.findById(user.getUserId())).willReturn(Optional.of(user));
-//        when(securityService.checkingLoggedAndToken(user.getUserId(), auth)).thenReturn(true);
-//        Set<ProofEntity> proofList = new HashSet<>();
-//        ProofEntity proof = new ProofEntity();
-//        proof.setProofId(1L);
-//        proof.setUser(user);
-//        proof.setKudos(new HashSet<>());
-//        proofList.add(proof);
-//        user.setProofs(proofList);
-//        user.setAuthorities(new HashSet<>(Arrays.asList("TALENT_ROLE")));
-//        when(proofRepository.findByUser_UserId(talentId)).thenReturn(Collections.emptyList());
-//        doNothing().when(userRepository).deleteById(talentId);
-//
-//        // When
-//        talentService.deleteTalentProfile(user.getUserId(), auth);
-//
-//        // Then
-//        verify(securityService).checkingLoggedAndToken(user.getUserId(), auth);
-//        verify(userRepository, times(1)).findById(user.getUserId());
-//        assertTrue(user.getProofs().isEmpty());
-//    }
+    @DisplayName("Delete talent profile successfully")
+    @Test
+    void deleteTalentProfile() {
+        // Given
+        long talentId = 1L;
+        Authentication auth = Mockito.mock(Authentication.class);
+        given(userRepository.findById(user.getUserId())).willReturn(Optional.of(user));
+        when(securityService.checkingLoggedAndToken(user.getUserId(), auth)).thenReturn(true);
+        Set<ProofEntity> proofList = new HashSet<>();
+        ProofEntity proof = new ProofEntity();
+        proof.setProofId(1L);
+        proof.setUser(user);
+        proof.setKudos(new HashSet<>());
+        proof.setSkills(List.of(new SkillEntity()));
+        proofList.add(proof);
+        user.setProofs(proofList);
+        user.setPositions(new HashSet<>());
+        user.setTalentSkills(new ArrayList<>());
+        user.setAuthorities(new HashSet<>(Arrays.asList("TALENT_ROLE")));
+        when(proofRepository.findByUser_UserId(talentId)).thenReturn(Collections.emptyList());
+        doNothing().when(userRepository).deleteById(talentId);
+
+        // When
+        talentService.deleteTalentProfile(user.getUserId(), auth);
+
+        // Then
+        verify(securityService).checkingLoggedAndToken(user.getUserId(), auth);
+        verify(userRepository, times(1)).findById(user.getUserId());
+        assertTrue(user.getProofs().isEmpty());
+    }
 
     @DisplayName("JUnit test for delete talent method which throw exception Unauthorized")
     @Test
