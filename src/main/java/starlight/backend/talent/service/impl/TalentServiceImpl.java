@@ -132,7 +132,7 @@ public class TalentServiceImpl implements TalentServiceInterface {
                     })
                     .filter(Objects::nonNull)
                     .collect(Collectors.toSet());
-            newPosition.addAll(talentPositions);
+            //newPosition.addAll(talentPositions);
             return !newPosition.isEmpty() ? newPosition : talentPositions;
 //            TODO: add delete endpoint for delete positions
     }
