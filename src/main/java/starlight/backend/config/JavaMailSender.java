@@ -9,7 +9,7 @@ import java.util.Properties;
 
 @Configuration
 @AllArgsConstructor
-public class JavaMailSenderImpl {
+public class JavaMailSender {
     EmailProps emailProps;
 
     @Bean
