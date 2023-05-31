@@ -352,3 +352,10 @@ UPDATE skill_entity SET category = 'sport'WHERE skill_id IN (123);
 -- changeset kate:19
 UPDATE skill_entity SET category = 'write'WHERE skill IN ('Prose');
 UPDATE skill_entity SET category = 'language'WHERE skill IN ('German','Spanish','Hindi');
+
+-- changeset kate:21
+DELETE FROM proof_skill WHERE proof_id = 15;
+DELETE FROM proof_skill WHERE proof_id = 20;
+DELETE FROM proof_skill WHERE proof_id = 19;
+DELETE FROM proof_skill WHERE proof_id = 55;
+DELETE FROM proof_skill WHERE proof_id = 39;

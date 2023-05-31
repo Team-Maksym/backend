@@ -34,3 +34,6 @@ INSERT INTO kudos_entity (sponsor_id,proof_id,follower_id,create_data, count_kud
 VALUES (2,1,1,'2004-09-14 22:11:12', 40);
 INSERT INTO kudos_entity (sponsor_id,proof_id,follower_id,create_data, count_kudos)
 VALUES (2,2,1,'2005-09-14 22:11:12', 70);
+
+-- changeset kate:21
+DELETE FROM kudos_entity;
