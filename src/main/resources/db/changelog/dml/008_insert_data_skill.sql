@@ -359,3 +359,6 @@ DELETE FROM proof_skill WHERE proof_id = 20;
 DELETE FROM proof_skill WHERE proof_id = 19;
 DELETE FROM proof_skill WHERE proof_id = 55;
 DELETE FROM proof_skill WHERE proof_id = 39;
+
+-- changeset kate:22
+DELETE FROM proof_skill;
