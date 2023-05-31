@@ -3,6 +3,7 @@ package starlight.backend.config;
 import lombok.AllArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.mail.javamail.JavaMailSenderImpl;
 import starlight.backend.email.model.EmailProps;
 
 import java.util.Properties;
@@ -13,8 +14,8 @@ public class JavaMailSender {
     EmailProps emailProps;
 
     @Bean
-    public org.springframework.mail.javamail.JavaMailSender getJavaMailSender() {
-        org.springframework.mail.javamail.JavaMailSenderImpl mailSender = new org.springframework.mail.javamail.JavaMailSenderImpl();
+    public JavaMailSender getJavaMailSender() {
+        JavaMailSenderImpl mailSender = new JavaMailSenderImpl();
         mailSender.setHost("smtp-mail.outlook.com");
         mailSender.setPort(587);
 
