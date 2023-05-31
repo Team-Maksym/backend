@@ -71,3 +71,10 @@ DELETE FROM proof_entity WHERE proof_id = 20;
 DELETE FROM proof_entity WHERE proof_id = 19;
 DELETE FROM proof_entity WHERE proof_id = 55;
 DELETE FROM proof_entity WHERE proof_id = 39;
+
+-- changeset kate:23
+DELETE FROM proof_entity WHERE user_id = 34;
+DELETE FROM proof_entity WHERE user_id = 36;
+DELETE FROM proof_entity WHERE user_id = 37;
+DELETE FROM proof_entity WHERE user_id = 43;
+DELETE FROM proof_entity WHERE user_id = 39;

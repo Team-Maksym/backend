@@ -114,3 +114,7 @@ databaseChangeLog:
   - changeSet:
       id: 22
       author: kate
+
+  - changeSet:
+      id: 23
+      author: kate
