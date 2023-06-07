@@ -64,17 +64,3 @@ INSERT INTO proof_entity (title,description,link,status,date_created,date_last_u
 VALUES ('But I must explain to you how all this mistaken idea of denouncing pleasure and praising pain was born and I will give you a complete account of the system, and expound the actual teachings.','"Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo. Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt. Neque porro quisquam est, qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit, sed quia non numquam eius modi tempora incidunt ut labore et dolore magnam aliquam quaerat voluptatem. Ut enim ad minima veniam, quis nostrum exercitationem ullam corporis suscipit laboriosam, nisi ut aliquid ex ea commodi consequatur? Quis autem vel eum iure reprehenderit qui in ea voluptate velit esse quam nihil molestiae consequatur, vel illum qui dolorem eum fugiat quo voluptas nulla pariatur?"','https://drive.google.com/file/d/19zB-HGRRAJIjsKaxLZxD6ZNmEZtn2mjc/view?usp=share_link','HIDDEN','2023-09-14 17:40:11','2001-09-14 22:11:12',2);
 INSERT INTO proof_entity (title,description,link,status,date_created,date_last_updated,user_id )
 VALUES ('But I must explain to you how all this mistaken idea of denouncing pleasure and praising pain was born and I will give you a complete account of the system, and expound the actual teachings.','"Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo. Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt. Neque porro quisquam est, qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit, sed quia non numquam eius modi tempora incidunt ut labore et dolore magnam aliquam quaerat voluptatem. Ut enim ad minima veniam, quis nostrum exercitationem ullam corporis suscipit laboriosam, nisi ut aliquid ex ea commodi consequatur? Quis autem vel eum iure reprehenderit qui in ea voluptate velit esse quam nihil molestiae consequatur, vel illum qui dolorem eum fugiat quo voluptas nulla pariatur?"','https://drive.google.com/file/d/19zB-HGRRAJIjsKaxLZxD6ZNmEZtn2mjc/view?usp=share_link','HIDDEN','2023-09-14 17:40:11','2001-09-14 22:11:12',2);
-
--- changeset kate:20
-DELETE FROM proof_entity WHERE proof_id = 15;
-DELETE FROM proof_entity WHERE proof_id = 20;
-DELETE FROM proof_entity WHERE proof_id = 19;
-DELETE FROM proof_entity WHERE proof_id = 55;
-DELETE FROM proof_entity WHERE proof_id = 39;
-
--- changeset kate:23
-DELETE FROM proof_entity WHERE user_id = 34;
-DELETE FROM proof_entity WHERE user_id = 36;
-DELETE FROM proof_entity WHERE user_id = 37;
-DELETE FROM proof_entity WHERE user_id = 43;
-DELETE FROM proof_entity WHERE user_id = 39;

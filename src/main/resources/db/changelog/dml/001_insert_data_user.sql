@@ -76,10 +76,3 @@ VALUES ('Test','email@email.com','$2a$10$/1f8thpvBU9P58gsHCbTiukL3u5pPpxscChs8K0
 -- changeset kate:8
 UPDATE user_entity SET email = 'jaxifiееsammi-2877@gmail.com' WHERE user_id = 1;
 UPDATE user_entity SET email = 'jaxifiееееsammi-2877@gmail.com' WHERE user_id = 2;
-
--- changeset kate:20
-DELETE FROM user_entity WHERE user_id = 43;
-DELETE FROM user_entity WHERE user_id = 39;
-DELETE FROM user_entity WHERE user_id = 37;
-DELETE FROM user_entity WHERE user_id = 36;
-DELETE FROM user_entity WHERE user_id = 34;
