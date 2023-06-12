@@ -22,8 +22,8 @@ import starlight.backend.security.service.SecurityServiceInterface;
 import starlight.backend.sponsor.SponsorRepository;
 import starlight.backend.sponsor.model.entity.SponsorEntity;
 import starlight.backend.sponsor.model.enums.SponsorStatus;
-import starlight.backend.user.model.entity.UserEntity;
-import starlight.backend.user.repository.UserRepository;
+import starlight.backend.talent.model.entity.TalentEntity;
+import starlight.backend.talent.repository.TalentRepository;
 
 import java.time.Instant;
 import java.util.Collections;
@@ -36,7 +36,7 @@ import static java.time.temporal.ChronoUnit.MINUTES;
 @Transactional
 public class SecurityServiceImpl implements SecurityServiceInterface {
     private final JwtEncoder jwtEncoder;
-    private UserRepository repository;
+    private TalentRepository repository;
     private SponsorRepository sponsorRepository;
     private MapperSecurity mapperSecurity;
     private PasswordEncoder passwordEncoder;
@@ -45,7 +45,7 @@ public class SecurityServiceImpl implements SecurityServiceInterface {
     public SessionInfo loginInfo(Authentication auth) {
         var user = repository.findByEmail(auth.getName())
                 .orElseThrow(() -> new UsernameNotFoundException(auth.getName() + " not found user by email"));
-        var token = getJWTToken(mapperSecurity.toUserDetailsImpl(user), user.getUserId());
+        var token = getJWTToken(mapperSecurity.toUserDetailsImpl(user), user.getTalentId());
         return mapperSecurity.toSessionInfo(token);
     }
 
@@ -64,18 +64,18 @@ public class SecurityServiceImpl implements SecurityServiceInterface {
     @Override
     public SessionInfo register(NewUser newUser) {
         var user = saveNewUser(newUser);
-        var token = getJWTToken(mapperSecurity.toUserDetailsImpl(user), user.getUserId());
+        var token = getJWTToken(mapperSecurity.toUserDetailsImpl(user), user.getTalentId());
         return mapperSecurity.toSessionInfo(token);
     }
 
-    UserEntity saveNewUser(NewUser newUser) {
+    TalentEntity saveNewUser(NewUser newUser) {
         if (repository.existsByEmail(newUser.email())) {
             throw new EmailAlreadyOccupiedException(newUser.email());
         }
         if (sponsorRepository.existsByEmail(newUser.email())) {
             throw new EmailAlreadyOccupiedException(newUser.email());
         }
-        return repository.save(UserEntity.builder()
+        return repository.save(TalentEntity.builder()
                 .fullName(newUser.fullName())
                 .email(newUser.email())
                 .password(passwordEncoder.encode(newUser.password()))
@@ -118,7 +118,7 @@ public class SecurityServiceImpl implements SecurityServiceInterface {
     private String getUserIdByEmail(String email) {
         var user = repository.findByEmail(email)
                 .orElseThrow(() -> new UsernameNotFoundException(email + " not found user by email"));
-        return user.getUserId().toString();
+        return user.getTalentId().toString();
     }
 
     @Override

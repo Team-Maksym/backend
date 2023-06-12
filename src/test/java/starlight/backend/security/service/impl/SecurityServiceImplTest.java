@@ -22,8 +22,8 @@ import starlight.backend.security.model.response.SessionInfo;
 import starlight.backend.sponsor.SponsorRepository;
 import starlight.backend.sponsor.model.entity.SponsorEntity;
 import starlight.backend.sponsor.model.enums.SponsorStatus;
-import starlight.backend.user.model.entity.UserEntity;
-import starlight.backend.user.repository.UserRepository;
+import starlight.backend.talent.model.entity.TalentEntity;
+import starlight.backend.talent.repository.TalentRepository;
 
 import java.time.Instant;
 import java.util.Optional;
@@ -38,7 +38,7 @@ class SecurityServiceImplTest {
     private JwtEncoder jwtEncoder;
 
     @Mock
-    private UserRepository userRepository;
+    private TalentRepository userRepository;
 
     @Mock
     private SponsorRepository sponsorRepository;
@@ -53,14 +53,14 @@ class SecurityServiceImplTest {
     private SecurityServiceImpl securityService;
 
     private NewUser newUser;
-    private UserEntity user;
+    private TalentEntity user;
 
     @BeforeEach
     public void setup() {
         MockitoAnnotations.openMocks(this);
 
-        user = UserEntity.builder()
-                .userId(1L)
+        user = TalentEntity.builder()
+                .talentId(1L)
                 .fullName("Jon Snow")
                 .email("myemail@gmail.com")
                 .password("Secret123")
@@ -84,7 +84,7 @@ class SecurityServiceImplTest {
                 .issuer("self")
                 .issuedAt(Instant.now())
                 .expiresAt(Instant.now().plusSeconds(180))
-                .subject(String.valueOf(user.getUserId()))
+                .subject(String.valueOf(user.getTalentId()))
                 .claim("scope", "ROLE_TALENT")
                 .build();
         SessionInfo expectedSessionInfo = SessionInfo.builder().build();
@@ -125,8 +125,8 @@ class SecurityServiceImplTest {
     @Test
     void testRegister_SuccessfulRegistration() {
         // Given
-        UserEntity savedUser = UserEntity.builder()
-                .userId(1L)
+        TalentEntity savedUser = TalentEntity.builder()
+                .talentId(1L)
                 .fullName(newUser.fullName())
                 .email(newUser.email())
                 .password("encoded_password")
@@ -135,14 +135,14 @@ class SecurityServiceImplTest {
                 .issuer("self")
                 .issuedAt(Instant.now())
                 .expiresAt(Instant.now().plusSeconds(180))
-                .subject(String.valueOf(user.getUserId()))
+                .subject(String.valueOf(user.getTalentId()))
                 .claim("scope", "ROLE_TALENT")
                 .build();
         SessionInfo expectedSessionInfo = SessionInfo.builder().build();
         UserDetailsImpl userDetails = new UserDetailsImpl(newUser.email(), savedUser.getPassword());
 
         when(userRepository.existsByEmail(newUser.email())).thenReturn(false);
-        when(userRepository.save(any(UserEntity.class))).thenReturn(savedUser);
+        when(userRepository.save(any(TalentEntity.class))).thenReturn(savedUser);
         when(securityService.saveNewUser(newUser)).thenReturn(savedUser);
         when(mapperSecurity.toUserDetailsImpl(savedUser)).thenReturn(userDetails);
         when(mapperSecurity.toSessionInfo(expectedSessionInfo.token())).thenReturn(expectedSessionInfo);
@@ -159,7 +159,7 @@ class SecurityServiceImplTest {
 
         // Then
         assertEquals(expectedSessionInfo.token(), sessionInfo.token());
-        verify(userRepository, times(1)).save(any(UserEntity.class));
+        verify(userRepository, times(1)).save(any(TalentEntity.class));
         verify(mapperSecurity, times(1)).toUserDetailsImpl(savedUser);
         verify(mapperSecurity, times(1)).toSessionInfo(expectedSessionInfo.token());
     }
@@ -277,26 +277,26 @@ class SecurityServiceImplTest {
     @Test
     void testSaveNewUser_SuccessfulSave() {
         // Given
-        UserEntity savedUser = UserEntity.builder()
-                .userId(1L)
+        TalentEntity savedUser = TalentEntity.builder()
+                .talentId(1L)
                 .fullName(newUser.fullName())
                 .email(newUser.email())
                 .password("encoded_password")
                 .build();
 
         when(passwordEncoder.encode(newUser.password())).thenReturn("encoded_password");
-        when(userRepository.save(any(UserEntity.class))).thenReturn(savedUser);
+        when(userRepository.save(any(TalentEntity.class))).thenReturn(savedUser);
 
         // When
-        UserEntity result = securityService.saveNewUser(newUser);
+        TalentEntity result = securityService.saveNewUser(newUser);
 
         // Then
-        assertEquals(savedUser.getUserId(), result.getUserId());
+        assertEquals(savedUser.getTalentId(), result.getTalentId());
         assertEquals(savedUser.getFullName(), result.getFullName());
         assertEquals(savedUser.getEmail(), result.getEmail());
         assertEquals(savedUser.getPassword(), result.getPassword());
 
         verify(passwordEncoder, times(1)).encode(newUser.password());
-        verify(userRepository, times(1)).save(any(UserEntity.class));
+        verify(userRepository, times(1)).save(any(TalentEntity.class));
     }
 }

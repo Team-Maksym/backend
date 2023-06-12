@@ -1,4 +1,4 @@
-package starlight.backend.user.model.entity;
+package starlight.backend.talent.model.entity;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
@@ -25,10 +25,11 @@ import static jakarta.persistence.GenerationType.IDENTITY;
 @NoArgsConstructor
 @Entity
 @Validated
-public class UserEntity {
+@Table(name = "talent")
+public class TalentEntity {
     @Id
     @GeneratedValue(strategy = IDENTITY)
-    private Long userId;
+    private Long talentId;
     @NotBlank
     private String fullName;
     @NotBlank
@@ -46,7 +47,7 @@ public class UserEntity {
     @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH})
     @JoinTable(
             name = "user_position",
-            joinColumns = @JoinColumn(name = "user_id"),
+            joinColumns = @JoinColumn(name = "talent_id"),
             inverseJoinColumns = @JoinColumn(name = "position_id"))
     @JsonManagedReference
     private Set<PositionEntity> positions;
@@ -54,7 +55,7 @@ public class UserEntity {
     @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH})
     @JoinTable(
             name = "talent_skill",
-            joinColumns = @JoinColumn(name = "user_id"),
+            joinColumns = @JoinColumn(name = "talent_id"),
             inverseJoinColumns = @JoinColumn(name = "skill_id"))
     @JsonManagedReference
     private List<SkillEntity> talentSkills;
@@ -62,7 +63,7 @@ public class UserEntity {
     @ElementCollection(fetch = FetchType.EAGER)
     private Collection<String> authorities;
 
-    @OneToMany(mappedBy = "user")
+    @OneToMany(mappedBy = "talent")
     @JsonManagedReference
     private Set<ProofEntity> proofs;
 }

@@ -5,7 +5,7 @@ import starlight.backend.security.model.UserDetailsImpl;
 import starlight.backend.security.model.enums.Role;
 import starlight.backend.security.model.response.SessionInfo;
 import starlight.backend.sponsor.model.entity.SponsorEntity;
-import starlight.backend.user.model.entity.UserEntity;
+import starlight.backend.talent.model.entity.TalentEntity;
 
 import static org.mapstruct.ReportingPolicy.IGNORE;
 
@@ -17,10 +17,10 @@ public interface MapperSecurity {
                 .build();
     }
 
-    default UserDetailsImpl toUserDetailsImpl(UserEntity user) {
+    default UserDetailsImpl toUserDetailsImpl(TalentEntity talent) {
         return new UserDetailsImpl(
-                user.getEmail(),
-                user.getPassword());
+                talent.getEmail(),
+                talent.getPassword());
     }
 
     default UserDetailsImpl toUserDetailsImplForSponsor(SponsorEntity sponsor) {

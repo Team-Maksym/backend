@@ -17,7 +17,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import starlight.backend.security.model.request.NewUser;
 import starlight.backend.security.model.response.SessionInfo;
 import starlight.backend.security.service.SecurityServiceInterface;
-import starlight.backend.user.model.entity.UserEntity;
+import starlight.backend.talent.model.entity.TalentEntity;
 
 import java.util.Base64;
 
@@ -41,12 +41,12 @@ class SecurityControllerTest {
 
     private NewUser newUser;
 
-    private UserEntity user;
+    private TalentEntity user;
 
     @BeforeEach
     public void setup() {
-        user = UserEntity.builder()
-                .userId(1L)
+        user = TalentEntity.builder()
+                .talentId(1L)
                 .fullName("Jon Snow")
                 .email("myemail@gmail.com")
                 .password("Secret123")

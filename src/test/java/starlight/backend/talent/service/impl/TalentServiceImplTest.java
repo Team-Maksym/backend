@@ -29,9 +29,9 @@ import starlight.backend.talent.MapperTalent;
 import starlight.backend.talent.model.request.TalentUpdateRequest;
 import starlight.backend.talent.model.response.TalentFullInfo;
 import starlight.backend.talent.model.response.TalentPagePagination;
-import starlight.backend.user.model.entity.UserEntity;
-import starlight.backend.user.repository.PositionRepository;
-import starlight.backend.user.repository.UserRepository;
+import starlight.backend.talent.model.entity.TalentEntity;
+import starlight.backend.talent.repository.PositionRepository;
+import starlight.backend.talent.repository.TalentRepository;
 
 import java.util.*;
 
@@ -51,7 +51,7 @@ class TalentServiceImplTest {
     @Mock
     private KudosRepository kudosRepository;
     @Mock
-    private UserRepository userRepository;
+    private TalentRepository userRepository;
 
     @Mock
     private PositionRepository positionRepository;
@@ -67,12 +67,12 @@ class TalentServiceImplTest {
 
     @InjectMocks
     private TalentServiceImpl talentService;
-    private UserEntity user;
+    private TalentEntity user;
 
     @BeforeEach
     public void setup() {
-        user = UserEntity.builder()
-                .userId(1L)
+        user = TalentEntity.builder()
+                .talentId(1L)
                 .fullName("Jon Snow")
                 .email("myemail@gmail.com")
                 .password("Secret123")
@@ -87,7 +87,7 @@ class TalentServiceImplTest {
         int size = 10;
 
         PageRequest pageRequest = PageRequest.of(page, size, Sort.by("userId").descending());
-        Page<UserEntity> userPage = new PageImpl<>(Collections.emptyList(), pageRequest, 20);
+        Page<TalentEntity> userPage = new PageImpl<>(Collections.emptyList(), pageRequest, 20);
 
         when(userRepository.findAll(pageRequest)).thenReturn(userPage);
         when(mapper.toTalentPagePagination(userPage)).thenReturn(TalentPagePagination.builder().build());
@@ -109,7 +109,7 @@ class TalentServiceImplTest {
         int size = 10;
 
         PageRequest pageRequest = PageRequest.of(page, size, Sort.by("userId").descending());
-        Page<UserEntity> userPage = new PageImpl<>(Collections.emptyList(), pageRequest, 50);
+        Page<TalentEntity> userPage = new PageImpl<>(Collections.emptyList(), pageRequest, 50);
 
         when(userRepository.findAll(pageRequest)).thenReturn(userPage);
 
@@ -123,7 +123,7 @@ class TalentServiceImplTest {
     void testTalentFullInfo_ExistingTalent() {
         // Given
         long id = 1L;
-        UserEntity userEntity = new UserEntity();
+        TalentEntity userEntity = new TalentEntity();
         TalentFullInfo talentFullInfo = TalentFullInfo.builder().build();
 
         when(userRepository.findById(id)).thenReturn(Optional.of(userEntity));
@@ -158,8 +158,8 @@ class TalentServiceImplTest {
         long id = 1L;
         TalentUpdateRequest updateRequest = TalentUpdateRequest.builder().build();
         Authentication authentication = Mockito.mock(Authentication.class);
-        UserEntity userEntity = new UserEntity();
-        userEntity.setUserId(id);
+        TalentEntity userEntity = new TalentEntity();
+        userEntity.setTalentId(id);
 
         when(securityService.checkingLoggedAndToken(id, authentication)).thenReturn(true);
         when(userRepository.findById(id)).thenReturn(Optional.of(userEntity));
@@ -190,8 +190,8 @@ class TalentServiceImplTest {
         assertThrows(ResponseStatusException.class, () -> talentService.updateTalentProfile(id, updateRequest, authentication));
         verify(securityService, times(1)).checkingLoggedAndToken(id, authentication);
         verify(userRepository, never()).findById(anyLong());
-        verify(mapper, never()).toTalentFullInfo(any(UserEntity.class));
-        verify(userRepository, never()).save(any(UserEntity.class));
+        verify(mapper, never()).toTalentFullInfo(any(TalentEntity.class));
+        verify(userRepository, never()).save(any(TalentEntity.class));
     }
 
     @Test
@@ -209,8 +209,8 @@ class TalentServiceImplTest {
         assertThrows(TalentNotFoundException.class, () -> talentService.updateTalentProfile(id, updateRequest, authentication));
         verify(securityService, times(1)).checkingLoggedAndToken(id, authentication);
         verify(userRepository, times(1)).findById(id);
-        verify(mapper, never()).toTalentFullInfo(any(UserEntity.class));
-        verify(userRepository, never()).save(any(UserEntity.class));
+        verify(mapper, never()).toTalentFullInfo(any(TalentEntity.class));
+        verify(userRepository, never()).save(any(TalentEntity.class));
     }
 
     @DisplayName("Delete talent profile successfully")
@@ -219,12 +219,12 @@ class TalentServiceImplTest {
         // Given
         long talentId = 1L;
         Authentication auth = Mockito.mock(Authentication.class);
-        given(userRepository.findById(user.getUserId())).willReturn(Optional.of(user));
-        when(securityService.checkingLoggedAndToken(user.getUserId(), auth)).thenReturn(true);
+        given(userRepository.findById(user.getTalentId())).willReturn(Optional.of(user));
+        when(securityService.checkingLoggedAndToken(user.getTalentId(), auth)).thenReturn(true);
         Set<ProofEntity> proofList = new HashSet<>();
         ProofEntity proof = new ProofEntity();
         proof.setProofId(1L);
-        proof.setUser(user);
+        proof.setTalent(user);
         proof.setKudos(new HashSet<>());
         proof.setSkills(List.of(new SkillEntity()));
         proofList.add(proof);
@@ -232,15 +232,15 @@ class TalentServiceImplTest {
         user.setPositions(new HashSet<>());
         user.setTalentSkills(new ArrayList<>());
         user.setAuthorities(new HashSet<>(Arrays.asList("TALENT_ROLE")));
-        when(proofRepository.findByUser_UserId(talentId)).thenReturn(Collections.emptyList());
+        when(proofRepository.findByTalent_TalentId(talentId)).thenReturn(Collections.emptyList());
         doNothing().when(userRepository).deleteById(talentId);
 
         // When
-        talentService.deleteTalentProfile(user.getUserId(), auth);
+        talentService.deleteTalentProfile(user.getTalentId(), auth);
 
         // Then
-        verify(securityService).checkingLoggedAndToken(user.getUserId(), auth);
-        verify(userRepository, times(1)).findById(user.getUserId());
+        verify(securityService).checkingLoggedAndToken(user.getTalentId(), auth);
+        verify(userRepository, times(1)).findById(user.getTalentId());
         assertTrue(user.getProofs().isEmpty());
     }
 
@@ -248,12 +248,12 @@ class TalentServiceImplTest {
     @Test
     void deleteTalentProfile_WithInvalidId_ShouldThrowUnauthorizedException() {
         // Given
-        when(securityService.checkingLoggedAndToken(user.getUserId(), null)).thenReturn(false);
+        when(securityService.checkingLoggedAndToken(user.getTalentId(), null)).thenReturn(false);
 
         // When // Then
-        assertThatThrownBy(() -> talentService.deleteTalentProfile(user.getUserId(), null))
+        assertThatThrownBy(() -> talentService.deleteTalentProfile(user.getTalentId(), null))
                 .isInstanceOf(UserAccesDeniedToDeleteThisUserException.class)
-                .hasMessage("User cannot delete this user. UserId = " + user.getUserId());
+                .hasMessage("User cannot delete this user. UserId = " + user.getTalentId());
     }
 
     @Test
@@ -269,7 +269,7 @@ class TalentServiceImplTest {
         assertThrows(UserAccesDeniedToDeleteThisUserException.class, () -> talentService.deleteTalentProfile(talentId, authentication));
         verify(securityService, times(1)).checkingLoggedAndToken(talentId, authentication);
         verify(userRepository, never()).findById(anyLong());
-        verify(proofRepository, never()).findByUser_UserId(anyLong());
+        verify(proofRepository, never()).findByTalent_TalentId(anyLong());
         verify(userRepository, never()).deleteById(anyLong());
     }
 
@@ -287,7 +287,7 @@ class TalentServiceImplTest {
         assertThrows(UserNotFoundException.class, () -> talentService.deleteTalentProfile(talentId, authentication));
         verify(securityService, times(1)).checkingLoggedAndToken(talentId, authentication);
         verify(userRepository, times(1)).findById(talentId);
-        verify(proofRepository, never()).findByUser_UserId(anyLong());
+        verify(proofRepository, never()).findByTalent_TalentId(anyLong());
         verify(userRepository, never()).deleteById(anyLong());
     }
 }

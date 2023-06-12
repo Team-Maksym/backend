@@ -23,6 +23,7 @@ import static jakarta.persistence.GenerationType.IDENTITY;
 @NoArgsConstructor
 @Entity
 @Validated
+@Table(name  = "sponsor")
 public class SponsorEntity {
     @Id
     @GeneratedValue(strategy = IDENTITY)
