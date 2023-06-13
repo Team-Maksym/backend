@@ -47,7 +47,7 @@ public class TalentEntity {
     private String experience;
     @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH})
     @JoinTable(
-            name = "user_position",
+            name = "talent_position",
             joinColumns = @JoinColumn(name = "talent_id"),
             inverseJoinColumns = @JoinColumn(name = "position_id"))
     @JsonManagedReference

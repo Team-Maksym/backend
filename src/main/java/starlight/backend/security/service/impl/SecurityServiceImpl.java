@@ -1,7 +1,6 @@
 package starlight.backend.security.service.impl;
 
 
-import jakarta.servlet.http.HttpServletRequest;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.Authentication;
@@ -27,6 +26,7 @@ import starlight.backend.talent.repository.TalentRepository;
 import starlight.backend.user.model.entity.RoleEntity;
 import starlight.backend.user.model.entity.UserEntity;
 import starlight.backend.user.model.enums.Role;
+import starlight.backend.user.repository.RoleRepository;
 import starlight.backend.user.repository.UserRepository;
 
 import java.time.Instant;
@@ -45,6 +45,7 @@ public class SecurityServiceImpl implements SecurityServiceInterface {
     private MapperSecurity mapperSecurity;
     private PasswordEncoder passwordEncoder;
     private UserRepository userRepository;
+    private RoleRepository roleRepository;
 
     @Override
     public SessionInfo loginInfo(Authentication auth) {
@@ -73,8 +74,8 @@ public class SecurityServiceImpl implements SecurityServiceInterface {
     }
 
     @Override
-    public SessionInfo register(NewUser newUser, HttpServletRequest request) {
-        var user = saveNewUser(newUser, request);
+    public SessionInfo register(NewUser newUser) {
+        var user = saveNewUser(newUser);
         if (talentRepository.existsByEmail(newUser.email())) {
             var token = getJWTToken(mapperSecurity.toUserDetailsImplTalent(user),
                     user.getTalent().getTalentId());
@@ -85,48 +86,36 @@ public class SecurityServiceImpl implements SecurityServiceInterface {
         return mapperSecurity.toSessionInfo(token);
     }
 
-    UserEntity saveNewUser(NewUser newUser, HttpServletRequest request) {
-        if (talentRepository.existsByEmail(newUser.email())) {
+    UserEntity saveNewUser(NewUser newUser) {
+        if (talentRepository.existsByEmail(newUser.email()) ||
+                sponsorRepository.existsByEmail(newUser.email())) {
             throw new EmailAlreadyOccupiedException(newUser.email());
         }
-        if (sponsorRepository.existsByEmail(newUser.email())) {
-            throw new EmailAlreadyOccupiedException(newUser.email());
-        }
-        var requestURI = request.getRequestURI();
-        var parts = requestURI.split("/");
-        var url = requestURI.substring(0, requestURI.lastIndexOf(parts[parts.length - 1]));
-        log.info("url {}", url);
-        if (url.toLowerCase().equals(Role.SPONSOR.toString())) {
-            return userRepository.save(UserEntity.builder()
-                    .role(RoleEntity.builder()
-                            .name(Role.TALENT.toString())
-                            .build())
-                    .sponsor(SponsorEntity.builder()
-                            .fullName(newUser.fullName())
-                            .email(newUser.email())
-                            .password(passwordEncoder.encode(newUser.password()))
-                            .unusedKudos(100) //TODO не хадкодить
-                            .status(SponsorStatus.ACTIVE)
-                            .build())
+
+        if (newUser.role().equals(Role.SPONSOR.toString())) {
+            var sponsor = sponsorRepository.save(SponsorEntity.builder()
+                    .fullName(newUser.fullName())
+                    .email(newUser.email())
+                    .password(passwordEncoder.encode(newUser.password()))
+                    .unusedKudos(100) //TODO не хадкодить
+                    .status(SponsorStatus.ACTIVE)
                     .build());
-        } else if (url.toLowerCase().equals(Role.TALENT.toString())) {
+            var role = roleRepository.findByName(Role.SPONSOR.getAuthority());
             return userRepository.save(UserEntity.builder()
-                    .role(RoleEntity.builder()
-                            .name(Role.TALENT.toString())
-                            .build())
-                    .talent(TalentEntity.builder()
-                            .fullName(newUser.fullName())
-                            .email(newUser.email())
-                            .password(passwordEncoder.encode(newUser.password()))
-                            .build())
-                    .build());
-        } else {
-            return userRepository.save(UserEntity.builder()
-                    .role(RoleEntity.builder()
-                            .name(Role.ADMIN.toString())
-                            .build())
+                    .role(role)
+                    .sponsor(sponsor)
                     .build());
         }
+        var talent = talentRepository.save(TalentEntity.builder()
+                .fullName(newUser.fullName())
+                .email(newUser.email())
+                .password(passwordEncoder.encode(newUser.password()))
+                .build());
+        var role = roleRepository.findByName(Role.TALENT.getAuthority());
+        return userRepository.save(UserEntity.builder()
+                .role(role)
+                .talent(talent)
+                .build());
     }
 
     @Override

@@ -21,7 +21,7 @@ public interface MapperSecurity {
         return new UserDetailsImpl(
                 user.getTalent().getEmail(),
                 user.getTalent().getPassword(),
-                Role.valueOf(user.getRole().getName()),
+                Role.valueOf(user.getRole().getName().substring("ROLE_".length())),
                 SponsorStatus.ACTIVE
         );
     }
@@ -30,7 +30,7 @@ public interface MapperSecurity {
         return new UserDetailsImpl(
                 user.getSponsor().getEmail(),
                 user.getSponsor().getPassword(),
-                Role.valueOf(user.getRole().getName()),
+                Role.valueOf(user.getRole().getName().substring("ROLE_".length())),
                 user.getSponsor().getStatus()
         );
     }
