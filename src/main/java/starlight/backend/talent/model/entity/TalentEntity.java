@@ -10,6 +10,7 @@ import org.hibernate.validator.constraints.URL;
 import org.springframework.validation.annotation.Validated;
 import starlight.backend.proof.model.entity.ProofEntity;
 import starlight.backend.skill.model.entity.SkillEntity;
+import starlight.backend.user.model.entity.UserEntity;
 
 import java.time.LocalDate;
 import java.util.Collection;
@@ -60,10 +61,10 @@ public class TalentEntity {
     @JsonManagedReference
     private List<SkillEntity> talentSkills;
 
-    @ElementCollection(fetch = FetchType.EAGER)
-    private Collection<String> authorities;
-
     @OneToMany(mappedBy = "talent")
     @JsonManagedReference
     private Set<ProofEntity> proofs;
+
+    @OneToOne(mappedBy = "talent")
+    private UserEntity user;
 }

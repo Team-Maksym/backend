@@ -10,7 +10,6 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.oauth2.server.resource.OAuth2ResourceServerConfigurer;
 import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.jwt.JwtDecoder;
@@ -24,9 +23,7 @@ import org.springframework.security.oauth2.server.resource.web.access.BearerToke
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
-import starlight.backend.security.model.UserDetailsImpl;
-import starlight.backend.sponsor.SponsorRepository;
-import starlight.backend.talent.repository.TalentRepository;
+import starlight.backend.user.repository.UserRepository;
 
 import java.security.KeyPair;
 import java.security.KeyPairGenerator;
@@ -41,6 +38,8 @@ import static org.springframework.security.web.util.matcher.AntPathRequestMatche
 @EnableMethodSecurity
 @Configuration
 class SecurityConfiguration {
+    private MapperSecurity mapper;
+
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http.authorizeHttpRequests(c -> c
@@ -134,19 +133,12 @@ class SecurityConfiguration {
     }
 
     @Bean
-    UserDetailsService userDetailsService(
-            TalentRepository talentRepository, SponsorRepository sponsorRepository
-    ) {
+    UserDetailsService userDetailsService(UserRepository userRepository) {
         return email -> {
-            if (talentRepository.existsByEmail(email)) {
-                return talentRepository.findByEmail(email)
-                        .map(talent -> new UserDetailsImpl(talent.getEmail(), talent.getPassword()))
-                        .orElseThrow(() -> new UsernameNotFoundException(email + " not found user by email"));
-            } else {
-                return sponsorRepository.findByEmail(email)
-                        .map(sponsor -> new UserDetailsImpl(sponsor.getEmail(), sponsor.getPassword()))
-                        .orElseThrow(() -> new UsernameNotFoundException(email + " not found user by email"));
+            if (userRepository.existsByTalent_Email(email)) {
+                return mapper.toUserDetailsImplTalent(userRepository.findByTalent_Email(email));
             }
+            return mapper.toUserDetailsImplSponsor(userRepository.findBySponsor_Email(email));
         };
     }
 }

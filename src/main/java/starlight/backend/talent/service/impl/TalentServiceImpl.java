@@ -140,7 +140,6 @@ public class TalentServiceImpl implements TalentServiceInterface {
         TalentEntity user = talentRepository.findById(talentId)
                 .orElseThrow(() -> new UserNotFoundException(talentId));
         user.getPositions().clear();
-        user.getAuthorities().clear();
         user.getTalentSkills().clear();
         if (!user.getProofs().isEmpty()) {
             for (ProofEntity proof : proofRepository.findByTalent_TalentId(talentId)) {

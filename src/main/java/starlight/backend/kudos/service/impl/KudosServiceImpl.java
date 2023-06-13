@@ -20,7 +20,7 @@ import starlight.backend.kudos.repository.KudosRepository;
 import starlight.backend.kudos.service.KudosServiceInterface;
 import starlight.backend.proof.ProofRepository;
 import starlight.backend.proof.model.entity.ProofEntity;
-import starlight.backend.security.model.enums.Role;
+import starlight.backend.user.model.enums.Role;
 import starlight.backend.security.service.SecurityServiceInterface;
 import starlight.backend.sponsor.SponsorRepository;
 import starlight.backend.sponsor.model.entity.SponsorEntity;
