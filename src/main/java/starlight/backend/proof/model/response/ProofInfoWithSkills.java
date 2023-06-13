@@ -16,6 +16,7 @@ public record ProofInfoWithSkills(
         @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "UTC")
         Instant dateCreated,
         Status status,
+        String link,
         List<SkillWithCategory> skillWithCategoryList
 ) {
 }
