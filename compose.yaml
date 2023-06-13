@@ -1,5 +1,23 @@
 version: '3.1'
 services:
+  backend:
+    container_name: "Starlight_Prod"
+    image: starlight_prod:latest
+    volumes:
+      - backend:/data/backend
+    ports:
+      - '8080-8090:8080'
+    networks:
+      - postgres
+    secrets:
+      - backend_secrets
+    env_file:
+      - .env
+    depends_on:
+      - postgres
+
+    restart: unless-stopped
+
   postgres:
     container_name: "PSQL_PROD"
     image: postgres
@@ -14,21 +32,6 @@ services:
       - '5432:5432'
     networks:
       - postgres
-    restart: unless-stopped
-
-  backend:
-    container_name: "Starlight_Prod"
-    image: starlight_prod:latest
-    volumes:
-      - backend:/data/backend
-    ports:
-      - '8080:8080'
-    networks:
-      - postgres
-    secrets:
-      - backend_secrets
-    env_file:
-      - .env
     restart: unless-stopped
 
   pgadmin:
