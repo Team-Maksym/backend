@@ -27,12 +27,8 @@ services:
       - postgres
     secrets:
       - backend_secrets
-    environment:
-      - DB_LOGIN
-      - DB_PASSWORD
-      - DB_URL
-      - MAIL_USER
-      - MAIL_PASSWORD
+    env_file:
+      - .env
     restart: unless-stopped
 
   pgadmin:
@@ -61,4 +57,4 @@ volumes:
 
 secrets:
   backend_secrets:
-    file: secrets.env
+    file: .env
