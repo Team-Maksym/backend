@@ -1,10 +1,15 @@
-FROM openjdk:19
+FROM maven:3.9-amazoncorretto-19 AS MAVEN_BUILD
+
+MAINTAINER Serhii Kushnerov
+
+COPY pom.xml /build/
+COPY src /build/src/
+
+WORKDIR /build/
+RUN mvn package
+
+FROM openjdk:19-alpine
 WORKDIR /app
-COPY target/backend-0.1.0.jar /app/backend-0.1.0.jar
+COPY --from=MAVEN_BUILD /build/target/backend-0.1.0.jar /app/
 EXPOSE 8080
-ENV DB_LOGIN=admin \
-    DB_PASSWORD=123456 \
-    DB_URL=postgres:5432/postgres \
-    MAIL_USER=java.team.maksym@gmail.com \
-    MAIL_PASSWORD=SoftServe123!
 CMD ["java", "-jar", "backend-0.1.0.jar"]
