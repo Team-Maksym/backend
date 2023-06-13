@@ -6,7 +6,6 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -102,7 +101,7 @@ public class SecurityController {
     @ResponseStatus(HttpStatus.OK)
     public SessionInfo loginSponsor(Authentication auth) {
         log.info("@PostMapping(\"/sponsors/login\")");
-        return service.loginInfo(auth);
+        return service.loginInfoSponsor(auth);
     }
 
     @Operation(
@@ -130,6 +129,19 @@ public class SecurityController {
     @ResponseStatus(HttpStatus.CREATED)
     public SessionInfo registerSponsor(@Valid @RequestBody NewUser newUser) {
         log.info("@PostMapping(\"/sponsors\")");
-        return service.register(newUser);
+        return service.registerSponsor(newUser);
+    }
+
+    @PostMapping("/admin")
+    @ResponseStatus(HttpStatus.CREATED)
+    public SessionInfo registerAdmin(@Valid @RequestBody NewUser newUser) {
+        log.info("@PostMapping(\"/admin\")");
+        return service.registerAdmin(newUser);
+    }
+
+    @PostMapping("/admin/login")
+    public SessionInfo loginAdmin(Authentication auth) {
+        log.info("@PostMapping(\"/admin/login\")");
+        return service.loginInfoAdmin(auth);
     }
 }

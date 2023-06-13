@@ -55,76 +55,41 @@ public class SecurityServiceImpl implements SecurityServiceInterface {
 
     @Override
     public SessionInfo loginInfo(Authentication auth) {
-        if (talentRepository.existsByEmail(auth.getName())) {
-            var user = userRepository.findByTalent_Email(auth.getName());
-            var token = getJWTToken(mapperSecurity.toUserDetailsImplTalent(user),
-                    user.getTalent().getTalentId());
-            return mapperSecurity.toSessionInfo(token);
+        if (!talentRepository.existsByEmail(auth.getName())) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "you do not have talent account there!!");
         }
-        if (sponsorRepository.existsByEmail(auth.getName())) {
-            var user = userRepository.findBySponsor_Email(auth.getName());
-            var token = getJWTToken(mapperSecurity.toUserDetailsImplSponsor(user),
-                    user.getSponsor().getSponsorId());
-            return mapperSecurity.toSessionInfo(token);
+        var user = userRepository.findByTalent_Email(auth.getName());
+        var token = getJWTToken(mapperSecurity.toUserDetailsImplTalent(user),
+                user.getTalent().getTalentId());
+        return mapperSecurity.toSessionInfo(token);
+    }
+    @Override
+    public SessionInfo loginInfoSponsor(Authentication auth) {
+        if (!sponsorRepository.existsByEmail(auth.getName())) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "you do not have sponsor account there!!");
         }
-        if (!adminRepository.existsByEmail(auth.getName())) {
-            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "you do not have any account there!!");
-        }
-        var user = userRepository.findByAdmin_Email(auth.getName());
-        var token = getJWTToken(mapperSecurity.toUserDetailsImplAdmin(user),
+        var user = userRepository.findBySponsor_Email(auth.getName());
+        var token = getJWTToken(mapperSecurity.toUserDetailsImplSponsor(user),
                 user.getSponsor().getSponsorId());
         return mapperSecurity.toSessionInfo(token);
     }
 
     @Override
-    public SessionInfo register(NewUser newUser) {
-        var user = saveNewUser(newUser);
-        if (talentRepository.existsByEmail(newUser.email())) {
-            var token = getJWTToken(mapperSecurity.toUserDetailsImplTalent(user),
-                    user.getTalent().getTalentId());
-            return mapperSecurity.toSessionInfo(token);
+    public SessionInfo loginInfoAdmin(Authentication auth) {
+        if (!adminRepository.existsByEmail(auth.getName())) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "you do not have any account there!!");
         }
-        if (sponsorRepository.existsByEmail(newUser.email())) {
-            var token = getJWTToken(mapperSecurity.toUserDetailsImplSponsor(user),
-                    user.getSponsor().getSponsorId());
-            return mapperSecurity.toSessionInfo(token);
-        }
+        var user = userRepository.findByAdmin_Email(auth.getName());
         var token = getJWTToken(mapperSecurity.toUserDetailsImplAdmin(user),
                 user.getAdmin().getAdminId());
         return mapperSecurity.toSessionInfo(token);
     }
-
-    UserEntity saveNewUser(NewUser newUser) {
+    @Override
+    public SessionInfo register(NewUser newUser) {
         if (talentRepository.existsByEmail(newUser.email()) ||
-                sponsorRepository.existsByEmail(newUser.email())) {
+                sponsorRepository.existsByEmail(newUser.email()) ||
+                adminRepository.existsByEmail(newUser.email())) {
             throw new EmailAlreadyOccupiedException(newUser.email());
-        }
-
-        if (newUser.role().equals(Role.SPONSOR.toString())) {
-            var sponsor = sponsorRepository.save(SponsorEntity.builder()
-                    .fullName(newUser.fullName())
-                    .email(newUser.email())
-                    .password(passwordEncoder.encode(newUser.password()))
-                    .unusedKudos(disableKudos.count())
-                    .status(SponsorStatus.ACTIVE)
-                    .build());
-            var role = roleRepository.findByName(Role.SPONSOR.getAuthority());
-            return userRepository.save(UserEntity.builder()
-                    .role(role)
-                    .sponsor(sponsor)
-                    .build());
-        }
-        if (newUser.role().equals(Role.ADMIN.toString())) {
-            var admin = adminRepository.save(AdminEntity.builder()
-                    .fullName(newUser.fullName())
-                    .email(newUser.email())
-                    .password(passwordEncoder.encode(newUser.password()))
-                    .build());
-            var role = roleRepository.findByName(Role.ADMIN.getAuthority());
-            return userRepository.save(UserEntity.builder()
-                    .role(role)
-                    .admin(admin)
-                    .build());
         }
         var talent = talentRepository.save(TalentEntity.builder()
                 .fullName(newUser.fullName())
@@ -132,11 +97,59 @@ public class SecurityServiceImpl implements SecurityServiceInterface {
                 .password(passwordEncoder.encode(newUser.password()))
                 .build());
         var role = roleRepository.findByName(Role.TALENT.getAuthority());
-        return userRepository.save(UserEntity.builder()
+        var user = userRepository.save(UserEntity.builder()
                 .role(role)
                 .talent(talent)
                 .build());
+        var token = getJWTToken(mapperSecurity.toUserDetailsImplTalent(user),
+                user.getTalent().getTalentId());
+        return mapperSecurity.toSessionInfo(token);
+    }
 
+    @Override
+    public SessionInfo registerSponsor(NewUser newUser) {
+        if (talentRepository.existsByEmail(newUser.email()) ||
+                sponsorRepository.existsByEmail(newUser.email()) ||
+                adminRepository.existsByEmail(newUser.email())) {
+            throw new EmailAlreadyOccupiedException(newUser.email());
+        }
+        var sponsor = sponsorRepository.save(SponsorEntity.builder()
+                .fullName(newUser.fullName())
+                .email(newUser.email())
+                .password(passwordEncoder.encode(newUser.password()))
+                .unusedKudos(disableKudos.count())
+                .status(SponsorStatus.ACTIVE)
+                .build());
+        var role = roleRepository.findByName(Role.SPONSOR.getAuthority());
+        var user = userRepository.save(UserEntity.builder()
+                .role(role)
+                .sponsor(sponsor)
+                .build());
+        var token = getJWTToken(mapperSecurity.toUserDetailsImplSponsor(user),
+                user.getSponsor().getSponsorId());
+        return mapperSecurity.toSessionInfo(token);
+    }
+
+    @Override
+    public SessionInfo registerAdmin(NewUser newUser) {
+        if (talentRepository.existsByEmail(newUser.email()) ||
+                sponsorRepository.existsByEmail(newUser.email()) ||
+                adminRepository.existsByEmail(newUser.email())) {
+            throw new EmailAlreadyOccupiedException(newUser.email());
+        }
+        var admin = adminRepository.save(AdminEntity.builder()
+                .fullName(newUser.fullName())
+                .email(newUser.email())
+                .password(passwordEncoder.encode(newUser.password()))
+                .build());
+        var role = roleRepository.findByName(Role.ADMIN.getAuthority());
+        var user = userRepository.save(UserEntity.builder()
+                .role(role)
+                .admin(admin)
+                .build());
+        var token = getJWTToken(mapperSecurity.toUserDetailsImplAdmin(user),
+                user.getAdmin().getAdminId());
+        return mapperSecurity.toSessionInfo(token);
     }
 
     @Override

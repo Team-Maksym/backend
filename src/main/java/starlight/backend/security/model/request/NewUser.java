@@ -29,9 +29,6 @@ public record NewUser(
         @Pattern(
                 regexp = "^(?=.*[A-Z])(?=.*[a-z])(?=.*\\d)\\S+$",
                 message = "must be between 8 and 128 characters, must contain at least one letter and one number")
-        String password,
-
-        @NotBlank
-        String role
+        String password
 ) {
 }
