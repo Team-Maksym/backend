@@ -3,6 +3,7 @@ package starlight.backend.security.service.impl;
 
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -11,8 +12,12 @@ import org.springframework.security.oauth2.jwt.JwtEncoder;
 import org.springframework.security.oauth2.jwt.JwtEncoderParameters;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.server.ResponseStatusException;
+import starlight.backend.admin.AdminRepository;
+import starlight.backend.admin.model.emtity.AdminEntity;
 import starlight.backend.exception.EmailAlreadyOccupiedException;
 import starlight.backend.exception.user.sponsor.SponsorNotFoundException;
+import starlight.backend.kudos.model.DisableKudos;
 import starlight.backend.security.MapperSecurity;
 import starlight.backend.security.model.UserDetailsImpl;
 import starlight.backend.security.model.request.NewUser;
@@ -23,7 +28,6 @@ import starlight.backend.sponsor.model.entity.SponsorEntity;
 import starlight.backend.sponsor.model.enums.SponsorStatus;
 import starlight.backend.talent.model.entity.TalentEntity;
 import starlight.backend.talent.repository.TalentRepository;
-import starlight.backend.user.model.entity.RoleEntity;
 import starlight.backend.user.model.entity.UserEntity;
 import starlight.backend.user.model.enums.Role;
 import starlight.backend.user.repository.RoleRepository;
@@ -46,32 +50,30 @@ public class SecurityServiceImpl implements SecurityServiceInterface {
     private PasswordEncoder passwordEncoder;
     private UserRepository userRepository;
     private RoleRepository roleRepository;
+    private AdminRepository adminRepository;
+    private DisableKudos disableKudos;
 
     @Override
     public SessionInfo loginInfo(Authentication auth) {
-        log.info("auth {}",auth.getName());
         if (talentRepository.existsByEmail(auth.getName())) {
             var user = userRepository.findByTalent_Email(auth.getName());
             var token = getJWTToken(mapperSecurity.toUserDetailsImplTalent(user),
                     user.getTalent().getTalentId());
             return mapperSecurity.toSessionInfo(token);
         }
-        var user = userRepository.findBySponsor_Email(auth.getName());
-        var token = getJWTToken(mapperSecurity.toUserDetailsImplSponsor(user),
+        if (sponsorRepository.existsByEmail(auth.getName())) {
+            var user = userRepository.findBySponsor_Email(auth.getName());
+            var token = getJWTToken(mapperSecurity.toUserDetailsImplSponsor(user),
+                    user.getSponsor().getSponsorId());
+            return mapperSecurity.toSessionInfo(token);
+        }
+        if (!adminRepository.existsByEmail(auth.getName())) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "you do not have any account there!!");
+        }
+        var user = userRepository.findByAdmin_Email(auth.getName());
+        var token = getJWTToken(mapperSecurity.toUserDetailsImplAdmin(user),
                 user.getSponsor().getSponsorId());
         return mapperSecurity.toSessionInfo(token);
-    }
-
-    @Override
-    public boolean isSponsorActive(Authentication auth) {
-        for (GrantedAuthority grantedAuthority : auth.getAuthorities()) {
-            if (grantedAuthority.getAuthority().equals(Role.SPONSOR.getAuthority())) {
-                var sponsor = sponsorRepository.findById(Long.valueOf(auth.getName()))
-                        .orElseThrow(() -> new SponsorNotFoundException(Long.parseLong(auth.getName())));
-                return sponsor.getStatus().equals(SponsorStatus.ACTIVE);
-            }
-        }
-        return true;
     }
 
     @Override
@@ -82,8 +84,13 @@ public class SecurityServiceImpl implements SecurityServiceInterface {
                     user.getTalent().getTalentId());
             return mapperSecurity.toSessionInfo(token);
         }
-        var token = getJWTToken(mapperSecurity.toUserDetailsImplSponsor(user),
-                user.getSponsor().getSponsorId());
+        if (sponsorRepository.existsByEmail(newUser.email())) {
+            var token = getJWTToken(mapperSecurity.toUserDetailsImplSponsor(user),
+                    user.getSponsor().getSponsorId());
+            return mapperSecurity.toSessionInfo(token);
+        }
+        var token = getJWTToken(mapperSecurity.toUserDetailsImplAdmin(user),
+                user.getAdmin().getAdminId());
         return mapperSecurity.toSessionInfo(token);
     }
 
@@ -98,13 +105,25 @@ public class SecurityServiceImpl implements SecurityServiceInterface {
                     .fullName(newUser.fullName())
                     .email(newUser.email())
                     .password(passwordEncoder.encode(newUser.password()))
-                    .unusedKudos(100) //TODO не хадкодить
+                    .unusedKudos(disableKudos.count())
                     .status(SponsorStatus.ACTIVE)
                     .build());
             var role = roleRepository.findByName(Role.SPONSOR.getAuthority());
             return userRepository.save(UserEntity.builder()
                     .role(role)
                     .sponsor(sponsor)
+                    .build());
+        }
+        if (newUser.role().equals(Role.ADMIN.toString())) {
+            var admin = adminRepository.save(AdminEntity.builder()
+                    .fullName(newUser.fullName())
+                    .email(newUser.email())
+                    .password(passwordEncoder.encode(newUser.password()))
+                    .build());
+            var role = roleRepository.findByName(Role.ADMIN.getAuthority());
+            return userRepository.save(UserEntity.builder()
+                    .role(role)
+                    .admin(admin)
                     .build());
         }
         var talent = talentRepository.save(TalentEntity.builder()
@@ -117,6 +136,7 @@ public class SecurityServiceImpl implements SecurityServiceInterface {
                 .role(role)
                 .talent(talent)
                 .build());
+
     }
 
     @Override
@@ -132,6 +152,18 @@ public class SecurityServiceImpl implements SecurityServiceInterface {
                 .claim("status", authentication.getStatus())
                 .build();
         return jwtEncoder.encode(JwtEncoderParameters.from(claims)).getTokenValue();
+    }
+
+    @Override
+    public boolean isSponsorActive(Authentication auth) {
+        for (GrantedAuthority grantedAuthority : auth.getAuthorities()) {
+            if (grantedAuthority.getAuthority().equals(Role.SPONSOR.getAuthority())) {
+                var sponsor = sponsorRepository.findById(Long.valueOf(auth.getName()))
+                        .orElseThrow(() -> new SponsorNotFoundException(Long.parseLong(auth.getName())));
+                return sponsor.getStatus().equals(SponsorStatus.ACTIVE);
+            }
+        }
+        return true;
     }
 
     @Override

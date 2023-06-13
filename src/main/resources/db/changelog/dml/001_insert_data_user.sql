@@ -78,7 +78,10 @@ VALUES ('Test','email@email.com','$2a$10$/1f8thpvBU9P58gsHCbTiukL3u5pPpxscChs8K0
 UPDATE talent SET email = 'jaxifiееsammi-2877@gmail.com' WHERE talent_id = 1;
 UPDATE talent SET email = 'jaxifiееееsammi-2877@gmail.com' WHERE talent_id = 2;
 
+-- changeset kate:21
 INSERT INTO role (name)
 VALUES ('ROLE_TALENT');
 INSERT INTO role (name)
 VALUES ('ROLE_SPONSOR');
+INSERT INTO role (name)
+VALUES ('ROLE_ADMIN');

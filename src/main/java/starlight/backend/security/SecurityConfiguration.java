@@ -74,6 +74,8 @@ class SecurityConfiguration {
                 .requestMatchers(antMatcher("/api/v1/proofs/**")).permitAll()
                 .requestMatchers("/api/v1/sponsors/recovery-account").permitAll()
                 /////////////////////////Another///////////////////////////////////////////////////
+                .requestMatchers("/**").hasAuthority("ROLE_ADMIN")
+                /////////////////////////Another///////////////////////////////////////////////////
                 .anyRequest().authenticated()
         );
         http.sessionManagement().sessionCreationPolicy(STATELESS);
@@ -138,10 +140,12 @@ class SecurityConfiguration {
     @Bean
     UserDetailsService userDetailsService(UserRepository userRepository) {
         return email -> {
-            if (userRepository.existsByTalent_Email(email)) {
-                return mapper.toUserDetailsImplTalent(userRepository.findByTalent_Email(email));
-            } else {
+            if (userRepository.existsByAdmin_Email(email)) {
+                return mapper.toUserDetailsImplAdmin(userRepository.findByAdmin_Email(email));
+            }else if(userRepository.existsBySponsor_Email(email)){
                 return mapper.toUserDetailsImplSponsor(userRepository.findBySponsor_Email(email));
+            }else {
+                return mapper.toUserDetailsImplTalent(userRepository.findByTalent_Email(email));
             }
         };
     }

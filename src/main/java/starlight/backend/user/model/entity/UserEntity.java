@@ -3,6 +3,7 @@ package starlight.backend.user.model.entity;
 import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.validation.annotation.Validated;
+import starlight.backend.admin.model.emtity.AdminEntity;
 import starlight.backend.sponsor.model.entity.SponsorEntity;
 import starlight.backend.talent.model.entity.TalentEntity;
 
@@ -32,6 +33,9 @@ public class UserEntity {
     @JoinColumn(name = "sponsor_id")
     private SponsorEntity sponsor;
 
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "admin_id")
+    private AdminEntity admin;
     @ManyToOne
     @JoinColumn(name = "role_id")
     private RoleEntity role;

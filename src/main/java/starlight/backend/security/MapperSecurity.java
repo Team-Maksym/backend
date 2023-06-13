@@ -34,4 +34,13 @@ public interface MapperSecurity {
                 user.getSponsor().getStatus()
         );
     }
+
+    default UserDetailsImpl toUserDetailsImplAdmin(UserEntity user) {
+        return new UserDetailsImpl(
+                user.getAdmin().getEmail(),
+                user.getAdmin().getPassword(),
+                Role.valueOf(user.getRole().getName().substring("ROLE_".length())),
+                SponsorStatus.ACTIVE
+        );
+    }
 }
