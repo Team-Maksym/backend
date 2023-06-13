@@ -5,7 +5,7 @@ services:
     image: postgres
     environment:
       POSTGRES_DB: postgres
-      POSTGRES_LOGIN: admin
+      POSTGRES_USERNAME: postgres
       POSTGRES_PASSWORD: 123456
       PGGATA: /data/postgres
     volumes:
@@ -16,8 +16,27 @@ services:
       - postgres
     restart: unless-stopped
 
+  backend:
+    container_name: "Starlight_Prod"
+    build:
+      context: .
+      dockerfile: Dockerfile
+#    environment:
+#      DB_LOGIN: admin
+#      DB_PASSWORD: 123456
+#      DB_URL: postgres:5432/postgres
+#      MAIL_USER: java.team.maksym@gmail.com
+#      MAIL_PASSWORD: SoftServe123!
+    volumes:
+      - backend:/data/backend
+    ports:
+      - '8080:8080'
+    networks:
+      - postgres
+    restart: unless-stopped
+
 #  pgadmin:
-#    container_name: pgadmin
+#    container_name: pgadmin_prod
 #    image: dpage/pgadmin4
 #    environment:
 #      PGADMIN_DEFAULT_EMAIL: sekret7d@gmail.com
