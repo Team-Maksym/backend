@@ -137,11 +137,11 @@ public class TalentServiceImpl implements TalentServiceInterface {
         if (!securityService.checkingLoggedAndToken(talentId, auth)) {
             throw new UserAccesDeniedToDeleteThisUserException(talentId);
         }
-        TalentEntity user = talentRepository.findById(talentId)
+        TalentEntity talent = talentRepository.findById(talentId)
                 .orElseThrow(() -> new UserNotFoundException(talentId));
-        user.getPositions().clear();
-        user.getTalentSkills().clear();
-        if (!user.getProofs().isEmpty()) {
+        talent.getPositions().clear();
+        talent.getTalentSkills().clear();
+        if (!talent.getProofs().isEmpty()) {
             for (ProofEntity proof : proofRepository.findByTalent_TalentId(talentId)) {
                 proof.setTalent(null);
                 proof.getSkills().clear();
@@ -150,8 +150,8 @@ public class TalentServiceImpl implements TalentServiceInterface {
                 proofRepository.deleteById(proof.getProofId());
             }
         }
-        user.getProofs().clear();
-        talentRepository.deleteById(user.getTalentId());
+        talent.getProofs().clear();
+        talentRepository.deleteById(talent.getTalentId());
     }
 
 

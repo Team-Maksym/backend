@@ -3,6 +3,8 @@ package starlight.backend.security;
 import com.nimbusds.jose.jwk.JWKSet;
 import com.nimbusds.jose.jwk.RSAKey;
 import com.nimbusds.jose.jwk.source.ImmutableJWKSet;
+import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
@@ -37,6 +39,7 @@ import static org.springframework.security.web.util.matcher.AntPathRequestMatche
 @EnableWebSecurity
 @EnableMethodSecurity
 @Configuration
+@AllArgsConstructor
 class SecurityConfiguration {
     private MapperSecurity mapper;
 
@@ -137,8 +140,9 @@ class SecurityConfiguration {
         return email -> {
             if (userRepository.existsByTalent_Email(email)) {
                 return mapper.toUserDetailsImplTalent(userRepository.findByTalent_Email(email));
+            } else {
+                return mapper.toUserDetailsImplSponsor(userRepository.findBySponsor_Email(email));
             }
-            return mapper.toUserDetailsImplSponsor(userRepository.findBySponsor_Email(email));
         };
     }
 }

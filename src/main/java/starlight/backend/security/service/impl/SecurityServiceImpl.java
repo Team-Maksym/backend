@@ -49,6 +49,7 @@ public class SecurityServiceImpl implements SecurityServiceInterface {
 
     @Override
     public SessionInfo loginInfo(Authentication auth) {
+        log.info("auth {}",auth.getName());
         if (talentRepository.existsByEmail(auth.getName())) {
             var user = userRepository.findByTalent_Email(auth.getName());
             var token = getJWTToken(mapperSecurity.toUserDetailsImplTalent(user),
