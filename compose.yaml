@@ -6,7 +6,7 @@ services:
     volumes:
       - backend:/data/backend
     ports:
-      - '8080-8090:8080'
+      - '8082:8082'
     networks:
       - postgres
     secrets:
