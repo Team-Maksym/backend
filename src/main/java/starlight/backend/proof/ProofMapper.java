@@ -33,6 +33,7 @@ public interface ProofMapper {
                 .description(proof.getDescription())
                 .title(proof.getTitle())
                 .status(proof.getStatus())
+                .link(proof.getLink())
                 .skillWithCategoryList(proof.getSkills()
                         .stream()
                         .map(this::toSkillWithCategory)
